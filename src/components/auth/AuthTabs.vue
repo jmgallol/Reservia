@@ -24,58 +24,21 @@ const tabs: TabItem[] = [
 </script>
 
 <template>
-  <div class="auth-tabs">
+  <div class="inline-flex bg-bg-tabs rounded-full p-1 gap-0.5">
     <button
       v-for="tab in tabs"
       :key="tab.key"
-      :class="['auth-tabs__btn', { 'auth-tabs__btn--active': activeTab === tab.key }]"
+      :class="[
+        'flex items-center gap-2 px-5 py-2.5 border-none rounded-full text-sm font-medium transition-all duration-150 whitespace-nowrap cursor-pointer',
+        activeTab === tab.key
+          ? 'bg-white text-text-primary font-semibold shadow-[0_1px_3px_rgba(0,0,0,0.08)]'
+          : 'bg-transparent text-text-secondary hover:text-text-primary'
+      ]"
       type="button"
       @click="emit('update:activeTab', tab.key)"
     >
-      <component :is="tab.icon" class="auth-tabs__icon" :size="16" />
+      <component :is="tab.icon" class="shrink-0 [stroke-width:2.2]" :size="16" />
       <span>{{ tab.label }}</span>
     </button>
   </div>
 </template>
-
-<style scoped>
-.auth-tabs {
-  display: inline-flex;
-  background: var(--color-bg-tabs);
-  border-radius: var(--radius-full);
-  padding: 4px;
-  gap: 2px;
-}
-
-.auth-tabs__btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 20px;
-  border: none;
-  border-radius: var(--radius-full);
-  background: transparent;
-  color: var(--color-text-secondary);
-  font-size: 14px;
-  font-weight: 500;
-  transition: all var(--transition-fast);
-  white-space: nowrap;
-  cursor: pointer;
-}
-
-.auth-tabs__btn:hover {
-  color: var(--color-text-primary);
-}
-
-.auth-tabs__btn--active {
-  background: var(--color-white);
-  color: var(--color-text-primary);
-  font-weight: 600;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-}
-
-.auth-tabs__icon {
-  flex-shrink: 0;
-  stroke-width: 2.2;
-}
-</style>

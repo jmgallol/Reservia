@@ -37,42 +37,42 @@ function handleLogin(): void {
 </script>
 
 <template>
-  <div class="login-form">
-    <h1 class="form-title">Bienvenido de nuevo</h1>
-    <p class="form-subtitle">Ingresa tus credenciales para continuar</p>
+  <div class="flex flex-col">
+    <h1 class="font-heading text-[28px] font-bold italic text-text-primary mb-1.5">Bienvenido de nuevo</h1>
+    <p class="text-text-secondary text-sm mb-6">Ingresa tus credenciales para continuar</p>
 
-    <div v-if="errorMessage" class="form-error">
+    <div v-if="errorMessage" class="bg-[#FEF2F2] border border-[#FECACA] text-[#991B1B] px-3.5 py-2.5 rounded-[6px] text-[13px] mb-4">
       {{ errorMessage }}
     </div>
 
-    <div class="form-group">
-      <label class="form-label" for="login-email">CORREO ELECTRÓNICO</label>
-      <div class="input-wrapper">
-        <Mail class="input-icon" :size="18" />
+    <div class="mb-4">
+      <label class="block text-[11px] font-semibold tracking-[0.5px] text-text-label mb-1.5" for="login-email">CORREO ELECTRÓNICO</label>
+      <div class="relative flex items-center">
+        <Mail class="absolute left-3.5 text-text-secondary opacity-60 pointer-events-none" :size="18" />
         <input
           id="login-email"
           v-model="email"
           type="email"
           placeholder="maria@email.com"
-          class="form-input"
+          class="w-full py-3.5 pr-3.5 pl-11 border border-border rounded-[10px] text-sm text-text-primary bg-white transition-colors duration-150 outline-none placeholder:text-text-placeholder focus:border-border-focus"
         />
       </div>
     </div>
 
-    <div class="form-group">
-      <label class="form-label" for="login-password">CONTRASEÑA</label>
-      <div class="input-wrapper">
-        <Lock class="input-icon" :size="18" />
+    <div class="mb-4">
+      <label class="block text-[11px] font-semibold tracking-[0.5px] text-text-label mb-1.5" for="login-password">CONTRASEÑA</label>
+      <div class="relative flex items-center">
+        <Lock class="absolute left-3.5 text-text-secondary opacity-60 pointer-events-none" :size="18" />
         <input
           id="login-password"
           v-model="password"
           :type="showPassword ? 'text' : 'password'"
           placeholder="••••••••"
-          class="form-input"
+          class="w-full py-3.5 pr-3.5 pl-11 border border-border rounded-[10px] text-sm text-text-primary bg-white transition-colors duration-150 outline-none placeholder:text-text-placeholder focus:border-border-focus"
         />
         <button
           type="button"
-          class="password-toggle"
+          class="absolute right-3.5 bg-transparent border-none text-text-secondary p-1 flex items-center justify-center opacity-60 cursor-pointer transition-opacity duration-150 hover:opacity-100"
           @click="showPassword = !showPassword"
         >
           <EyeOff v-if="showPassword" :size="18" />
@@ -81,195 +81,21 @@ function handleLogin(): void {
       </div>
     </div>
 
-    <div class="form-row">
-      <label class="checkbox-label">
-        <input v-model="rememberMe" type="checkbox" class="checkbox-input" />
-        <span class="checkbox-custom"></span>
+    <div class="flex items-center justify-between mb-6">
+      <label class="flex items-center gap-2 text-[13px] text-text-secondary cursor-pointer">
+        <input v-model="rememberMe" type="checkbox" class="w-4 h-4 accent-green-dark cursor-pointer" />
+        <span class="hidden"></span>
         Recordarme
       </label>
-      <a href="#" class="forgot-link">¿Olvidaste tu contraseña?</a>
+      <a href="#" class="text-[13px] text-orange font-medium transition-colors duration-150 hover:text-orange-hover">¿Olvidaste tu contraseña?</a>
     </div>
 
-    <button class="btn btn--green" @click="handleLogin">
+    <button class="w-full py-3.5 border-none rounded-full text-[15px] font-semibold text-white transition-all duration-250 mb-4 bg-green-dark hover:bg-green-medium hover:-translate-y-px hover:shadow-lg" @click="handleLogin">
       Iniciar sesión
     </button>
 
-    <button class="admin-link" @click="emit('switchTab', 'admin')">
+    <button class="block text-center text-[13px] text-text-secondary bg-transparent border-none mt-2 cursor-pointer transition-colors duration-150 hover:text-green-dark" @click="emit('switchTab', 'admin')">
       — Ingresar como administrador —
     </button>
   </div>
 </template>
-
-<style scoped>
-.login-form {
-  display: flex;
-  flex-direction: column;
-}
-
-.form-title {
-  font-family: var(--font-heading);
-  font-size: 28px;
-  font-weight: 700;
-  font-style: italic;
-  color: var(--color-text-primary);
-  margin-bottom: 6px;
-}
-
-.form-subtitle {
-  color: var(--color-text-secondary);
-  font-size: 14px;
-  margin-bottom: var(--space-lg);
-}
-
-.form-error {
-  background: #FEF2F2;
-  border: 1px solid #FECACA;
-  color: #991B1B;
-  padding: 10px 14px;
-  border-radius: var(--radius-sm);
-  font-size: 13px;
-  margin-bottom: var(--space-md);
-}
-
-.form-group {
-  margin-bottom: var(--space-md);
-}
-
-.form-label {
-  display: block;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  color: var(--color-text-label);
-  margin-bottom: 6px;
-}
-
-.input-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.input-icon {
-  position: absolute;
-  left: 14px;
-  color: var(--color-text-secondary);
-  pointer-events: none;
-  opacity: 0.6;
-}
-
-.form-input {
-  width: 100%;
-  padding: 14px 14px 14px 44px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  font-size: 14px;
-  color: var(--color-text-primary);
-  background: var(--color-white);
-  transition: border-color var(--transition-fast);
-  outline: none;
-}
-
-.form-input::placeholder {
-  color: var(--color-text-placeholder);
-}
-
-.form-input:focus {
-  border-color: var(--color-border-focus);
-}
-
-.password-toggle {
-  position: absolute;
-  right: 14px;
-  background: none;
-  border: none;
-  color: var(--color-text-secondary);
-  padding: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0.6;
-  cursor: pointer;
-  transition: opacity var(--transition-fast);
-}
-
-.password-toggle:hover {
-  opacity: 1;
-}
-
-.form-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: var(--space-lg);
-}
-
-.checkbox-label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  color: var(--color-text-secondary);
-  cursor: pointer;
-}
-
-.checkbox-input {
-  width: 16px;
-  height: 16px;
-  accent-color: var(--color-green-dark);
-  cursor: pointer;
-}
-
-.checkbox-custom {
-  display: none;
-}
-
-.forgot-link {
-  font-size: 13px;
-  color: var(--color-orange);
-  font-weight: 500;
-  transition: color var(--transition-fast);
-}
-
-.forgot-link:hover {
-  color: var(--color-orange-hover);
-}
-
-.btn {
-  width: 100%;
-  padding: 14px;
-  border: none;
-  border-radius: var(--radius-full);
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--color-white);
-  transition: all var(--transition-normal);
-  margin-bottom: var(--space-md);
-}
-
-.btn--green {
-  background: var(--color-green-dark);
-}
-
-.btn--green:hover {
-  background: var(--color-green-medium);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(45, 90, 61, 0.3);
-}
-
-.admin-link {
-  display: block;
-  text-align: center;
-  font-size: 13px;
-  color: var(--color-text-secondary);
-  background: none;
-  border: none;
-  margin-top: var(--space-sm);
-  cursor: pointer;
-  transition: color var(--transition-fast);
-}
-
-.admin-link:hover {
-  color: var(--color-green-dark);
-}
-</style>

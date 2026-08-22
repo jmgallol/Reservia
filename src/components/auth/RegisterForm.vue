@@ -63,74 +63,74 @@ function handleRegister(): void {
 </script>
 
 <template>
-  <div class="register-form">
-    <h1 class="form-title">Crear cuenta</h1>
-    <p class="form-subtitle">Regístrate para explorar y reservar restaurantes</p>
+  <div class="flex flex-col">
+    <h1 class="font-heading text-[28px] font-bold italic text-text-primary mb-1.5">Crear cuenta</h1>
+    <p class="text-text-secondary text-sm mb-6">Regístrate para explorar y reservar restaurantes</p>
 
-    <div v-if="errorMessage" class="form-error">
+    <div v-if="errorMessage" class="bg-[#FEF2F2] border border-[#FECACA] text-[#991B1B] px-3.5 py-2.5 rounded-[6px] text-[13px] mb-4">
       {{ errorMessage }}
     </div>
 
-    <div v-if="successMessage" class="form-success">
+    <div v-if="successMessage" class="bg-[#F0FDF4] border border-[#BBF7D0] text-[#166534] px-3.5 py-2.5 rounded-[6px] text-[13px] mb-4">
       {{ successMessage }}
     </div>
 
-    <div class="form-group">
-      <label class="form-label" for="register-name">NOMBRE COMPLETO</label>
-      <div class="input-wrapper">
-        <UserPlus class="input-icon" :size="18" />
+    <div class="mb-4">
+      <label class="block text-[11px] font-semibold tracking-[0.5px] text-text-label mb-1.5" for="register-name">NOMBRE COMPLETO</label>
+      <div class="relative flex items-center">
+        <UserPlus class="absolute left-3.5 text-text-secondary opacity-60 pointer-events-none" :size="18" />
         <input
           id="register-name"
           v-model="name"
           type="text"
           placeholder="María García"
-          class="form-input"
+          class="w-full py-3.5 pr-3.5 pl-11 border border-border rounded-[10px] text-sm text-text-primary bg-white transition-colors duration-150 outline-none placeholder:text-text-placeholder focus:border-border-focus"
         />
       </div>
     </div>
 
-    <div class="form-group">
-      <label class="form-label" for="register-email">CORREO ELECTRÓNICO</label>
-      <div class="input-wrapper">
-        <Mail class="input-icon" :size="18" />
+    <div class="mb-4">
+      <label class="block text-[11px] font-semibold tracking-[0.5px] text-text-label mb-1.5" for="register-email">CORREO ELECTRÓNICO</label>
+      <div class="relative flex items-center">
+        <Mail class="absolute left-3.5 text-text-secondary opacity-60 pointer-events-none" :size="18" />
         <input
           id="register-email"
           v-model="email"
           type="email"
           placeholder="maria@email.com"
-          class="form-input"
+          class="w-full py-3.5 pr-3.5 pl-11 border border-border rounded-[10px] text-sm text-text-primary bg-white transition-colors duration-150 outline-none placeholder:text-text-placeholder focus:border-border-focus"
         />
       </div>
     </div>
 
-    <div class="form-group">
-      <label class="form-label" for="register-phone">TELÉFONO</label>
-      <div class="input-wrapper">
-        <Phone class="input-icon" :size="18" />
+    <div class="mb-4">
+      <label class="block text-[11px] font-semibold tracking-[0.5px] text-text-label mb-1.5" for="register-phone">TELÉFONO</label>
+      <div class="relative flex items-center">
+        <Phone class="absolute left-3.5 text-text-secondary opacity-60 pointer-events-none" :size="18" />
         <input
           id="register-phone"
           v-model="phone"
           type="tel"
           placeholder="+57 300 000 0000"
-          class="form-input"
+          class="w-full py-3.5 pr-3.5 pl-11 border border-border rounded-[10px] text-sm text-text-primary bg-white transition-colors duration-150 outline-none placeholder:text-text-placeholder focus:border-border-focus"
         />
       </div>
     </div>
 
-    <div class="form-group">
-      <label class="form-label" for="register-password">CONTRASEÑA</label>
-      <div class="input-wrapper">
-        <Lock class="input-icon" :size="18" />
+    <div class="mb-4">
+      <label class="block text-[11px] font-semibold tracking-[0.5px] text-text-label mb-1.5" for="register-password">CONTRASEÑA</label>
+      <div class="relative flex items-center">
+        <Lock class="absolute left-3.5 text-text-secondary opacity-60 pointer-events-none" :size="18" />
         <input
           id="register-password"
           v-model="password"
           :type="showPassword ? 'text' : 'password'"
           placeholder="Mínimo 8 caracteres"
-          class="form-input"
+          class="w-full py-3.5 pr-3.5 pl-11 border border-border rounded-[10px] text-sm text-text-primary bg-white transition-colors duration-150 outline-none placeholder:text-text-placeholder focus:border-border-focus"
         />
         <button
           type="button"
-          class="password-toggle"
+          class="absolute right-3.5 bg-transparent border-none text-text-secondary p-1 flex items-center justify-center opacity-60 cursor-pointer transition-opacity duration-150 hover:opacity-100"
           @click="showPassword = !showPassword"
         >
           <EyeOff v-if="showPassword" :size="18" />
@@ -139,20 +139,20 @@ function handleRegister(): void {
       </div>
     </div>
 
-    <div class="form-group">
-      <label class="form-label" for="register-confirm-password">CONFIRMAR CONTRASEÑA</label>
-      <div class="input-wrapper">
-        <Lock class="input-icon" :size="18" />
+    <div class="mb-4">
+      <label class="block text-[11px] font-semibold tracking-[0.5px] text-text-label mb-1.5" for="register-confirm-password">CONFIRMAR CONTRASEÑA</label>
+      <div class="relative flex items-center">
+        <Lock class="absolute left-3.5 text-text-secondary opacity-60 pointer-events-none" :size="18" />
         <input
           id="register-confirm-password"
           v-model="confirmPassword"
           :type="showConfirmPassword ? 'text' : 'password'"
           placeholder="Repite tu contraseña"
-          class="form-input"
+          class="w-full py-3.5 pr-3.5 pl-11 border border-border rounded-[10px] text-sm text-text-primary bg-white transition-colors duration-150 outline-none placeholder:text-text-placeholder focus:border-border-focus"
         />
         <button
           type="button"
-          class="password-toggle"
+          class="absolute right-3.5 bg-transparent border-none text-text-secondary p-1 flex items-center justify-center opacity-60 cursor-pointer transition-opacity duration-150 hover:opacity-100"
           @click="showConfirmPassword = !showConfirmPassword"
         >
           <EyeOff v-if="showConfirmPassword" :size="18" />
@@ -161,138 +161,8 @@ function handleRegister(): void {
       </div>
     </div>
 
-    <button class="btn btn--orange" @click="handleRegister">
+    <button class="w-full py-3.5 border-none rounded-full text-[15px] font-semibold text-white transition-all duration-250 mt-2 bg-orange hover:bg-orange-hover hover:-translate-y-px hover:shadow-[0_4px_12px_rgba(196,114,58,0.3)]" @click="handleRegister">
       Crear cuenta
     </button>
   </div>
 </template>
-
-<style scoped>
-.register-form {
-  display: flex;
-  flex-direction: column;
-}
-
-.form-title {
-  font-family: var(--font-heading);
-  font-size: 28px;
-  font-weight: 700;
-  font-style: italic;
-  color: var(--color-text-primary);
-  margin-bottom: 6px;
-}
-
-.form-subtitle {
-  color: var(--color-text-secondary);
-  font-size: 14px;
-  margin-bottom: var(--space-lg);
-}
-
-.form-error {
-  background: #FEF2F2;
-  border: 1px solid #FECACA;
-  color: #991B1B;
-  padding: 10px 14px;
-  border-radius: var(--radius-sm);
-  font-size: 13px;
-  margin-bottom: var(--space-md);
-}
-
-.form-success {
-  background: #F0FDF4;
-  border: 1px solid #BBF7D0;
-  color: #166534;
-  padding: 10px 14px;
-  border-radius: var(--radius-sm);
-  font-size: 13px;
-  margin-bottom: var(--space-md);
-}
-
-.form-group {
-  margin-bottom: var(--space-md);
-}
-
-.form-label {
-  display: block;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  color: var(--color-text-label);
-  margin-bottom: 6px;
-}
-
-.input-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.input-icon {
-  position: absolute;
-  left: 14px;
-  color: var(--color-text-secondary);
-  pointer-events: none;
-  opacity: 0.6;
-}
-
-.form-input {
-  width: 100%;
-  padding: 14px 14px 14px 44px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  font-size: 14px;
-  color: var(--color-text-primary);
-  background: var(--color-white);
-  transition: border-color var(--transition-fast);
-  outline: none;
-}
-
-.form-input::placeholder {
-  color: var(--color-text-placeholder);
-}
-
-.form-input:focus {
-  border-color: var(--color-border-focus);
-}
-
-.password-toggle {
-  position: absolute;
-  right: 14px;
-  background: none;
-  border: none;
-  color: var(--color-text-secondary);
-  padding: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0.6;
-  cursor: pointer;
-  transition: opacity var(--transition-fast);
-}
-
-.password-toggle:hover {
-  opacity: 1;
-}
-
-.btn {
-  width: 100%;
-  padding: 14px;
-  border: none;
-  border-radius: var(--radius-full);
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--color-white);
-  transition: all var(--transition-normal);
-  margin-top: var(--space-sm);
-}
-
-.btn--orange {
-  background: var(--color-orange);
-}
-
-.btn--orange:hover {
-  background: var(--color-orange-hover);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(196, 114, 58, 0.3);
-}
-</style>
