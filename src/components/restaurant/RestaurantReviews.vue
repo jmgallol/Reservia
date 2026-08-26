@@ -1,82 +1,97 @@
-<script lang="ts">
+<script setup lang="ts">
+// Imports
 import { computed, ref } from 'vue';
-import { ReviewService } from '@/services/ReviewService'
 
-const props = defineProps<{
-    restaurantId: number;
-}>();
+import StarRating from '@/components/restaurant/StarRating.vue';
 
-const reviews = computed(() => ReviewService.getReviewsByRestaurantId(props.restaurantId));
+import { ReviewService } from '@/services/ReviewService';
 
+import { formatDate } from '@/utils/formatDate';
+
+// Props
+interface Props {
+  restaurantId: number;
+}
+
+const props = defineProps<Props>();
+
+// Reactive state
 const form = ref({
-    rating: 5,
-    comment: '',
-    user: '',
+  comment: '',
+  rating: 5,
+  user: '',
 });
 
 const isSubmitting = ref(false);
 
-function submitReview(){
-    if(!form.value.comment.trim()) return;
+// Computed
+const reviews = computed(() => ReviewService.getReviewsByRestaurantId(props.restaurantId));
 
-    isSubmitting.value = true;
-    ReviewService.createReview({
-        restaurantId: props.restaurantId,
-        rating: Math.min(5, Math.max(1, form.value.rating)),
-        comment: form.value.comment.trim(),
-        user: form.value.user.trim() || undefined,
-    });
-    form.value = { rating: 5, comment: '', user:'' };
-    isSubmitting.value = false;
+function submitReview(): void {
+  if (!form.value.comment.trim()) return;
+
+  isSubmitting.value = true;
+  ReviewService.createReview({
+    id: 0,
+    restaurantId: props.restaurantId,
+    rating: Math.min(5, Math.max(1, form.value.rating)),
+    comment: form.value.comment.trim(),
+    user: form.value.user.trim() || '',
+    status: 'approved',
+  });
+  form.value = { comment: '', rating: 5, user: '' };
+  isSubmitting.value = false;
 }
 </script>
 
 <template>
   <div class="space-y-6">
-    <h3 class="text-lg font-semibold text-gray-800">Reviews</h3>
+    <h3 class="text-lg font-semibold text-gray-800">Reseñas</h3>
 
-    <!-- Create review form -->
+    <!-- Review form -->
     <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
-      <h4 class="text-sm font-medium text-gray-700 mb-3">Add a review</h4>
+      <h4 class="text-sm font-medium text-gray-700 mb-3">Agregar reseña</h4>
       <form @submit.prevent="submitReview" class="space-y-3">
+        <!-- Rating -->
         <div>
-          <label for="rating" class="block text-sm text-gray-600 mb-1">Rating</label>
-          <select
-            id="rating"
-            v-model.number="form.rating"
-            class="w-full border border-gray-300 rounded py-2 px-3 focus:outline-none focus:ring focus:border-blue-300"
-            required
-          >
-            <option v-for="n in 5" :key="n" :value="n">{{ n }} star{{ n > 1 ? 's' : '' }}</option>
-          </select>
+          <label class="block text-sm text-gray-600 mb-1">Calificación</label>
+          <StarRating :rating="form.rating" :size="24" @update:rating="form.rating = $event" />
         </div>
+
+        <!-- Comment -->
         <div>
-          <label for="comment" class="block text-sm text-gray-600 mb-1">Comment</label>
+          <label for="review-comment" class="block text-sm text-gray-600 mb-1">Comentario</label>
           <textarea
-            id="comment"
+            id="review-comment"
             v-model="form.comment"
             rows="3"
             class="w-full border border-gray-300 rounded py-2 px-3 focus:outline-none focus:ring focus:border-blue-300"
-            placeholder="Write your review..."
+            placeholder="Comparte tu experiencia..."
             required
           />
         </div>
+
+        <!-- Author -->
         <div>
-          <label for="author" class="block text-sm text-gray-600 mb-1">Your name (optional)</label>
+          <label for="review-author" class="block text-sm text-gray-600 mb-1"
+            >Tu nombre (opcional)</label
+          >
           <input
-            id="author"
+            id="review-author"
             v-model="form.user"
             type="text"
             class="w-full border border-gray-300 rounded py-2 px-3 focus:outline-none focus:ring focus:border-blue-300"
-            placeholder="Name"
+            placeholder="Nombre"
           />
         </div>
+
+        <!-- Action -->
         <button
           type="submit"
           :disabled="isSubmitting || !form.comment.trim()"
           class="bg-blue-600 text-white font-medium py-2 px-4 rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
         >
-          Post review
+          Publicar reseña
         </button>
       </form>
     </div>
@@ -89,10 +104,8 @@ function submitReview(){
         class="bg-white rounded-lg border border-gray-200 p-4 shadow-sm"
       >
         <div class="flex items-center justify-between gap-2 mb-2">
-          <span class="font-medium text-gray-800">{{ review.author || 'Anonymous' }}</span>
-          <span class="text-amber-500 text-sm" :title="`${review.rating} stars`">
-            {{ '★'.repeat(review.rating) }}{{ '☆'.repeat(5 - review.rating) }}
-          </span>
+          <span class="font-medium text-gray-800">{{ review.user || 'Anónimo' }}</span>
+          <StarRating :rating="review.rating" :size="16" :readonly="true" />
         </div>
         <p class="text-gray-600 text-sm whitespace-pre-wrap">{{ review.comment }}</p>
         <p v-if="review.createdAt" class="text-gray-400 text-xs mt-2">
@@ -100,7 +113,7 @@ function submitReview(){
         </p>
       </li>
       <li v-if="reviews.length === 0" class="text-gray-500 text-sm py-4">
-        No reviews yet. Be the first to review!
+        Aún no hay reseñas. ¡Sé el primero en opinar!
       </li>
     </ul>
   </div>

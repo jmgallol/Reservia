@@ -77,7 +77,9 @@ function handleRegister(): void {
 
     authStore.login(result.user);
     successMessage.value = '¡Registro exitoso! Redirigiendo...';
-    alert(`¡Bienvenido, ${result.user.name}! Tu restaurante "${result.restaurant.name}" ha sido registrado.`);
+    alert(
+      `¡Bienvenido, ${result.user.name}! Tu restaurante "${result.restaurant.name}" ha sido registrado.`,
+    );
   } catch (error) {
     errorMessage.value = error instanceof Error ? error.message : 'Ocurrió un error al registrar.';
   }
@@ -86,32 +88,52 @@ function handleRegister(): void {
 
 <template>
   <div class="flex flex-col">
-    <h1 class="font-heading text-[28px] font-bold italic text-text-primary mb-1.5">Registro de administrador</h1>
+    <h1 class="font-heading text-[28px] font-bold italic text-text-primary mb-1.5">
+      Registro de administrador
+    </h1>
     <p class="text-text-secondary text-sm mb-4">Crea tu cuenta y asocia tu restaurante</p>
 
-    <div class="flex gap-3 items-start bg-alert-bg border border-alert-border rounded-[10px] px-4 py-3.5 mb-6">
+    <div
+      class="flex gap-3 items-start bg-alert-bg border border-alert-border rounded-[10px] px-4 py-3.5 mb-6"
+    >
       <Info class="text-gold shrink-0 mt-px" :size="20" />
       <p class="text-[13px] text-alert-text leading-snug">
-        Cada administrador solo puede gestionar <strong class="underline font-bold">un único restaurante</strong>.
-        Durante el registro deberás crear o asociar tu establecimiento.
+        Cada administrador solo puede gestionar
+        <strong class="underline font-bold">un único restaurante</strong>. Durante el registro
+        deberás crear o asociar tu establecimiento.
       </p>
     </div>
 
-    <div v-if="errorMessage" class="bg-[#FEF2F2] border border-[#FECACA] text-[#991B1B] px-3.5 py-2.5 rounded-[6px] text-[13px] mb-4">
+    <div
+      v-if="errorMessage"
+      class="bg-[#FEF2F2] border border-[#FECACA] text-[#991B1B] px-3.5 py-2.5 rounded-[6px] text-[13px] mb-4"
+    >
       {{ errorMessage }}
     </div>
 
-    <div v-if="successMessage" class="bg-[#F0FDF4] border border-[#BBF7D0] text-[#166534] px-3.5 py-2.5 rounded-[6px] text-[13px] mb-4">
+    <div
+      v-if="successMessage"
+      class="bg-[#F0FDF4] border border-[#BBF7D0] text-[#166534] px-3.5 py-2.5 rounded-[6px] text-[13px] mb-4"
+    >
       {{ successMessage }}
     </div>
 
     <!-- Datos del administrador -->
-    <h2 class="font-body text-xs font-bold tracking-[0.5px] text-text-primary mb-4 mt-2">DATOS DEL ADMINISTRADOR</h2>
+    <h2 class="font-body text-xs font-bold tracking-[0.5px] text-text-primary mb-4 mt-2">
+      DATOS DEL ADMINISTRADOR
+    </h2>
 
     <div class="mb-4">
-      <label class="block text-[11px] font-semibold tracking-[0.5px] text-text-label mb-1.5" for="admin-name">NOMBRE COMPLETO</label>
+      <label
+        class="block text-[11px] font-semibold tracking-[0.5px] text-text-label mb-1.5"
+        for="admin-name"
+        >NOMBRE COMPLETO</label
+      >
       <div class="relative flex items-center">
-        <User class="absolute left-3.5 text-text-secondary opacity-60 pointer-events-none" :size="18" />
+        <User
+          class="absolute left-3.5 text-text-secondary opacity-60 pointer-events-none"
+          :size="18"
+        />
         <input
           id="admin-name"
           v-model="name"
@@ -123,9 +145,16 @@ function handleRegister(): void {
     </div>
 
     <div class="mb-4">
-      <label class="block text-[11px] font-semibold tracking-[0.5px] text-text-label mb-1.5" for="admin-email">CORREO</label>
+      <label
+        class="block text-[11px] font-semibold tracking-[0.5px] text-text-label mb-1.5"
+        for="admin-email"
+        >CORREO</label
+      >
       <div class="relative flex items-center">
-        <Mail class="absolute left-3.5 text-text-secondary opacity-60 pointer-events-none" :size="18" />
+        <Mail
+          class="absolute left-3.5 text-text-secondary opacity-60 pointer-events-none"
+          :size="18"
+        />
         <input
           id="admin-email"
           v-model="email"
@@ -137,9 +166,16 @@ function handleRegister(): void {
     </div>
 
     <div class="mb-4">
-      <label class="block text-[11px] font-semibold tracking-[0.5px] text-text-label mb-1.5" for="admin-phone">TELÉFONO</label>
+      <label
+        class="block text-[11px] font-semibold tracking-[0.5px] text-text-label mb-1.5"
+        for="admin-phone"
+        >TELÉFONO</label
+      >
       <div class="relative flex items-center">
-        <Phone class="absolute left-3.5 text-text-secondary opacity-60 pointer-events-none" :size="18" />
+        <Phone
+          class="absolute left-3.5 text-text-secondary opacity-60 pointer-events-none"
+          :size="18"
+        />
         <input
           id="admin-phone"
           v-model="phone"
@@ -151,9 +187,16 @@ function handleRegister(): void {
     </div>
 
     <div class="mb-4">
-      <label class="block text-[11px] font-semibold tracking-[0.5px] text-text-label mb-1.5" for="admin-password">CONTRASEÑA</label>
+      <label
+        class="block text-[11px] font-semibold tracking-[0.5px] text-text-label mb-1.5"
+        for="admin-password"
+        >CONTRASEÑA</label
+      >
       <div class="relative flex items-center">
-        <Lock class="absolute left-3.5 text-text-secondary opacity-60 pointer-events-none" :size="18" />
+        <Lock
+          class="absolute left-3.5 text-text-secondary opacity-60 pointer-events-none"
+          :size="18"
+        />
         <input
           id="admin-password"
           v-model="password"
@@ -173,10 +216,16 @@ function handleRegister(): void {
     </div>
 
     <!-- Datos del restaurante -->
-    <h2 class="font-body text-xs font-bold tracking-[0.5px] text-text-primary mb-4 mt-2">DATOS DEL RESTAURANTE</h2>
+    <h2 class="font-body text-xs font-bold tracking-[0.5px] text-text-primary mb-4 mt-2">
+      DATOS DEL RESTAURANTE
+    </h2>
 
     <div class="mb-4">
-      <label class="block text-[11px] font-semibold tracking-[0.5px] text-text-label mb-1.5" for="admin-restaurant-name">NOMBRE DEL RESTAURANTE</label>
+      <label
+        class="block text-[11px] font-semibold tracking-[0.5px] text-text-label mb-1.5"
+        for="admin-restaurant-name"
+        >NOMBRE DEL RESTAURANTE</label
+      >
       <input
         id="admin-restaurant-name"
         v-model="restaurantName"
@@ -187,7 +236,11 @@ function handleRegister(): void {
     </div>
 
     <div class="mb-4">
-      <label class="block text-[11px] font-semibold tracking-[0.5px] text-text-label mb-1.5" for="admin-restaurant-address">DIRECCIÓN</label>
+      <label
+        class="block text-[11px] font-semibold tracking-[0.5px] text-text-label mb-1.5"
+        for="admin-restaurant-address"
+        >DIRECCIÓN</label
+      >
       <input
         id="admin-restaurant-address"
         v-model="restaurantAddress"
@@ -199,7 +252,11 @@ function handleRegister(): void {
 
     <div class="grid grid-cols-2 gap-4">
       <div class="mb-4">
-        <label class="block text-[11px] font-semibold tracking-[0.5px] text-text-label mb-1.5" for="admin-restaurant-city">CIUDAD</label>
+        <label
+          class="block text-[11px] font-semibold tracking-[0.5px] text-text-label mb-1.5"
+          for="admin-restaurant-city"
+          >CIUDAD</label
+        >
         <select
           id="admin-restaurant-city"
           v-model="restaurantCity"
@@ -212,7 +269,11 @@ function handleRegister(): void {
       </div>
 
       <div class="mb-4">
-        <label class="block text-[11px] font-semibold tracking-[0.5px] text-text-label mb-1.5" for="admin-restaurant-category">CATEGORÍA</label>
+        <label
+          class="block text-[11px] font-semibold tracking-[0.5px] text-text-label mb-1.5"
+          for="admin-restaurant-category"
+          >CATEGORÍA</label
+        >
         <select
           id="admin-restaurant-category"
           v-model="restaurantCategory"
@@ -225,7 +286,10 @@ function handleRegister(): void {
       </div>
     </div>
 
-    <button class="w-full py-3.5 border-none rounded-full text-[15px] font-semibold text-white transition-all duration-250 mt-2 flex items-center justify-center gap-2 bg-orange hover:bg-orange-hover hover:-translate-y-px hover:shadow-[0_4px_12px_rgba(196,114,58,0.3)]" @click="handleRegister">
+    <button
+      class="w-full py-3.5 border-none rounded-full text-[15px] font-semibold text-white transition-all duration-250 mt-2 flex items-center justify-center gap-2 bg-orange hover:bg-orange-hover hover:-translate-y-px hover:shadow-[0_4px_12px_rgba(196,114,58,0.3)]"
+      @click="handleRegister"
+    >
       <span>Continuar configuración</span>
       <ArrowRight :size="18" />
     </button>

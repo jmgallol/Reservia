@@ -1,7 +1,9 @@
-import type { UserInterface } from '@/interfaces/UserInterface';
-import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
-import type { CreateClientDTO } from '@/dtos/CreateClientDTO';
 import type { CreateAdminDTO } from '@/dtos/CreateAdminDTO';
+import type { CreateClientDTO } from '@/dtos/CreateClientDTO';
+import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
+import type { UserInterface } from '@/interfaces/UserInterface';
+
+import { useAuthStore } from '@/stores/auth';
 
 const USERS_KEY = 'reservia_users';
 const RESTAURANTS_KEY = 'reservia_restaurants';
@@ -35,6 +37,30 @@ export class AuthService {
     return users.find((user) => user.email === email && user.password === password);
   }
 
+  static loginAndSave(email: string, password: string): UserInterface | undefined {
+    const user = AuthService.login(email, password);
+    if (user) {
+      const store = useAuthStore();
+      store.login(user);
+    }
+    return user;
+  }
+
+  static logoutUser(): void {
+    const store = useAuthStore();
+    store.logout();
+  }
+
+  static getCurrentUser(): UserInterface | null {
+    const store = useAuthStore();
+    return store.currentUser;
+  }
+
+  static isAuthenticated(): boolean {
+    const store = useAuthStore();
+    return store.isAuthenticated();
+  }
+
   static registerClient(dto: CreateClientDTO): UserInterface {
     const users = AuthService.getUsers();
 
@@ -57,7 +83,10 @@ export class AuthService {
     return newUser;
   }
 
-  static registerAdmin(dto: CreateAdminDTO): { user: UserInterface; restaurant: RestaurantInterface } {
+  static registerAdmin(dto: CreateAdminDTO): {
+    user: UserInterface;
+    restaurant: RestaurantInterface;
+  } {
     const users = AuthService.getUsers();
     const restaurants = AuthService.getRestaurants();
 

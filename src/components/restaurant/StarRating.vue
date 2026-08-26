@@ -23,10 +23,10 @@ const emit = defineEmits<{
   'update:rating': [rating: number];
 }>();
 
-// Variables reactivas
+// Reactive state
 const hoverRating = ref(0);
 
-// Métodos
+// Methods
 function isStarFilled(starIndex: number): boolean {
   const currentRating = hoverRating.value > 0 ? hoverRating.value : props.rating;
   return starIndex <= Math.round(currentRating);
@@ -53,32 +53,30 @@ function handleSelect(starIndex: number): void {
 </script>
 
 <template>
-  <!-- Contenedor de Estrellas -->
+  <!-- Star container -->
   <div
     class="inline-flex items-center gap-1 select-none"
-    :class="{ 'cursor-pointer': !readonly }"
+    :class="{ 'cursor-pointer': !props.readonly }"
     @mouseleave="handleMouseLeave"
   >
     <button
-      v-for="star in maxStars"
+      v-for="star in props.maxStars"
       :key="star"
       type="button"
-      :disabled="readonly"
-      :aria-label="`Calificar con ${star} de ${maxStars} estrellas`"
+      :disabled="props.readonly"
+      :aria-label="`Calificar con ${star} de ${props.maxStars} estrellas`"
       :class="[
         'p-0.5 transition-transform duration-150 focus:outline-none',
-        !readonly ? 'hover:scale-110 cursor-pointer' : 'cursor-default',
+        !props.readonly ? 'hover:scale-110 cursor-pointer' : 'cursor-default',
       ]"
       @mouseenter="handleMouseEnter(star)"
       @click="handleSelect(star)"
     >
       <Star
-        :size="size"
+        :size="props.size"
         :class="[
           'transition-colors duration-150',
-          isStarFilled(star)
-            ? 'text-amber-400 fill-amber-400'
-            : 'text-gray-300 fill-transparent',
+          isStarFilled(star) ? 'text-amber-400 fill-amber-400' : 'text-gray-300 fill-transparent',
         ]"
       />
     </button>

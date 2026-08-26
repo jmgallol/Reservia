@@ -1,33 +1,31 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap');
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
-  /* Primary colors */
-  --color-green-dark: #2D5A3D;
-  --color-green-medium: #3A7350;
-  --color-green-light: #4A8C63;
+  /* Brand colors */
+  --color-verde-bosque: #1a3d2b;
+  --color-terracota: #c8552a;
+  --color-crema-calida: #faf8f4;
+  --color-verde-sidebar: #122318;
+  --color-ambar: #e8a020;
+  --color-salvia: #7aad8c;
 
-  /* Accent colors */
-  --color-orange: #C4723A;
-  --color-orange-hover: #B0632F;
-  --color-gold: #B8860B;
-  --color-gold-light: #DAA520;
-
-  /* Alert */
-  --color-alert-bg: #FDF8E8;
-  --color-alert-border: #DAA520;
-  --color-alert-text: #5C4813;
+  /* Aliases */
+  --color-green-dark: #1a3d2b;
+  --color-green-medium: #234e38;
+  --color-green-light: #7aad8c;
+  --color-orange: #c8552a;
+  --color-orange-hover: #b24820;
 
   /* Neutrals */
-  --color-bg-light: #FAFAF8;
-  --color-bg-tabs: #F0EDE8;
-  --color-border: #D4D4D4;
-  --color-border-focus: #2D5A3D;
+  --color-bg-light: #faf8f4;
+  --color-border: #e7e5e4;
+  --color-border-focus: #1a3d2b;
 
-  --color-text-primary: #1A1A1A;
-  --color-text-secondary: #666666;
-  --color-text-label: #333333;
-  --color-text-placeholder: #999999;
+  --color-text-primary: #292524;
+  --color-text-secondary: #78716c;
+  --color-text-label: #292524;
+  --color-text-placeholder: #78716c;
 
   /* Typography */
   --font-heading: 'Playfair Display', Georgia, 'Times New Roman', serif;
@@ -46,7 +44,7 @@
   body {
     min-height: 100vh;
     color: var(--color-text-primary);
-    background: #fff;
+    background-color: var(--color-crema-calida);
     font-family: var(--font-body);
     font-size: 15px;
     line-height: 1.6;
@@ -60,13 +58,13 @@
   }
 
   a {
-    color: var(--color-green-dark);
+    color: var(--color-verde-bosque);
     text-decoration: none;
     transition: color 150ms ease;
   }
 
   a:hover {
-    color: var(--color-green-light);
+    color: var(--color-terracota);
   }
 
   button {
@@ -79,4 +77,3 @@
     font-family: var(--font-body);
   }
 }
-
