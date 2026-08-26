@@ -93,9 +93,5 @@ function handleLogin(): void {
     <button class="w-full py-3.5 border-none rounded-full text-[15px] font-semibold text-white transition-all duration-250 mb-4 bg-green-dark hover:bg-green-medium hover:-translate-y-px hover:shadow-lg" @click="handleLogin">
       Iniciar sesión
     </button>
-
-    <button class="block text-center text-[13px] text-text-secondary bg-transparent border-none mt-2 cursor-pointer transition-colors duration-150 hover:text-green-dark" @click="emit('switchTab', 'admin')">
-      — Ingresar como administrador —
-    </button>
   </div>
 </template>
