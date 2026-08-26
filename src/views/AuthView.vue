@@ -1,15 +1,19 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import AuthTabs from '@/components/auth/AuthTabs.vue';
-import LoginForm from '@/components/auth/LoginForm.vue';
-import RegisterForm from '@/components/auth/RegisterForm.vue';
-import AdminRegisterForm from '@/components/auth/AdminRegisterForm.vue';
+import { ref, computed } from 'vue';
+import LoginComponent from '@/components/auth/LoginComponent.vue';
+import RegisterComponent from '@/components/auth/RegisterComponent.vue';
+import AdminRegisterComponent from '@/components/auth/AdminRegisterComponent.vue';
+import { Lock, UserPlus, Store } from 'lucide-vue-next';
 
-const activeTab = ref('login');
+const currentForm = ref('login');
 
-function handleSwitchTab(tab: string): void {
-  activeTab.value = tab;
-}
+const formComponents: Record<string, any> = {
+  login: LoginComponent,
+  register: RegisterComponent,
+  admin: AdminRegisterComponent,
+};
+
+const activeComponent = computed(() => formComponents[currentForm.value]);
 </script>
 
 <template>
@@ -27,22 +31,54 @@ function handleSwitchTab(tab: string): void {
           <span class="font-heading text-[22px] font-bold text-text-primary">Reservia</span>
         </div>
 
-        <!-- Tabs -->
-        <AuthTabs :active-tab="activeTab" @update:active-tab="handleSwitchTab" />
+        <!-- Buttons -->
+        <div class="inline-flex bg-bg-tabs rounded-full p-1 gap-0.5">
+          <button
+            type="button"
+            :class="[
+              'flex items-center gap-2 px-5 py-2.5 border-none rounded-full text-sm font-medium transition-all duration-150 cursor-pointer',
+              currentForm === 'login'
+                ? 'bg-white text-text-primary font-semibold shadow-[0_1px_3px_rgba(0,0,0,0.08)]'
+                : 'bg-transparent text-text-secondary hover:text-text-primary'
+            ]"
+            @click="currentForm = 'login'"
+          >
+            <Lock class="shrink-0 [stroke-width:2.2]" :size="16" />
+            <span>Ingresar</span>
+          </button>
+
+          <button
+            type="button"
+            :class="[
+              'flex items-center gap-2 px-5 py-2.5 border-none rounded-full text-sm font-medium transition-all duration-150 cursor-pointer',
+              currentForm === 'register'
+                ? 'bg-white text-text-primary font-semibold shadow-[0_1px_3px_rgba(0,0,0,0.08)]'
+                : 'bg-transparent text-text-secondary hover:text-text-primary'
+            ]"
+            @click="currentForm = 'register'"
+          >
+            <UserPlus class="shrink-0 [stroke-width:2.2]" :size="16" />
+            <span>Registro</span>
+          </button>
+
+          <button
+            type="button"
+            :class="[
+              'flex items-center gap-2 px-5 py-2.5 border-none rounded-full text-sm font-medium transition-all duration-150 cursor-pointer',
+              currentForm === 'admin'
+                ? 'bg-white text-text-primary font-semibold shadow-[0_1px_3px_rgba(0,0,0,0.08)]'
+                : 'bg-transparent text-text-secondary hover:text-text-primary'
+            ]"
+            @click="currentForm = 'admin'"
+          >
+            <Store class="shrink-0 [stroke-width:2.2]" :size="16" />
+            <span>Admin</span>
+          </button>
+        </div>
 
         <!-- Form panels -->
         <div class="mt-8">
-          <LoginForm
-            v-if="activeTab === 'login'"
-            @switch-tab="handleSwitchTab"
-          />
-          <RegisterForm
-            v-if="activeTab === 'register'"
-            @switch-tab="handleSwitchTab"
-          />
-          <AdminRegisterForm
-            v-if="activeTab === 'admin'"
-          />
+          <component :is="activeComponent" />
         </div>
       </div>
     </div>
@@ -65,3 +101,4 @@ function handleSwitchTab(tab: string): void {
     </div>
   </div>
 </template>
+
