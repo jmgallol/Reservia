@@ -65,7 +65,9 @@ function handleCancelReservation(id: number): void {
         </p>
       </div>
 
-      <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-[#FAF8F4] text-stone-700 border border-stone-200">
+      <span
+        class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-[#FAF8F4] text-stone-700 border border-stone-200"
+      >
         {{ reservations.length }} registros
       </span>
     </div>
@@ -79,7 +81,9 @@ function handleCancelReservation(id: number): void {
       <!-- Client Column Slot -->
       <template #cell(client)="{ item }">
         <div class="flex items-center gap-3">
-          <div class="w-8 h-8 rounded-full bg-[#FAF8F4] border border-stone-200 text-[#1A3D2B] font-bold text-xs flex items-center justify-center shrink-0">
+          <div
+            class="w-8 h-8 rounded-full bg-[#FAF8F4] border border-stone-200 text-[#1A3D2B] font-bold text-xs flex items-center justify-center shrink-0"
+          >
             {{ item.clientName ? String(item.clientName).charAt(0) : 'U' }}
           </div>
           <div>
@@ -95,7 +99,9 @@ function handleCancelReservation(id: number): void {
 
       <!-- Guests Column Slot -->
       <template #cell(guests)="{ item }">
-        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-stone-100 text-stone-700">
+        <span
+          class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-stone-100 text-stone-700"
+        >
           {{ item.guests }} pers.
         </span>
       </template>

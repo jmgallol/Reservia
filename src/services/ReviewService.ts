@@ -1,3 +1,4 @@
+import type { CreateReviewDTO } from '@/dtos/CreateReviewDTO';
 import type { ReviewInterface } from '@/interfaces/ReviewInterface';
 
 import { reviewSeedData } from '@/seeders/ReviewSeeder';
@@ -29,16 +30,23 @@ export class ReviewService {
     return store.reviews.filter((review) => review.restaurantId === id);
   }
 
-  static createReview(review: ReviewInterface): void {
+  static createReview(dto: CreateReviewDTO): ReviewInterface {
     this.ensureInitialized();
     const store = useReviewStore();
     const nextId = store.reviews.length > 0 ? Math.max(...store.reviews.map((r) => r.id)) + 1 : 1;
-    store.reviews.push({
-      ...review,
+
+    const newReview: ReviewInterface = {
       id: nextId,
+      restaurantId: dto.restaurantId,
+      rating: Math.min(5, Math.max(1, dto.rating)),
+      comment: dto.comment,
+      user: dto.user?.trim() || 'Anónimo',
       status: 'approved',
       createdAt: new Date().toISOString(),
-    });
+    };
+
+    store.reviews.push(newReview);
+    return newReview;
   }
 
   static updateReview(review: ReviewInterface): void {

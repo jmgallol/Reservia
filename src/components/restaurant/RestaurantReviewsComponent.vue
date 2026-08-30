@@ -33,12 +33,10 @@ function submitReview(): void {
 
   isSubmitting.value = true;
   ReviewService.createReview({
-    id: 0,
     restaurantId: props.restaurantId,
-    rating: Math.min(5, Math.max(1, form.value.rating)),
+    rating: form.value.rating,
     comment: form.value.comment.trim(),
-    user: form.value.user.trim() || '',
-    status: 'approved',
+    user: form.value.user.trim(),
   });
   form.value = { comment: '', rating: 5, user: '' };
   isSubmitting.value = false;

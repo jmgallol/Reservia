@@ -1,3 +1,4 @@
+import type { CreateReservationDTO } from '@/dtos/CreateReservationDTO';
 import type { ReservationInterface, ReservationStatus } from '@/interfaces/ReservationInterface';
 
 import { reservationSeedData } from '@/seeders/ReservationSeeder';
@@ -29,15 +30,27 @@ export class ReservationService {
     return store.reservations.filter((r) => r.date === 'Hoy' || r.date === 'Mañana');
   }
 
-  static createReservation(reservation: ReservationInterface): void {
+  static createReservation(dto: CreateReservationDTO): ReservationInterface {
     this.ensureInitialized();
     const store = useReservationStore();
     const nextId =
       store.reservations.length > 0 ? Math.max(...store.reservations.map((r) => r.id)) + 1 : 1;
-    store.reservations.push({
-      ...reservation,
+
+    const newReservation: ReservationInterface = {
       id: nextId,
-    });
+      restaurantId: dto.restaurantId,
+      userId: dto.userId ?? 0,
+      clientName: dto.clientName,
+      clientEmail: dto.clientEmail ?? '',
+      date: dto.date,
+      time: dto.time,
+      guests: dto.guests,
+      status: 'pending',
+      specialRequest: dto.specialRequest ?? '',
+    };
+
+    store.reservations.push(newReservation);
+    return newReservation;
   }
 
   static updateReservationStatus(id: number, status: ReservationStatus): void {
