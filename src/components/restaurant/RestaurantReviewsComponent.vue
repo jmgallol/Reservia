@@ -2,11 +2,11 @@
 // Imports
 import { computed, ref } from 'vue';
 
-import StarRating from '@/components/restaurant/StarRating.vue';
+import StarRatingComponent from '@/components/restaurant/StarRatingComponent.vue';
 
 import { ReviewService } from '@/services/ReviewService';
 
-import { formatDate } from '@/utils/formatDate';
+import { DateFormatUtil } from '@/utils/DateFormatUtil';
 
 // Props
 interface Props {
@@ -27,6 +27,7 @@ const isSubmitting = ref(false);
 // Computed
 const reviews = computed(() => ReviewService.getReviewsByRestaurantId(props.restaurantId));
 
+// Methods
 function submitReview(): void {
   if (!form.value.comment.trim()) return;
 
@@ -55,7 +56,11 @@ function submitReview(): void {
         <!-- Rating -->
         <div>
           <label class="block text-sm text-gray-600 mb-1">Calificación</label>
-          <StarRating :rating="form.rating" :size="24" @update:rating="form.rating = $event" />
+          <StarRatingComponent
+            :rating="form.rating"
+            :size="24"
+            @update:rating="form.rating = $event"
+          />
         </div>
 
         <!-- Comment -->
@@ -105,11 +110,11 @@ function submitReview(): void {
       >
         <div class="flex items-center justify-between gap-2 mb-2">
           <span class="font-medium text-gray-800">{{ review.user || 'Anónimo' }}</span>
-          <StarRating :rating="review.rating" :size="16" :readonly="true" />
+          <StarRatingComponent :rating="review.rating" :size="16" :readonly="true" />
         </div>
         <p class="text-gray-600 text-sm whitespace-pre-wrap">{{ review.comment }}</p>
         <p v-if="review.createdAt" class="text-gray-400 text-xs mt-2">
-          {{ formatDate(review.createdAt) }}
+          {{ DateFormatUtil.format(review.createdAt) }}
         </p>
       </li>
       <li v-if="reviews.length === 0" class="text-gray-500 text-sm py-4">

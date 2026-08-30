@@ -2,9 +2,12 @@
 // Imports
 import { computed } from 'vue';
 
-import type { StatusType } from '@/interfaces/StatusType';
+import type { ReservationStatus } from '@/interfaces/ReservationInterface';
+import type { RestaurantStatus } from '@/interfaces/RestaurantInterface';
 
 // Props
+type StatusType = ReservationStatus | RestaurantStatus;
+
 interface Props {
   status: StatusType;
 }

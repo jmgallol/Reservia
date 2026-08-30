@@ -1,13 +1,18 @@
 <script setup lang="ts">
+// Imports
 import { ref } from 'vue';
-import { UserPlus, Mail, Phone, Lock, Eye, EyeOff } from 'lucide-vue-next';
+
+import { Eye, EyeOff, Lock, Mail, Phone, UserPlus } from 'lucide-vue-next';
+
 import { AuthService } from '@/services/AuthService';
 
+// Emits
 const emit = defineEmits<{
-  (e: 'switchTab', tab: string): void;
-  (e: 'registered'): void;
+  switchTab: [tab: string];
+  registered: [];
 }>();
 
+// Reactive state
 const name = ref('');
 const email = ref('');
 const phone = ref('');
@@ -18,6 +23,7 @@ const successMessage = ref('');
 const showPassword = ref(false);
 const showConfirmPassword = ref(false);
 
+// Methods
 function handleRegister(): void {
   errorMessage.value = '';
   successMessage.value = '';

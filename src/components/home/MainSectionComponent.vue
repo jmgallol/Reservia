@@ -14,7 +14,7 @@ const searchQuery = ref('');
 // Methods
 function handleSearch(): void {
   const query = searchQuery.value.trim();
-  router.push({ name: 'restaurantes', query: query ? { q: query } : undefined });
+  router.push({ name: 'restaurants', query: query ? { q: query } : undefined });
 }
 </script>
 

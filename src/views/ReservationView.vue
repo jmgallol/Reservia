@@ -2,68 +2,66 @@
 // Imports
 import { ref } from 'vue';
 
-import BaseModal from '@/components/common/BaseModal.vue';
-import StatusBadge from '@/components/common/StatusBadge.vue';
-import ClientHeader from '@/components/layout/ClientHeader.vue';
+import BaseModalComponent from '@/components/common/BaseModalComponent.vue';
+import StatusBadgeComponent from '@/components/common/StatusBadgeComponent.vue';
+import ClientHeaderComponent from '@/components/layout/ClientHeaderComponent.vue';
 
-import type { StatusType } from '@/interfaces/StatusType';
-
-import { AuthService } from '@/services/AuthService';
+import type { ReservationStatus } from '@/interfaces/ReservationInterface';
 
 // Reactive state
 const showModal = ref(false);
 
-// Computed
-const isAuthenticated = () => AuthService.isAuthenticated();
-
 // Selectors
-const reservationStatuses: StatusType[] = ['pending', 'confirmed', 'completed', 'cancelled'];
-const restaurantStatuses: StatusType[] = ['active', 'inactive'];
+const reservationStatuses: ReservationStatus[] = ['pending', 'confirmed', 'completed', 'cancelled'];
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <!-- Header -->
-    <ClientHeader v-if="isAuthenticated()" />
-    <PublicHeader v-else />
+  <div class="min-h-screen bg-[#FAF8F4]">
+    <!-- Client Header -->
+    <ClientHeaderComponent />
 
-    <!-- Main section -->
-    <MainSection />
-
-    <!-- Component -->
-    <div class="max-w-2xl mx-auto p-8 space-y-6">
-      <!-- StatusBadge -->
-      <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-        <h2 class="text-lg font-semibold text-gray-800 mb-4">StatusBadge</h2>
-        <div class="space-y-3">
-          <div class="flex flex-wrap gap-3">
-            <StatusBadge v-for="status in reservationStatuses" :key="status" :status="status" />
-          </div>
-          <div class="flex flex-wrap gap-3">
-            <StatusBadge v-for="status in restaurantStatuses" :key="status" :status="status" />
-          </div>
+    <!-- Content -->
+    <main class="max-w-6xl mx-auto px-6 py-8">
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h1 class="text-3xl font-bold text-[#1A3D2B] font-heading">Mis Reservas</h1>
+          <p class="text-stone-500 mt-1">Gestiona y consulta el estado de tus reservas</p>
         </div>
-      </div>
 
-      <!-- BaseModal demo -->
-      <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-        <h2 class="text-lg font-semibold text-gray-800 mb-1">BaseModal</h2>
-        <p class="text-sm text-gray-500 mb-4">
-          Controlado con <code class="bg-gray-100 px-1 rounded">v-model</code>, overlay con blur y
-          botón de cierre.
-        </p>
         <button
-          class="bg-green-700 text-white text-sm font-medium py-2 px-5 rounded-full hover:bg-green-800 transition"
+          class="px-5 py-2.5 bg-[#C8552A] hover:bg-[#b04820] text-white rounded-full text-sm font-semibold transition-colors duration-150 shadow-sm cursor-pointer"
           @click="showModal = true"
         >
-          Abrir modal
+          Nueva Reserva
         </button>
       </div>
-    </div>
 
-    <!-- BaseModal -->
-    <BaseModal v-model="showModal">
-      <p class="text-sm text-gray-400 py-4 text-center">Aquí va el contenido de Isabel.</p>
-    </BaseModal>
+      <!-- Status Badges Demo -->
+      <div class="bg-white rounded-2xl p-6 border border-stone-200 shadow-sm mb-6">
+        <h2 class="text-lg font-semibold text-stone-800 mb-4">Estados de Reserva</h2>
+        <div class="flex flex-wrap gap-3">
+          <StatusBadgeComponent
+            v-for="status in reservationStatuses"
+            :key="status"
+            :status="status"
+          />
+        </div>
+      </div>
+    </main>
+
+    <!-- Modal Demo -->
+    <BaseModalComponent v-model="showModal" title="Nueva Reserva">
+      <p class="text-stone-600 text-sm">
+        Aquí podrás seleccionar restaurante, fecha, hora y número de personas.
+      </p>
+      <template #footer>
+        <button
+          class="px-4 py-2 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-lg text-sm font-medium transition-colors"
+          @click="showModal = false"
+        >
+          Cerrar
+        </button>
+      </template>
+    </BaseModalComponent>
   </div>
 </template>

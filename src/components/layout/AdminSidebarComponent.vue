@@ -13,15 +13,7 @@ import {
 } from 'lucide-vue-next';
 
 import { AuthService } from '@/services/AuthService';
-import { getInitials } from '@/utils/getInitials';
-
-// Selectors
-const navItems = [
-  { label: 'Dashboard', to: '/admin/dashboard', icon: LayoutDashboard },
-  { label: 'Mi Restaurante', to: '/admin/restaurante', icon: Store },
-  { label: 'Reservas', to: '/admin/reservas', icon: Calendar },
-  { label: 'Reseñas', to: '/admin/resenas', icon: MessageSquare },
-];
+import { StringFormatUtil } from '@/utils/StringFormatUtil';
 
 // Variables
 const route = useRoute();
@@ -33,8 +25,16 @@ const currentUser = computed(() => AuthService.getCurrentUser());
 const adminName = computed(() => currentUser.value?.name ?? 'Administrador');
 const adminEmail = computed(() => currentUser.value?.email ?? 'admin@reservia.com');
 const adminInitials = computed(() =>
-  currentUser.value ? getInitials(currentUser.value.name) : 'A',
+  currentUser.value ? StringFormatUtil.getInitials(currentUser.value.name) : 'A',
 );
+
+// Selectors
+const navItems = [
+  { label: 'Dashboard', to: '/admin/dashboard', icon: LayoutDashboard },
+  { label: 'Mi Restaurante', to: '/admin/restaurant', icon: Store },
+  { label: 'Reservas', to: '/admin/reservations', icon: Calendar },
+  { label: 'Reseñas', to: '/admin/reviews', icon: MessageSquare },
+];
 
 // Methods
 async function handleLogout(): Promise<void> {
@@ -44,8 +44,10 @@ async function handleLogout(): Promise<void> {
 </script>
 
 <template>
-  <!-- Admin sidebar -->
-  <aside class="flex flex-col w-64 min-h-screen bg-[#122318] text-white border-r border-[#1e3827]">
+  <!-- Admin sidebar fixed to viewport height -->
+  <aside
+    class="flex flex-col w-64 h-screen shrink-0 bg-[#122318] text-white border-r border-[#1e3827] z-20"
+  >
     <!-- Restaurant header -->
     <div class="flex items-center gap-3 px-5 py-5 border-b border-[#1e3827]">
       <div
@@ -60,7 +62,7 @@ async function handleLogout(): Promise<void> {
     </div>
 
     <!-- Navigation -->
-    <nav class="flex-1 px-3 py-4 space-y-1">
+    <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
       <RouterLink
         v-for="item in navItems"
         :key="item.to"
@@ -82,7 +84,7 @@ async function handleLogout(): Promise<void> {
     </nav>
 
     <!-- Admin info + logout -->
-    <div class="px-3 py-4 border-t border-[#1e3827]">
+    <div class="px-3 py-4 border-t border-[#1e3827] shrink-0">
       <div class="flex items-center gap-3 px-3 py-2 mb-1">
         <!-- Avatar -->
         <div
@@ -100,7 +102,7 @@ async function handleLogout(): Promise<void> {
       <!-- Logout -->
       <button
         type="button"
-        class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-stone-300 hover:bg-[#2e1c1c] hover:text-red-400 transition-colors duration-150"
+        class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-stone-300 hover:bg-[#2e1c1c] hover:text-red-400 transition-colors duration-150 cursor-pointer"
         @click="handleLogout"
       >
         <LogOut :size="18" />

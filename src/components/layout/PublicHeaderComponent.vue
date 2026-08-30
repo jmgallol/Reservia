@@ -7,9 +7,9 @@ const route = useRoute();
 
 // Selectors
 const navItems = [
-  { label: 'Inicio', to: '/inicio' },
-  { label: 'Restaurantes', to: '/restaurantes' },
-  { label: 'Acerca de', to: '/acerca-de' },
+  { label: 'Inicio', to: '/' },
+  { label: 'Restaurantes', to: '/restaurants' },
+  { label: 'Acerca de', to: '/about' },
 ];
 </script>
 
@@ -18,7 +18,7 @@ const navItems = [
   <header class="w-full bg-white border-b border-stone-200 px-6 py-3">
     <div class="max-w-6xl mx-auto flex items-center justify-between">
       <!-- Logo -->
-      <RouterLink to="/inicio" class="flex items-center gap-2 no-underline">
+      <RouterLink to="/" class="flex items-center gap-2 no-underline">
         <img src="@/assets/images/logo.png" alt="Reservia logo" class="h-10 w-auto" />
         <span class="text-[18px] font-bold tracking-tight leading-none">
           <span class="text-[#1A3D2B]">Reserv</span><span class="text-[#E8A020]">ia</span>

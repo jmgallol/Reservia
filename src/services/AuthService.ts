@@ -3,7 +3,7 @@ import type { CreateClientDTO } from '@/dtos/CreateClientDTO';
 import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
 import type { UserInterface } from '@/interfaces/UserInterface';
 
-import { useAuthStore } from '@/stores/auth';
+import { useAuthStore } from '@/stores/authStore';
 
 const USERS_KEY = 'reservia_users';
 const RESTAURANTS_KEY = 'reservia_restaurants';
@@ -117,6 +117,10 @@ export class AuthService {
     restaurants.push(newRestaurant);
     AuthService.saveUsers(users);
     AuthService.saveRestaurants(restaurants);
+
+    // Save session in auth store
+    const store = useAuthStore();
+    store.login(newUser);
 
     return { user: newUser, restaurant: newRestaurant };
   }

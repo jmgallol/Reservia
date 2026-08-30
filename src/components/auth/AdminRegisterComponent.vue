@@ -1,11 +1,12 @@
 <script setup lang="ts">
+// Imports
 import { ref } from 'vue';
-import { Info, User, Mail, Phone, Lock, Eye, EyeOff, ArrowRight } from 'lucide-vue-next';
+
+import { ArrowRight, Eye, EyeOff, Info, Lock, Mail, Phone, User } from 'lucide-vue-next';
+
 import { AuthService } from '@/services/AuthService';
-import { useAuthStore } from '@/stores/auth';
 
-const authStore = useAuthStore();
-
+// Reactive state
 const name = ref('');
 const email = ref('');
 const phone = ref('');
@@ -18,6 +19,7 @@ const errorMessage = ref('');
 const successMessage = ref('');
 const showPassword = ref(false);
 
+// Selectors
 const cities: string[] = [
   'Bogotá',
   'Medellín',
@@ -42,6 +44,7 @@ const categories: string[] = [
   'Fusión',
 ];
 
+// Methods
 function handleRegister(): void {
   errorMessage.value = '';
   successMessage.value = '';
@@ -75,7 +78,6 @@ function handleRegister(): void {
       restaurantCategory: restaurantCategory.value,
     });
 
-    authStore.login(result.user);
     successMessage.value = '¡Registro exitoso! Redirigiendo...';
     alert(
       `¡Bienvenido, ${result.user.name}! Tu restaurante "${result.restaurant.name}" ha sido registrado.`,

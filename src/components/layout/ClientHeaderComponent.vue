@@ -4,13 +4,7 @@ import { computed, ref } from 'vue';
 import { RouterLink, useRoute, useRouter } from 'vue-router';
 
 import { AuthService } from '@/services/AuthService';
-import { getInitials } from '@/utils/getInitials';
-
-// Selectors — static, defined at module level (created once, not per instance)
-const navItems = [
-  { label: 'Restaurantes', to: '/restaurantes' },
-  { label: 'Mis Reservas', to: '/mis-reservas' },
-];
+import { StringFormatUtil } from '@/utils/StringFormatUtil';
 
 // Variables
 const route = useRoute();
@@ -23,10 +17,16 @@ const showUserMenu = ref(false);
 const currentUser = computed(() => AuthService.getCurrentUser());
 
 const userInitials = computed(() =>
-  currentUser.value ? getInitials(currentUser.value.name) : '?',
+  currentUser.value ? StringFormatUtil.getInitials(currentUser.value.name) : '?',
 );
 
 const userName = computed(() => currentUser.value?.name ?? 'Usuario');
+
+// Selectors
+const navItems = [
+  { label: 'Restaurantes', to: '/restaurants' },
+  { label: 'Mis Reservas', to: '/my-reservations' },
+];
 
 // Methods
 async function handleLogout(): Promise<void> {
@@ -41,7 +41,7 @@ async function handleLogout(): Promise<void> {
   <header class="w-full bg-white border-b border-stone-200 px-6 py-3">
     <div class="max-w-6xl mx-auto flex items-center justify-between">
       <!-- Logo -->
-      <RouterLink to="/restaurantes" class="flex items-center gap-2 no-underline">
+      <RouterLink to="/" class="flex items-center gap-2 no-underline">
         <img src="@/assets/images/logo.png" alt="Reservia logo" class="h-10 w-auto" />
         <span class="text-[18px] font-bold tracking-tight leading-none">
           <span class="text-[#1A3D2B]">Reserv</span><span class="text-[#E8A020]">ia</span>
