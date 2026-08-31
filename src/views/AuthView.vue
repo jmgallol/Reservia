@@ -22,6 +22,13 @@ const formComponents: Record<AuthTab, Component> = {
   register: RegisterComponent,
 };
 
+// Constants
+const authTabs = [
+  { id: 'login' as AuthTab, label: 'Ingresar', icon: Lock },
+  { id: 'register' as AuthTab, label: 'Registro', icon: UserPlus },
+  { id: 'admin' as AuthTab, label: 'Admin', icon: Store },
+];
+
 // Computed
 const activeComponent = computed<Component>(() => formComponents[currentForm.value]);
 </script>
@@ -44,45 +51,19 @@ const activeComponent = computed<Component>(() => formComponents[currentForm.val
         <!-- Buttons -->
         <div class="inline-flex bg-bg-tabs rounded-full p-1 gap-0.5">
           <button
+            v-for="tab in authTabs"
+            :key="tab.id"
             type="button"
             :class="[
               'flex items-center gap-2 px-5 py-2.5 border-none rounded-full text-sm font-medium transition-all duration-150 cursor-pointer',
-              currentForm === 'login'
+              currentForm === tab.id
                 ? 'bg-white text-text-primary font-semibold shadow-[0_1px_3px_rgba(0,0,0,0.08)]'
                 : 'bg-transparent text-text-secondary hover:text-text-primary',
             ]"
-            @click="currentForm = 'login'"
+            @click="currentForm = tab.id"
           >
-            <Lock class="shrink-0 [stroke-width:2.2]" :size="16" />
-            <span>Ingresar</span>
-          </button>
-
-          <button
-            type="button"
-            :class="[
-              'flex items-center gap-2 px-5 py-2.5 border-none rounded-full text-sm font-medium transition-all duration-150 cursor-pointer',
-              currentForm === 'register'
-                ? 'bg-white text-text-primary font-semibold shadow-[0_1px_3px_rgba(0,0,0,0.08)]'
-                : 'bg-transparent text-text-secondary hover:text-text-primary',
-            ]"
-            @click="currentForm = 'register'"
-          >
-            <UserPlus class="shrink-0 [stroke-width:2.2]" :size="16" />
-            <span>Registro</span>
-          </button>
-
-          <button
-            type="button"
-            :class="[
-              'flex items-center gap-2 px-5 py-2.5 border-none rounded-full text-sm font-medium transition-all duration-150 cursor-pointer',
-              currentForm === 'admin'
-                ? 'bg-white text-text-primary font-semibold shadow-[0_1px_3px_rgba(0,0,0,0.08)]'
-                : 'bg-transparent text-text-secondary hover:text-text-primary',
-            ]"
-            @click="currentForm = 'admin'"
-          >
-            <Store class="shrink-0 [stroke-width:2.2]" :size="16" />
-            <span>Admin</span>
+            <component :is="tab.icon" class="shrink-0 [stroke-width:2.2]" :size="16" />
+            <span>{{ tab.label }}</span>
           </button>
         </div>
 
