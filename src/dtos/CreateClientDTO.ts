@@ -1,6 +1,3 @@
-export interface CreateClientDTO {
-  name: string;
-  email: string;
-  phone: string;
-  password: string;
-}
+import type { UserInterface } from '@/interfaces/UserInterface';
+
+export type CreateClientDTO = Omit<UserInterface, 'id' | 'role'>;

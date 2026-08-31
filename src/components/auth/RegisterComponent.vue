@@ -1,13 +1,18 @@
 <script setup lang="ts">
+// Imports
 import { ref } from 'vue';
-import { UserPlus, Mail, Phone, Lock, Eye, EyeOff } from 'lucide-vue-next';
+
+import { Eye, EyeOff, Lock, Mail, Phone, UserPlus } from 'lucide-vue-next';
+
 import { AuthService } from '@/services/AuthService';
 
+// Emits
 const emit = defineEmits<{
-  (e: 'switchTab', tab: string): void;
-  (e: 'registered'): void;
+  switchTab: [tab: string];
+  registered: [];
 }>();
 
+// Reactive state
 const name = ref('');
 const email = ref('');
 const phone = ref('');
@@ -18,6 +23,7 @@ const successMessage = ref('');
 const showPassword = ref(false);
 const showConfirmPassword = ref(false);
 
+// Methods
 function handleRegister(): void {
   errorMessage.value = '';
   successMessage.value = '';
@@ -67,18 +73,31 @@ function handleRegister(): void {
     <h1 class="font-heading text-[28px] font-bold italic text-text-primary mb-1.5">Crear cuenta</h1>
     <p class="text-text-secondary text-sm mb-6">Regístrate para explorar y reservar restaurantes</p>
 
-    <div v-if="errorMessage" class="bg-[#FEF2F2] border border-[#FECACA] text-[#991B1B] px-3.5 py-2.5 rounded-[6px] text-[13px] mb-4">
+    <div
+      v-if="errorMessage"
+      class="bg-[#FEF2F2] border border-[#FECACA] text-[#991B1B] px-3.5 py-2.5 rounded-[6px] text-[13px] mb-4"
+    >
       {{ errorMessage }}
     </div>
 
-    <div v-if="successMessage" class="bg-[#F0FDF4] border border-[#BBF7D0] text-[#166534] px-3.5 py-2.5 rounded-[6px] text-[13px] mb-4">
+    <div
+      v-if="successMessage"
+      class="bg-[#F0FDF4] border border-[#BBF7D0] text-[#166534] px-3.5 py-2.5 rounded-[6px] text-[13px] mb-4"
+    >
       {{ successMessage }}
     </div>
 
     <div class="mb-4">
-      <label class="block text-[11px] font-semibold tracking-[0.5px] text-text-label mb-1.5" for="register-name">NOMBRE COMPLETO</label>
+      <label
+        class="block text-[11px] font-semibold tracking-[0.5px] text-text-label mb-1.5"
+        for="register-name"
+        >NOMBRE COMPLETO</label
+      >
       <div class="relative flex items-center">
-        <UserPlus class="absolute left-3.5 text-text-secondary opacity-60 pointer-events-none" :size="18" />
+        <UserPlus
+          class="absolute left-3.5 text-text-secondary opacity-60 pointer-events-none"
+          :size="18"
+        />
         <input
           id="register-name"
           v-model="name"
@@ -90,9 +109,16 @@ function handleRegister(): void {
     </div>
 
     <div class="mb-4">
-      <label class="block text-[11px] font-semibold tracking-[0.5px] text-text-label mb-1.5" for="register-email">CORREO ELECTRÓNICO</label>
+      <label
+        class="block text-[11px] font-semibold tracking-[0.5px] text-text-label mb-1.5"
+        for="register-email"
+        >CORREO ELECTRÓNICO</label
+      >
       <div class="relative flex items-center">
-        <Mail class="absolute left-3.5 text-text-secondary opacity-60 pointer-events-none" :size="18" />
+        <Mail
+          class="absolute left-3.5 text-text-secondary opacity-60 pointer-events-none"
+          :size="18"
+        />
         <input
           id="register-email"
           v-model="email"
@@ -104,9 +130,16 @@ function handleRegister(): void {
     </div>
 
     <div class="mb-4">
-      <label class="block text-[11px] font-semibold tracking-[0.5px] text-text-label mb-1.5" for="register-phone">TELÉFONO</label>
+      <label
+        class="block text-[11px] font-semibold tracking-[0.5px] text-text-label mb-1.5"
+        for="register-phone"
+        >TELÉFONO</label
+      >
       <div class="relative flex items-center">
-        <Phone class="absolute left-3.5 text-text-secondary opacity-60 pointer-events-none" :size="18" />
+        <Phone
+          class="absolute left-3.5 text-text-secondary opacity-60 pointer-events-none"
+          :size="18"
+        />
         <input
           id="register-phone"
           v-model="phone"
@@ -118,9 +151,16 @@ function handleRegister(): void {
     </div>
 
     <div class="mb-4">
-      <label class="block text-[11px] font-semibold tracking-[0.5px] text-text-label mb-1.5" for="register-password">CONTRASEÑA</label>
+      <label
+        class="block text-[11px] font-semibold tracking-[0.5px] text-text-label mb-1.5"
+        for="register-password"
+        >CONTRASEÑA</label
+      >
       <div class="relative flex items-center">
-        <Lock class="absolute left-3.5 text-text-secondary opacity-60 pointer-events-none" :size="18" />
+        <Lock
+          class="absolute left-3.5 text-text-secondary opacity-60 pointer-events-none"
+          :size="18"
+        />
         <input
           id="register-password"
           v-model="password"
@@ -140,9 +180,16 @@ function handleRegister(): void {
     </div>
 
     <div class="mb-4">
-      <label class="block text-[11px] font-semibold tracking-[0.5px] text-text-label mb-1.5" for="register-confirm-password">CONFIRMAR CONTRASEÑA</label>
+      <label
+        class="block text-[11px] font-semibold tracking-[0.5px] text-text-label mb-1.5"
+        for="register-confirm-password"
+        >CONFIRMAR CONTRASEÑA</label
+      >
       <div class="relative flex items-center">
-        <Lock class="absolute left-3.5 text-text-secondary opacity-60 pointer-events-none" :size="18" />
+        <Lock
+          class="absolute left-3.5 text-text-secondary opacity-60 pointer-events-none"
+          :size="18"
+        />
         <input
           id="register-confirm-password"
           v-model="confirmPassword"
@@ -161,7 +208,10 @@ function handleRegister(): void {
       </div>
     </div>
 
-    <button class="w-full py-3.5 border-none rounded-full text-[15px] font-semibold text-white transition-all duration-250 mt-2 bg-orange hover:bg-orange-hover hover:-translate-y-px hover:shadow-[0_4px_12px_rgba(196,114,58,0.3)]" @click="handleRegister">
+    <button
+      class="w-full py-3.5 border-none rounded-full text-[15px] font-semibold text-white transition-all duration-250 mt-2 bg-orange hover:bg-orange-hover hover:-translate-y-px hover:shadow-[0_4px_12px_rgba(196,114,58,0.3)]"
+      @click="handleRegister"
+    >
       Crear cuenta
     </button>
   </div>
