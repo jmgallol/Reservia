@@ -1,6 +1,7 @@
 <script setup lang="ts">
 // External imports
 import { computed, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 // Internal imports
 import HeaderComponent from '@/components/layout/HeaderComponent.vue';
@@ -14,6 +15,7 @@ import { RestaurantService } from '@/services/RestaurantService';
 // Reactive state
 const selectedCity = ref('Todas');
 const selectedCategory = ref('Todas');
+const router = useRouter();
 
 // Computed
 const allRestaurants = computed(() => RestaurantService.getAll());
@@ -44,11 +46,11 @@ const categories = [
 
 // Methods
 function handleViewDetails(id: number): void {
-  console.info('Ver detalles de restaurante:', id);
+  router.push(`/restaurants/${id}`);
 }
 
 function handleReserve(id: number): void {
-  console.info('Reservar en restaurante:', id);
+  router.push(`/restaurants/${id}`);
 }
 </script>
 

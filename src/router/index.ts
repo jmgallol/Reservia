@@ -4,6 +4,7 @@ import AdminView from '../views/AdminView.vue';
 import AuthView from '../views/AuthView.vue';
 import HomeView from '../views/HomeView.vue';
 import ReservationView from '../views/ReservationView.vue';
+import RestaurantShowView from '../views/RestaurantShowView.vue';
 
 import { AuthService } from '@/services/AuthService';
 
@@ -13,6 +14,7 @@ const router = createRouter({
     // Public routes
     { path: '/', name: 'home', component: HomeView, meta: { title: 'Inicio' } },
     { path: '/restaurants', name: 'restaurants', component: HomeView, meta: { title: 'Restaurantes' } },
+     { path: '/restaurants/:id', name: 'restaurant-show', component: RestaurantShowView, meta: { title: 'Detalles del Restaurante' } },
     { path: '/about', name: 'about', component: HomeView, meta: { title: 'Acerca de' } },
     { path: '/auth', name: 'auth', component: AuthView, meta: { title: 'Autenticación' } },
     // Client routes (Protected)
