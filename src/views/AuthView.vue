@@ -1,10 +1,11 @@
 <script setup lang="ts">
-// Imports
+// External imports
 import { computed, ref } from 'vue';
 import type { Component } from 'vue';
 
 import { Lock, Store, UserPlus } from 'lucide-vue-next';
 
+// Internal imports
 import AdminRegisterComponent from '@/components/auth/AdminRegisterComponent.vue';
 import LoginComponent from '@/components/auth/LoginComponent.vue';
 import RegisterComponent from '@/components/auth/RegisterComponent.vue';

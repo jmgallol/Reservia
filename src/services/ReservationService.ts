@@ -1,37 +1,25 @@
 import type { CreateReservationDTO } from '@/dtos/CreateReservationDTO';
 import type { ReservationInterface, ReservationStatus } from '@/interfaces/ReservationInterface';
 
-import { reservationSeedData } from '@/seeders/ReservationSeeder';
 import { useReservationStore } from '@/stores/reservationsStore';
 
 export class ReservationService {
-  private static ensureInitialized(): void {
-    const store = useReservationStore();
-    if (store.reservations.length === 0) {
-      store.reservations = [...reservationSeedData];
-    }
-  }
-
-  static getReservations(): ReservationInterface[] {
-    this.ensureInitialized();
+  static getAll(): ReservationInterface[] {
     const store = useReservationStore();
     return store.reservations;
   }
 
-  static getReservationById(id: number): ReservationInterface | undefined {
-    this.ensureInitialized();
+  static getById(id: number): ReservationInterface | undefined {
     const store = useReservationStore();
     return store.reservations.find((r) => r.id === id);
   }
 
-  static getUpcomingReservations(): ReservationInterface[] {
-    this.ensureInitialized();
+  static getByStatus(status: ReservationStatus): ReservationInterface[] {
     const store = useReservationStore();
-    return store.reservations.filter((r) => r.date === 'Hoy' || r.date === 'Mañana');
+    return store.reservations.filter((r) => r.status === status);
   }
 
-  static createReservation(dto: CreateReservationDTO): ReservationInterface {
-    this.ensureInitialized();
+  static create(dto: CreateReservationDTO): ReservationInterface {
     const store = useReservationStore();
     const nextId =
       store.reservations.length > 0 ? Math.max(...store.reservations.map((r) => r.id)) + 1 : 1;
@@ -53,8 +41,7 @@ export class ReservationService {
     return newReservation;
   }
 
-  static updateReservationStatus(id: number, status: ReservationStatus): void {
-    this.ensureInitialized();
+  static updateStatus(id: number, status: ReservationStatus): void {
     const store = useReservationStore();
     const index = store.reservations.findIndex((r) => r.id === id);
     if (index !== -1 && store.reservations[index]) {
@@ -62,8 +49,7 @@ export class ReservationService {
     }
   }
 
-  static deleteReservation(id: number): void {
-    this.ensureInitialized();
+  static delete(id: number): void {
     const store = useReservationStore();
     const index = store.reservations.findIndex((r) => r.id === id);
     if (index !== -1) {

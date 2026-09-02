@@ -46,7 +46,7 @@ export class AuthService {
     return user;
   }
 
-  static logoutUser(): void {
+  static logout(): void {
     const store = useAuthStore();
     store.logout();
   }
@@ -88,7 +88,6 @@ export class AuthService {
     restaurant: RestaurantInterface;
   } {
     const users = AuthService.getUsers();
-    const restaurants = AuthService.getRestaurants();
 
     const emailExists = users.some((user) => user.email === dto.email);
     if (emailExists) {
@@ -104,6 +103,7 @@ export class AuthService {
       role: 'admin',
     };
 
+    const restaurants = AuthService.getRestaurants();
     const newRestaurant: RestaurantInterface = {
       id: AuthService.generateId(restaurants),
       name: dto.restaurantName,
@@ -111,6 +111,8 @@ export class AuthService {
       city: dto.restaurantCity,
       category: dto.restaurantCategory,
       adminId: newUser.id,
+      imageUrl:
+        'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&auto=format&fit=crop&q=80',
     };
 
     users.push(newUser);
