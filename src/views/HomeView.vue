@@ -1,53 +1,186 @@
 <script setup lang="ts">
-// Imports
+// External imports
 import { computed, ref } from 'vue';
 
-import BenefitsSectionComponent from '@/components/home/BenefitsSectionComponent.vue';
-import CategorySectionComponent from '@/components/home/CategorySectionComponent.vue';
-import FeaturedRestaurantsComponent from '@/components/home/FeaturedRestaurantsComponent.vue';
-import MainSectionComponent from '@/components/home/MainSectionComponent.vue';
-import AppFooterComponent from '@/components/layout/AppFooterComponent.vue';
-import ClientHeaderComponent from '@/components/layout/ClientHeaderComponent.vue';
-import PublicHeaderComponent from '@/components/layout/PublicHeaderComponent.vue';
+// Internal imports
+import HeaderComponent from '@/components/layout/HeaderComponent.vue';
+import SidebarComponent from '@/components/layout/SidebarComponent.vue';
+import StarRatingComponent from '@/components/restaurant/StarRatingComponent.vue';
 
-import { AuthService } from '@/services/AuthService';
+import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
+
+import { RestaurantService } from '@/services/RestaurantService';
 
 // Reactive state
-const selectedCategory = ref('');
+const selectedCity = ref('Todas');
+const selectedCategory = ref('Todas');
 
 // Computed
-const isAuthenticated = computed(() => AuthService.isAuthenticated());
+const allRestaurants = computed(() => RestaurantService.getAll());
+
+const filteredRestaurants = computed<RestaurantInterface[]>(() => {
+  return allRestaurants.value.filter((restaurant) => {
+    const matchesCity =
+      selectedCity.value === 'Todas' ||
+      restaurant.city.toLowerCase() === selectedCity.value.toLowerCase();
+    const matchesCategory =
+      selectedCategory.value === 'Todas' ||
+      restaurant.category.toLowerCase() === selectedCategory.value.toLowerCase();
+    return matchesCity && matchesCategory;
+  });
+});
+
+// Selectors
+const cities = ['Todas', 'Bogotá', 'Medellín', 'Cali', 'Cartagena'];
+const categories = [
+  'Todas',
+  'Italiana',
+  'Colombiana',
+  'Asiática',
+  'Mexicana',
+  'Vegetariana',
+  'Comida Rápida',
+];
 
 // Methods
-function handleCategorySelect(category: string): void {
-  selectedCategory.value = category;
+function handleViewDetails(id: number): void {
+  console.info('Ver detalles de restaurante:', id);
+}
+
+function handleReserve(id: number): void {
+  console.info('Reservar en restaurante:', id);
 }
 </script>
 
 <template>
-  <div class="min-h-screen bg-[#FAF8F4] flex flex-col justify-between">
-    <div>
+  <div class="flex h-screen overflow-hidden bg-[#FAF8F4] relative">
+    <!-- Sidebar -->
+    <SidebarComponent role="client" />
+
+    <!-- Content column with persistent top header and scrollable body -->
+    <div class="flex-1 flex flex-col h-full min-w-0 overflow-hidden">
       <!-- Header -->
-      <ClientHeaderComponent v-if="isAuthenticated" />
-      <PublicHeaderComponent v-else />
+      <HeaderComponent class="shrink-0" />
 
-      <!-- Main & Search Section -->
-      <MainSectionComponent />
+      <!-- Main Page Content -->
+      <main class="flex-1 px-8 pb-24 overflow-y-auto space-y-6">
+        <!-- Filter Card matching Image 1 -->
+        <div
+          class="bg-white rounded-2xl p-6 border border-stone-200/80 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+        >
+          <div class="flex flex-wrap items-center gap-6">
+            <!-- City filter -->
+            <div class="space-y-1">
+              <label
+                for="city-select"
+                class="block text-[11px] font-bold text-stone-500 uppercase tracking-wider"
+              >
+                CIUDAD
+              </label>
+              <select
+                id="city-select"
+                v-model="selectedCity"
+                class="px-3.5 py-2 bg-[#FAF8F4] border border-stone-200 rounded-xl text-xs font-semibold text-stone-800 outline-none cursor-pointer hover:border-stone-400 transition-colors"
+              >
+                <option v-for="city in cities" :key="city" :value="city">
+                  {{ city }}
+                </option>
+              </select>
+            </div>
 
-      <!-- Categories Section -->
-      <CategorySectionComponent
-        :selected-category="selectedCategory"
-        @select-category="handleCategorySelect"
-      />
+            <!-- Category filter -->
+            <div class="space-y-1">
+              <label
+                for="category-select"
+                class="block text-[11px] font-bold text-stone-500 uppercase tracking-wider"
+              >
+                CATEGORÍA
+              </label>
+              <select
+                id="category-select"
+                v-model="selectedCategory"
+                class="px-3.5 py-2 bg-[#FAF8F4] border border-stone-200 rounded-xl text-xs font-semibold text-stone-800 outline-none cursor-pointer hover:border-stone-400 transition-colors"
+              >
+                <option v-for="cat in categories" :key="cat" :value="cat">
+                  {{ cat }}
+                </option>
+              </select>
+            </div>
+          </div>
 
-      <!-- Featured Restaurants Grid -->
-      <FeaturedRestaurantsComponent :selected-category="selectedCategory" />
+          <!-- Counter badge -->
+          <span class="text-xs font-semibold text-stone-400">
+            <strong class="text-stone-800">{{ filteredRestaurants.length }}</strong> resultados
+          </span>
+        </div>
 
-      <!-- Benefits Section -->
-      <BenefitsSectionComponent />
+        <!-- Restaurants Grid matching Image 1 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          <article
+            v-for="restaurant in filteredRestaurants"
+            :key="restaurant.id"
+            class="bg-white rounded-2xl border border-stone-200/80 shadow-xs overflow-hidden flex flex-col justify-between hover:shadow-md transition-all duration-200"
+          >
+            <!-- Image with Category Badge -->
+            <div class="relative h-48 w-full bg-stone-100 overflow-hidden">
+              <img
+                :src="restaurant.imageUrl"
+                :alt="restaurant.name"
+                class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+              />
+              <span
+                class="absolute top-3 right-3 px-2.5 py-1 rounded-full text-[11px] font-bold bg-[#122318]/90 backdrop-blur-xs text-white border border-white/20"
+              >
+                {{ restaurant.category }}
+              </span>
+            </div>
+
+            <!-- Details -->
+            <div class="p-5 space-y-3 flex-1 flex flex-col justify-between">
+              <div>
+                <h2 class="text-lg font-bold text-stone-900 tracking-tight font-heading">
+                  {{ restaurant.name }}
+                </h2>
+
+                <div class="flex items-center gap-3 text-xs text-stone-500 mt-1">
+                  <span>📍 {{ restaurant.city }}</span>
+                  <span>·</span>
+                  <span>🕒 12:00–22:00</span>
+                </div>
+
+                <div class="flex items-center gap-2 mt-2">
+                  <StarRatingComponent
+                    :rating="restaurant.rating ?? 4.8"
+                    :readonly="true"
+                    :size="14"
+                  />
+                  <span class="text-xs font-bold text-stone-700">
+                    {{ restaurant.rating ?? 4.8 }}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Buttons -->
+              <div class="grid grid-cols-2 gap-2.5 pt-3 border-t border-stone-100">
+                <button
+                  type="button"
+                  class="py-2.5 px-3 rounded-full border border-stone-300 text-stone-700 hover:bg-stone-50 text-xs font-semibold transition-colors cursor-pointer text-center"
+                  @click="handleViewDetails(restaurant.id)"
+                >
+                  Ver detalles
+                </button>
+                <button
+                  type="button"
+                  class="py-2.5 px-3 rounded-full bg-[#C8552A] hover:bg-[#b54a22] text-white text-xs font-semibold shadow-xs transition-colors cursor-pointer text-center"
+                  @click="handleReserve(restaurant.id)"
+                >
+                  Reservar
+                </button>
+              </div>
+            </div>
+          </article>
+        </div>
+      </main>
     </div>
-
-    <!-- Footer -->
-    <AppFooterComponent />
   </div>
 </template>

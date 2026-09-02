@@ -1,10 +1,12 @@
 <script setup lang="ts">
-// Imports
+// External imports
 import { ref } from 'vue';
 
+// Internal imports
 import BaseModalComponent from '@/components/common/BaseModalComponent.vue';
+import HeaderComponent from '@/components/layout/HeaderComponent.vue';
+import SidebarComponent from '@/components/layout/SidebarComponent.vue';
 import StatusBadgeComponent from '@/components/common/StatusBadgeComponent.vue';
-import ClientHeaderComponent from '@/components/layout/ClientHeaderComponent.vue';
 
 import type { ReservationStatus } from '@/interfaces/ReservationInterface';
 
@@ -16,38 +18,51 @@ const reservationStatuses: ReservationStatus[] = ['pending', 'confirmed', 'compl
 </script>
 
 <template>
-  <div class="min-h-screen bg-[#FAF8F4]">
-    <!-- Client Header -->
-    <ClientHeaderComponent />
+  <div class="flex h-screen overflow-hidden bg-[#FAF8F4] relative">
+    <!-- Sidebar -->
+    <SidebarComponent role="client" />
 
-    <!-- Content -->
-    <main class="max-w-6xl mx-auto px-6 py-8">
-      <div class="flex items-center justify-between mb-8">
-        <div>
-          <h1 class="text-3xl font-bold text-[#1A3D2B] font-heading">Mis Reservas</h1>
-          <p class="text-stone-500 mt-1">Gestiona y consulta el estado de tus reservas</p>
+    <!-- Content column with persistent top header and scrollable body -->
+    <div class="flex-1 flex flex-col h-full min-w-0 overflow-hidden">
+      <!-- Header -->
+      <HeaderComponent class="shrink-0" />
+
+      <!-- Main Page Content -->
+      <main class="flex-1 px-8 pb-24 overflow-y-auto space-y-6">
+        <div class="max-w-5xl mx-auto space-y-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-xl font-bold text-stone-900 tracking-tight">
+                Control de reservaciones
+              </h2>
+              <p class="text-stone-500 text-xs mt-1">
+                Consulta y gestiona el estado de tus reservas actuales
+              </p>
+            </div>
+
+            <button
+              type="button"
+              class="px-5 py-2.5 bg-[#C8552A] hover:bg-[#b04820] text-white rounded-full text-xs font-semibold transition-colors duration-150 shadow-sm cursor-pointer"
+              @click="showModal = true"
+            >
+              Nueva Reserva
+            </button>
+          </div>
+
+          <!-- Status Badges Card -->
+          <div class="bg-white rounded-2xl p-6 border border-stone-200/80 shadow-xs">
+            <h3 class="text-sm font-bold text-stone-800 mb-3">Estados de Reserva</h3>
+            <div class="flex flex-wrap gap-3">
+              <StatusBadgeComponent
+                v-for="status in reservationStatuses"
+                :key="status"
+                :status="status"
+              />
+            </div>
+          </div>
         </div>
-
-        <button
-          class="px-5 py-2.5 bg-[#C8552A] hover:bg-[#b04820] text-white rounded-full text-sm font-semibold transition-colors duration-150 shadow-sm cursor-pointer"
-          @click="showModal = true"
-        >
-          Nueva Reserva
-        </button>
-      </div>
-
-      <!-- Status Badges Demo -->
-      <div class="bg-white rounded-2xl p-6 border border-stone-200 shadow-sm mb-6">
-        <h2 class="text-lg font-semibold text-stone-800 mb-4">Estados de Reserva</h2>
-        <div class="flex flex-wrap gap-3">
-          <StatusBadgeComponent
-            v-for="status in reservationStatuses"
-            :key="status"
-            :status="status"
-          />
-        </div>
-      </div>
-    </main>
+      </main>
+    </div>
 
     <!-- Modal Demo -->
     <BaseModalComponent v-model="showModal" title="Nueva Reserva">
@@ -56,7 +71,8 @@ const reservationStatuses: ReservationStatus[] = ['pending', 'confirmed', 'compl
       </p>
       <template #footer>
         <button
-          class="px-4 py-2 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-lg text-sm font-medium transition-colors"
+          type="button"
+          class="px-4 py-2 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-lg text-sm font-medium transition-colors cursor-pointer"
           @click="showModal = false"
         >
           Cerrar

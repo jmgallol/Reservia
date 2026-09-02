@@ -1,37 +1,25 @@
 import type { CreateReviewDTO } from '@/dtos/CreateReviewDTO';
 import type { ReviewInterface } from '@/interfaces/ReviewInterface';
 
-import { reviewSeedData } from '@/seeders/ReviewSeeder';
 import { useReviewStore } from '@/stores/reviewStore';
 
 export class ReviewService {
-  private static ensureInitialized(): void {
-    const store = useReviewStore();
-    if (store.reviews.length === 0) {
-      store.reviews = [...reviewSeedData];
-    }
-  }
-
-  static getReviews(): ReviewInterface[] {
-    this.ensureInitialized();
+  static getAll(): ReviewInterface[] {
     const store = useReviewStore();
     return store.reviews;
   }
 
-  static getReviewById(id: number): ReviewInterface | undefined {
-    this.ensureInitialized();
+  static getById(id: number): ReviewInterface | undefined {
     const store = useReviewStore();
     return store.reviews.find((review) => review.id === id);
   }
 
-  static getReviewsByRestaurantId(id: number): ReviewInterface[] {
-    this.ensureInitialized();
+  static getByRestaurantId(id: number): ReviewInterface[] {
     const store = useReviewStore();
     return store.reviews.filter((review) => review.restaurantId === id);
   }
 
-  static createReview(dto: CreateReviewDTO): ReviewInterface {
-    this.ensureInitialized();
+  static create(dto: CreateReviewDTO): ReviewInterface {
     const store = useReviewStore();
     const nextId = store.reviews.length > 0 ? Math.max(...store.reviews.map((r) => r.id)) + 1 : 1;
 
@@ -49,8 +37,7 @@ export class ReviewService {
     return newReview;
   }
 
-  static updateReview(review: ReviewInterface): void {
-    this.ensureInitialized();
+  static update(review: ReviewInterface): void {
     const store = useReviewStore();
     const index = store.reviews.findIndex((r) => r.id === review.id);
     if (index !== -1) {
@@ -62,8 +49,7 @@ export class ReviewService {
     }
   }
 
-  static deleteReview(id: number): void {
-    this.ensureInitialized();
+  static delete(id: number): void {
     const store = useReviewStore();
     const index = store.reviews.findIndex((r) => r.id === id);
     if (index !== -1) {

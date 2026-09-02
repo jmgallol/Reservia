@@ -1,9 +1,9 @@
 <script setup lang="ts">
-// Imports
+//External imports
+import { Eye, EyeOff, Lock, Mail, Phone, UserPlus } from 'lucide-vue-next';
 import { ref } from 'vue';
 
-import { Eye, EyeOff, Lock, Mail, Phone, UserPlus } from 'lucide-vue-next';
-
+//Internal imports
 import { AuthService } from '@/services/AuthService';
 
 // Emits

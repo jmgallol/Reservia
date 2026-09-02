@@ -1,7 +1,8 @@
 <script setup lang="ts">
-// Imports
+//External imports
 import { computed } from 'vue';
 
+//Internal imports
 import type { ReservationStatus } from '@/interfaces/ReservationInterface';
 import type { RestaurantStatus } from '@/interfaces/RestaurantInterface';
 

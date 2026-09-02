@@ -1,9 +1,9 @@
 <script setup lang="ts">
-// Imports
+// external Imports
+import { ArrowRight, Eye, EyeOff, Info, Lock, Mail, Phone, User } from 'lucide-vue-next';
 import { ref } from 'vue';
 
-import { ArrowRight, Eye, EyeOff, Info, Lock, Mail, Phone, User } from 'lucide-vue-next';
-
+// internal Imports
 import { AuthService } from '@/services/AuthService';
 
 // Reactive state
