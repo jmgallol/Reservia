@@ -1,37 +1,5 @@
 <script setup lang="ts">
-// External imports
-import { computed, ref } from 'vue';
-import type { Component } from 'vue';
-
-import { Lock, Store, UserPlus } from 'lucide-vue-next';
-
-// Internal imports
-import AdminRegisterComponent from '@/components/auth/AdminRegisterComponent.vue';
 import LoginComponent from '@/components/auth/LoginComponent.vue';
-import RegisterComponent from '@/components/auth/RegisterComponent.vue';
-
-// Types
-type AuthTab = 'login' | 'register' | 'admin';
-
-// Reactive state
-const currentForm = ref<AuthTab>('login');
-
-// Selectors
-const formComponents: Record<AuthTab, Component> = {
-  admin: AdminRegisterComponent,
-  login: LoginComponent,
-  register: RegisterComponent,
-};
-
-// Constants
-const authTabs = [
-  { id: 'login' as AuthTab, label: 'Ingresar', icon: Lock },
-  { id: 'register' as AuthTab, label: 'Registro', icon: UserPlus },
-  { id: 'admin' as AuthTab, label: 'Admin', icon: Store },
-];
-
-// Computed
-const activeComponent = computed<Component>(() => formComponents[currentForm.value]);
 </script>
 
 <template>
@@ -49,28 +17,9 @@ const activeComponent = computed<Component>(() => formComponents[currentForm.val
           </span>
         </div>
 
-        <!-- Buttons -->
-        <div class="inline-flex bg-bg-tabs rounded-full p-1 gap-0.5">
-          <button
-            v-for="tab in authTabs"
-            :key="tab.id"
-            type="button"
-            :class="[
-              'flex items-center gap-2 px-5 py-2.5 border-none rounded-full text-sm font-medium transition-all duration-150 cursor-pointer',
-              currentForm === tab.id
-                ? 'bg-white text-text-primary font-semibold shadow-[0_1px_3px_rgba(0,0,0,0.08)]'
-                : 'bg-transparent text-text-secondary hover:text-text-primary',
-            ]"
-            @click="currentForm = tab.id"
-          >
-            <component :is="tab.icon" class="shrink-0 [stroke-width:2.2]" :size="16" />
-            <span>{{ tab.label }}</span>
-          </button>
-        </div>
-
-        <!-- Form panels -->
+        <!-- Form panel -->
         <div class="mt-8">
-          <component :is="activeComponent" />
+          <LoginComponent />
         </div>
       </div>
     </div>
