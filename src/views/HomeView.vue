@@ -11,8 +11,10 @@ import StarRatingComponent from '@/components/restaurant/StarRatingComponent.vue
 import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
 
 import { RestaurantService } from '@/services/RestaurantService';
+import { StringFormatUtil } from '@/utils/StringFormatUtil';
 
 // Reactive state
+const searchQuery = ref('');
 const selectedCity = ref('Todas');
 const selectedCategory = ref('Todas');
 const router = useRouter();
@@ -21,14 +23,21 @@ const router = useRouter();
 const allRestaurants = computed(() => RestaurantService.getAll());
 
 const filteredRestaurants = computed<RestaurantInterface[]>(() => {
+  const normalizedSearchQuery = StringFormatUtil.normalizeSearchText(searchQuery.value);
+
   return allRestaurants.value.filter((restaurant) => {
+    const matchesSearch =
+      normalizedSearchQuery === '' ||
+      StringFormatUtil.normalizeSearchText(restaurant.name).includes(normalizedSearchQuery) ||
+      StringFormatUtil.normalizeSearchText(restaurant.city).includes(normalizedSearchQuery) ||
+      StringFormatUtil.normalizeSearchText(restaurant.category).includes(normalizedSearchQuery);
     const matchesCity =
       selectedCity.value === 'Todas' ||
       restaurant.city.toLowerCase() === selectedCity.value.toLowerCase();
     const matchesCategory =
       selectedCategory.value === 'Todas' ||
       restaurant.category.toLowerCase() === selectedCategory.value.toLowerCase();
-    return matchesCity && matchesCategory;
+    return matchesSearch && matchesCity && matchesCategory;
   });
 });
 
@@ -71,6 +80,23 @@ function handleReserve(id: number): void {
           class="bg-white rounded-2xl p-6 border border-stone-200/80 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
         >
           <div class="flex flex-wrap items-center gap-6">
+            <!-- Search input -->
+            <div class="space-y-1">
+              <label
+                for="restaurant-search"
+                class="block text-[11px] font-bold text-stone-500 uppercase tracking-wider"
+              >
+                BÚSQUEDA
+              </label>
+              <input
+                id="restaurant-search"
+                v-model="searchQuery"
+                type="search"
+                placeholder="Buscar por nombre, ciudad o categoría"
+                class="w-72 max-w-full px-3.5 py-2 bg-[#FAF8F4] border border-stone-200 rounded-xl text-xs font-semibold text-stone-800 outline-none placeholder:text-stone-400 hover:border-stone-400 focus:border-stone-400 transition-colors"
+              />
+            </div>
+
             <!-- City filter -->
             <div class="space-y-1">
               <label

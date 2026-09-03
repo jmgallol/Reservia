@@ -8,4 +8,12 @@ export class StringFormatUtil {
       .map((word) => word.charAt(0).toUpperCase())
       .join('');
   }
+
+  static normalizeSearchText(text: string): string {
+    return text
+      .trim()
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+  }
 }
