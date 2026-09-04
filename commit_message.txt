@@ -1,0 +1,17 @@
+feat: Implementación del Panel de Reservas y ajustes en la arquitectura de datos
+
+Archivos modificados y creados:
+- src/components/dashboard/DoughnutChartComponent.vue: Creado componente reutilizable de gráfico de dona con Chart.js.
+- src/components/layout/HeaderComponent.vue: Se hizo dinámico el título del dashboard según el restaurante del administrador logueado.
+- src/components/layout/SidebarComponent.vue: Ajustes en navegación.
+- src/components/restaurant/ReservationFormComponent.vue: Corrección de error de tipado eliminando campos inexistentes.
+- src/components/restaurant/RestaurantEditFormComponent.vue: Agregada lógica para el mensaje temporal de 'Actualización exitosa'.
+- src/router/index.ts: Configuración de rutas para apuntar a AdminReservationsView y AdminRestaurantView.
+- src/seeders/ReservationSeeder.ts: Eliminados campos clientName y clientEmail sobrantes para mantener normalización de la interfaz.
+- src/seeders/RestaurantSeeder.ts: Agregados 5 nuevos restaurantes de Medellín con ubicación, categoría e imágenes.
+- src/seeders/UserSeeder.ts: Agregados 5 nuevos usuarios administradores para los restaurantes recién creados.
+- src/services/AuthService.ts: Refactorizado para usar el store de Pinia en lugar de los seeders y removida responsabilidad de obtener nombres.
+- src/services/ReservationService.ts: Implementado método getByRestaurantId y limpieza de función create.
+- src/services/UserService.ts: Creado nuevo servicio con método getNameById para mantener el principio de responsabilidad única.
+- src/views/AdminReservationsView.vue: Creada vista principal con tabla de reservas, acciones, filtros dinámicos y gráfico estadístico.
+- src/views/AdminRestaurantView.vue: Lógica corregida para calcular dinámicamente el restaurante usando el currentUser.restaurantId.

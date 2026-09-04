@@ -3,6 +3,8 @@ import { createRouter, createWebHistory, type Router } from 'vue-router';
 
 // Internal imports
 import { AuthService } from '@/services/AuthService';
+import AdminReservationsView from '@/views/AdminReservationsView.vue';
+import AdminRestaurantView from '@/views/AdminRestaurantView.vue';
 import AdminView from '@/views/AdminView.vue';
 import AuthView from '@/views/AuthView.vue';
 import HomeView from '@/views/HomeView.vue';
@@ -72,13 +74,13 @@ const router = createRouter({
     {
       path: '/admin/restaurant',
       name: 'admin-restaurant',
-      component: AdminView,
+      component: AdminRestaurantView,
       meta: { title: 'Mi Restaurante', requiresAuth: true, requiresAdmin: true },
     },
     {
       path: '/admin/reservations',
       name: 'admin-reservations',
-      component: AdminView,
+      component: AdminReservationsView,
       meta: { title: 'Reservas', requiresAuth: true, requiresAdmin: true },
     },
     {
