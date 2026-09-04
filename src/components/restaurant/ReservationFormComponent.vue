@@ -25,7 +25,7 @@ const reservationTime = ref('19:30');
 const guests = ref(2);
 
 // Methods
-const handleConfirmReservation = () => {
+function handleConfirmReservation(): void {
   const user = AuthService.getCurrentUser();
 
   const reservationDTO: CreateReservationDTO = {
@@ -33,9 +33,9 @@ const handleConfirmReservation = () => {
     userId: user?.id ?? 0,
     clientName: user?.name,
     clientEmail: user?.email,
-    date: reservationDate.value,
-    time: reservationTime.value,
-    guests: guests.value,
+    reservationDate: reservationDate.value,
+    reservationTime: reservationTime.value,
+    numberOfPeople: guests.value,
   };
 
   ReservationService.create(reservationDTO);
@@ -97,7 +97,7 @@ function increaseGuests(): void {
         <div class="inline-flex items-center border border-stone-200 rounded-full px-1 py-1">
           <button
             type="button"
-            class="w-8 h-8 rounded-full flex items-center justify-center text-stone-600 hover:bg-stone-100 transition-colors"
+            class="w-8 h-8 rounded-full flex items-center justify-center text-stone-600 hover:bg-stone-100 transition-colors cursor-pointer"
             @click="decreaseGuests"
           >
             <Minus :size="14" stroke-width="3" />
@@ -105,7 +105,7 @@ function increaseGuests(): void {
           <span class="w-10 text-center text-[15px] font-bold text-stone-800">{{ guests }}</span>
           <button
             type="button"
-            class="w-8 h-8 rounded-full flex items-center justify-center text-stone-600 hover:bg-stone-100 transition-colors"
+            class="w-8 h-8 rounded-full flex items-center justify-center text-stone-600 hover:bg-stone-100 transition-colors cursor-pointer"
             @click="increaseGuests"
           >
             <Plus :size="14" stroke-width="3" />
@@ -117,7 +117,7 @@ function increaseGuests(): void {
     <!-- Submit Button -->
     <button
       type="button"
-      class="w-full mt-5 py-3.5 bg-[#C8552A] hover:bg-[#b54a22] text-white rounded-xl text-[15px] font-bold transition-all shadow-sm active:scale-[0.98]"
+      class="w-full mt-5 py-3.5 bg-[#C8552A] hover:bg-[#b54a22] text-white rounded-xl text-[15px] font-bold transition-all shadow-sm active:scale-[0.98] cursor-pointer"
       @click="handleConfirmReservation"
     >
       Confirmar reserva

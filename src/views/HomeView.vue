@@ -8,90 +8,36 @@ import HeaderComponent from '@/components/layout/HeaderComponent.vue';
 import SidebarComponent from '@/components/layout/SidebarComponent.vue';
 import StarRatingComponent from '@/components/restaurant/StarRatingComponent.vue';
 
-import type { RestaurantInterface, RestaurantPriceLevel } from '@/interfaces/RestaurantInterface';
+import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
 
 import { RestaurantService } from '@/services/RestaurantService';
-import { StringFormatUtil } from '@/utils/StringFormatUtil';
 
 // Variables
 const router = useRouter();
 
-// Reactive state
+// Variables reactivas
 const searchQuery = ref('');
 const selectedCity = ref('Todas');
 const selectedCategory = ref('Todas');
-const selectedPrice = ref<RestaurantPriceLevel | 'Todos'>('Todos');
-const selectedRating = ref<number | 'Todas'>('Todas');
 
 // Computed
-const allRestaurants = computed(() => RestaurantService.getAll());
+const cities = computed<string[]>(() => RestaurantService.getCities());
 
-const cities = computed<string[]>(() => {
-  const cityNames = allRestaurants.value.map((restaurant) => restaurant.city);
-  return ['Todas', ...Array.from(new Set(cityNames)).sort((a, b) => a.localeCompare(b))];
-});
-
-const categories = computed<string[]>(() => {
-  const categoryNames = allRestaurants.value.map((restaurant) => restaurant.category);
-  return ['Todas', ...Array.from(new Set(categoryNames)).sort((a, b) => a.localeCompare(b))];
-});
+const categories = computed<string[]>(() => RestaurantService.getCategories());
 
 const filteredRestaurants = computed<RestaurantInterface[]>(() => {
-  return allRestaurants.value.filter(matchesFilters);
+  return RestaurantService.filter({
+    query: searchQuery.value,
+    city: selectedCity.value,
+    category: selectedCategory.value,
+  });
 });
 
-// Selectors
-const priceOptions: { label: string; value: RestaurantPriceLevel | 'Todos' }[] = [
-  { label: 'Todos', value: 'Todos' },
-  { label: '$', value: 1 },
-  { label: '$$', value: 2 },
-  { label: '$$$', value: 3 },
-  { label: '$$$$', value: 4 },
-];
-
-const ratingOptions: { label: string; value: number | 'Todas' }[] = [
-  { label: 'Todas', value: 'Todas' },
-  { label: '4.0+', value: 4 },
-  { label: '4.5+', value: 4.5 },
-];
-
-// Methods
-function matchesFilters(restaurant: RestaurantInterface): boolean {
-  const normalizedQuery = StringFormatUtil.normalizeSearchText(searchQuery.value);
-  const normalizedName = StringFormatUtil.normalizeSearchText(restaurant.name);
-  const normalizedCity = StringFormatUtil.normalizeSearchText(restaurant.city);
-  const normalizedCategory = StringFormatUtil.normalizeSearchText(restaurant.category);
-
-  const matchesSearch =
-    normalizedQuery === '' ||
-    normalizedName.includes(normalizedQuery) ||
-    normalizedCity.includes(normalizedQuery) ||
-    normalizedCategory.includes(normalizedQuery);
-
-  const matchesCity =
-    selectedCity.value === 'Todas' ||
-    restaurant.city.toLowerCase() === selectedCity.value.toLowerCase();
-
-  const matchesCategory =
-    selectedCategory.value === 'Todas' ||
-    restaurant.category.toLowerCase() === selectedCategory.value.toLowerCase();
-
-  const matchesPrice =
-    selectedPrice.value === 'Todos' || restaurant.priceLevel === selectedPrice.value;
-
-  const matchesRating =
-    selectedRating.value === 'Todas' ||
-    (restaurant.rating !== undefined && restaurant.rating >= selectedRating.value);
-
-  return matchesSearch && matchesCity && matchesCategory && matchesPrice && matchesRating;
-}
-
+// Métodos
 function clearFilters(): void {
   searchQuery.value = '';
   selectedCity.value = 'Todas';
   selectedCategory.value = 'Todas';
-  selectedPrice.value = 'Todos';
-  selectedRating.value = 'Todas';
 }
 
 function handleReserve(id: number): void {
@@ -171,43 +117,6 @@ function handleReserve(id: number): void {
               </select>
             </div>
 
-            <!-- Price filter -->
-            <div class="space-y-1">
-              <label
-                for="price-select"
-                class="block text-[11px] font-bold text-stone-500 uppercase tracking-wider"
-              >
-                PRECIO
-              </label>
-              <select
-                id="price-select"
-                v-model="selectedPrice"
-                class="px-3.5 py-2 bg-[#FAF8F4] border border-stone-200 rounded-xl text-xs font-semibold text-stone-800 outline-none cursor-pointer hover:border-stone-400 transition-colors"
-              >
-                <option v-for="option in priceOptions" :key="option.value" :value="option.value">
-                  {{ option.label }}
-                </option>
-              </select>
-            </div>
-
-            <!-- Rating filter -->
-            <div class="space-y-1">
-              <label
-                for="rating-select"
-                class="block text-[11px] font-bold text-stone-500 uppercase tracking-wider"
-              >
-                CALIFICACIÓN
-              </label>
-              <select
-                id="rating-select"
-                v-model="selectedRating"
-                class="px-3.5 py-2 bg-[#FAF8F4] border border-stone-200 rounded-xl text-xs font-semibold text-stone-800 outline-none cursor-pointer hover:border-stone-400 transition-colors"
-              >
-                <option v-for="option in ratingOptions" :key="option.value" :value="option.value">
-                  {{ option.label }}
-                </option>
-              </select>
-            </div>
 
             <!-- Clear filters -->
             <button
@@ -255,12 +164,12 @@ function handleReserve(id: number): void {
 
                 <div class="flex items-center gap-2 mt-2">
                   <StarRatingComponent
-                    :rating="restaurant.rating ?? 4.8"
+                    :rating="RestaurantService.calculateAverageRating(restaurant.id)"
                     :readonly="true"
                     :size="14"
                   />
                   <span class="text-xs font-bold text-stone-700">
-                    {{ restaurant.rating ?? 4.8 }}
+                    {{ RestaurantService.calculateAverageRating(restaurant.id) }}
                   </span>
                 </div>
               </div>

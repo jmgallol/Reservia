@@ -1,4 +1,3 @@
-export type RestaurantPriceLevel = 1 | 2 | 3 | 4;
 export type RestaurantStatus = 'active' | 'inactive';
 
 export interface RestaurantInterface {
@@ -8,7 +7,7 @@ export interface RestaurantInterface {
   address: string;
   city: string;
   category: string;
-  priceLevel?: RestaurantPriceLevel; // Diagram equivalent: averagePrice
+  averagePrice?: number;
   capacity?: number;
   openingTime?: string;
   closingTime?: string;
@@ -16,8 +15,5 @@ export interface RestaurantInterface {
   status?: RestaurantStatus;
   latitude?: number;
   longitude?: number;
-  rating?: number; // Calculated helper (from diagram: calculateAverageRating())
-  reviewCount?: number;
-  // Primitive relations
-  adminId: number; // Diagram equivalent: user: User (Admin relation)
+  adminId: number;
 }
