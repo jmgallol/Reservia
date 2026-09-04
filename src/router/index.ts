@@ -6,8 +6,10 @@ import { AuthService } from '@/services/AuthService';
 import AdminView from '@/views/AdminView.vue';
 import AuthView from '@/views/AuthView.vue';
 import HomeView from '@/views/HomeView.vue';
+import MapView from '@/views/MapView.vue';
 import ReservationView from '@/views/ReservationView.vue';
 import RestaurantShowView from '@/views/RestaurantShowView.vue';
+import ReviewView from '@/views/ReviewView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -46,8 +48,14 @@ const router = createRouter({
     {
       path: '/reviews',
       name: 'reviews',
-      component: HomeView,
+      component: ReviewView,
       meta: { title: 'Mis Reseñas', requiresAuth: true },
+    },
+    {
+      path: '/map',
+      name: 'map',
+      component: MapView,
+      meta: { title: 'Mapa', requiresAuth: true },
     },
 
     // Admin routes (Protected)

@@ -9,4 +9,6 @@ export interface UserInterface {
   phone: string;
   role: UserRole;
   status?: UserStatus;
+  // Primitive relations (Foreign keys)
+  restaurantId?: number; // Diagram equivalent: restaurant: Restaurant (Admin relation)
 }

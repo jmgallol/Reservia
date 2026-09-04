@@ -4,6 +4,7 @@ import {
   Calendar,
   LayoutDashboard,
   LogOut,
+  MapPin,
   MessageSquare,
   Store,
   UtensilsCrossed,
@@ -59,6 +60,7 @@ const userInitials = computed(() => StringFormatUtil.getInitials(userName.value)
 // Selectors
 const clientNavItems = [
   { label: 'Restaurantes', to: '/restaurants', icon: UtensilsCrossed },
+  { label: 'Mapa', to: '/map', icon: MapPin },
   { label: 'Mis Reservas', to: '/reservations', icon: Calendar },
   { label: 'Mis Reseñas', to: '/reviews', icon: MessageSquare },
 ];
