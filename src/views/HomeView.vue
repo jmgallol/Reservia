@@ -13,57 +13,34 @@ import type { RestaurantInterface, RestaurantPriceLevel } from '@/interfaces/Res
 import { RestaurantService } from '@/services/RestaurantService';
 import { StringFormatUtil } from '@/utils/StringFormatUtil';
 
+// Variables
+const router = useRouter();
+
 // Reactive state
 const searchQuery = ref('');
 const selectedCity = ref('Todas');
 const selectedCategory = ref('Todas');
 const selectedPrice = ref<RestaurantPriceLevel | 'Todos'>('Todos');
 const selectedRating = ref<number | 'Todas'>('Todas');
-const router = useRouter();
 
 // Computed
 const allRestaurants = computed(() => RestaurantService.getAll());
 
-const filteredRestaurants = computed<RestaurantInterface[]>(() => {
-  const normalizedSearchQuery = StringFormatUtil.normalizeSearchText(searchQuery.value);
+const cities = computed<string[]>(() => {
+  const cityNames = allRestaurants.value.map((restaurant) => restaurant.city);
+  return ['Todas', ...Array.from(new Set(cityNames)).sort((a, b) => a.localeCompare(b))];
+});
 
-  return allRestaurants.value.filter((restaurant) => {
-    const minimumRating = selectedRating.value;
-    const priceLevel = selectedPrice.value;
-    const matchesSearch =
-      normalizedSearchQuery === '' ||
-      StringFormatUtil.normalizeSearchText(restaurant.name).includes(normalizedSearchQuery) ||
-      StringFormatUtil.normalizeSearchText(restaurant.city).includes(normalizedSearchQuery) ||
-      StringFormatUtil.normalizeSearchText(restaurant.category).includes(normalizedSearchQuery);
-    const matchesCity =
-      selectedCity.value === 'Todas' ||
-      restaurant.city.toLowerCase() === selectedCity.value.toLowerCase();
-    const matchesCategory =
-      selectedCategory.value === 'Todas' ||
-      restaurant.category.toLowerCase() === selectedCategory.value.toLowerCase();
-    const matchesPrice = priceLevel === 'Todos' || restaurant.priceLevel === priceLevel;
-    const matchesRating =
-      minimumRating === 'Todas' ||
-      (restaurant.rating !== undefined && restaurant.rating >= minimumRating);
-    return matchesSearch && matchesCity && matchesCategory && matchesPrice && matchesRating;
-  });
+const categories = computed<string[]>(() => {
+  const categoryNames = allRestaurants.value.map((restaurant) => restaurant.category);
+  return ['Todas', ...Array.from(new Set(categoryNames)).sort((a, b) => a.localeCompare(b))];
+});
+
+const filteredRestaurants = computed<RestaurantInterface[]>(() => {
+  return allRestaurants.value.filter(matchesFilters);
 });
 
 // Selectors
-const cities = computed<string[]>(() => [
-  'Todas',
-  ...Array.from(new Set(allRestaurants.value.map((restaurant) => restaurant.city))).sort((a, b) =>
-    a.localeCompare(b),
-  ),
-]);
-
-const categories = computed<string[]>(() => [
-  'Todas',
-  ...Array.from(new Set(allRestaurants.value.map((restaurant) => restaurant.category))).sort(
-    (a, b) => a.localeCompare(b),
-  ),
-]);
-
 const priceOptions: { label: string; value: RestaurantPriceLevel | 'Todos' }[] = [
   { label: 'Todos', value: 'Todos' },
   { label: '$', value: 1 },
@@ -79,16 +56,42 @@ const ratingOptions: { label: string; value: number | 'Todas' }[] = [
 ];
 
 // Methods
+function matchesFilters(restaurant: RestaurantInterface): boolean {
+  const normalizedQuery = StringFormatUtil.normalizeSearchText(searchQuery.value);
+  const normalizedName = StringFormatUtil.normalizeSearchText(restaurant.name);
+  const normalizedCity = StringFormatUtil.normalizeSearchText(restaurant.city);
+  const normalizedCategory = StringFormatUtil.normalizeSearchText(restaurant.category);
+
+  const matchesSearch =
+    normalizedQuery === '' ||
+    normalizedName.includes(normalizedQuery) ||
+    normalizedCity.includes(normalizedQuery) ||
+    normalizedCategory.includes(normalizedQuery);
+
+  const matchesCity =
+    selectedCity.value === 'Todas' ||
+    restaurant.city.toLowerCase() === selectedCity.value.toLowerCase();
+
+  const matchesCategory =
+    selectedCategory.value === 'Todas' ||
+    restaurant.category.toLowerCase() === selectedCategory.value.toLowerCase();
+
+  const matchesPrice =
+    selectedPrice.value === 'Todos' || restaurant.priceLevel === selectedPrice.value;
+
+  const matchesRating =
+    selectedRating.value === 'Todas' ||
+    (restaurant.rating !== undefined && restaurant.rating >= selectedRating.value);
+
+  return matchesSearch && matchesCity && matchesCategory && matchesPrice && matchesRating;
+}
+
 function clearFilters(): void {
   searchQuery.value = '';
   selectedCity.value = 'Todas';
   selectedCategory.value = 'Todas';
   selectedPrice.value = 'Todos';
   selectedRating.value = 'Todas';
-}
-
-function handleViewDetails(id: number): void {
-  router.push(`/restaurants/${id}`);
 }
 
 function handleReserve(id: number): void {
@@ -108,7 +111,7 @@ function handleReserve(id: number): void {
 
       <!-- Main Page Content -->
       <main class="flex-1 px-8 pb-24 overflow-y-auto space-y-6">
-        <!-- Filter Card matching Image 1 -->
+        <!-- Filter Card -->
         <div
           class="bg-white rounded-2xl p-6 border border-stone-200/80 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
         >
@@ -222,7 +225,7 @@ function handleReserve(id: number): void {
           </span>
         </div>
 
-        <!-- Restaurants Grid matching Image 1 -->
+        <!-- Restaurants Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           <article
             v-for="restaurant in filteredRestaurants"
@@ -250,12 +253,6 @@ function handleReserve(id: number): void {
                   {{ restaurant.name }}
                 </h2>
 
-                <div class="flex items-center gap-3 text-xs text-stone-500 mt-1">
-                  <span>📍 {{ restaurant.city }}</span>
-                  <span>·</span>
-                  <span>🕒 12:00–22:00</span>
-                </div>
-
                 <div class="flex items-center gap-2 mt-2">
                   <StarRatingComponent
                     :rating="restaurant.rating ?? 4.8"
@@ -269,17 +266,10 @@ function handleReserve(id: number): void {
               </div>
 
               <!-- Buttons -->
-              <div class="grid grid-cols-2 gap-2.5 pt-3 border-t border-stone-100">
+              <div class="flex justify-center pt-3 border-t border-stone-100">
                 <button
                   type="button"
-                  class="py-2.5 px-3 rounded-full border border-stone-300 text-stone-700 hover:bg-stone-50 text-xs font-semibold transition-colors cursor-pointer text-center"
-                  @click="handleViewDetails(restaurant.id)"
-                >
-                  Ver detalles
-                </button>
-                <button
-                  type="button"
-                  class="py-2.5 px-3 rounded-full bg-[#C8552A] hover:bg-[#b54a22] text-white text-xs font-semibold shadow-xs transition-colors cursor-pointer text-center"
+                  class="py-2.5 px-8 rounded-full bg-[#C8552A] hover:bg-[#b54a22] text-white text-xs font-semibold shadow-xs transition-colors cursor-pointer text-center"
                   @click="handleReserve(restaurant.id)"
                 >
                   Reservar

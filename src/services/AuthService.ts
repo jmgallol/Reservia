@@ -1,6 +1,6 @@
 import type { UserInterface } from '@/interfaces/UserInterface';
 
-import { userSeeder } from '@/seeders/UserSeeder';
+import { userSeeder } from '@/seeders/userseeder';
 import { useAuthStore } from '@/stores/authStore';
 
 export class AuthService {

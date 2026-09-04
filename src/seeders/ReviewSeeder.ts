@@ -1,6 +1,6 @@
 import type { ReviewInterface } from '@/interfaces/ReviewInterface';
 
-export const reviewSeedData: ReviewInterface[] = [
+export const reviewSeeder: ReviewInterface[] = [
   {
     id: 1,
     restaurantId: 1,

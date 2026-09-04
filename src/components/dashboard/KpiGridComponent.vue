@@ -1,42 +1,55 @@
 <script setup lang="ts">
 // External imports
-import { AlertCircle, Calendar, Check, Star, TrendingDown, TrendingUp } from 'lucide-vue-next';
+import { AlertCircle, Calendar, Check, Star } from 'lucide-vue-next';
+import { computed } from 'vue';
 
-// Selectors
-const kpiCards = [
-  {
-    id: 'total',
-    label: 'Reservas totales',
-    value: '412',
-    trendText: '+12% vs mes ant.',
-    isPositive: true,
-    icon: Calendar,
-  },
-  {
-    id: 'today',
-    label: 'Confirmadas hoy',
-    value: '18',
-    trendText: '+3 nuevas',
-    isPositive: true,
-    icon: Check,
-  },
-  {
-    id: 'pending',
-    label: 'Pendientes',
-    value: '7',
-    trendText: 'requieren acción',
-    isPositive: false,
-    icon: AlertCircle,
-  },
-  {
-    id: 'rating',
-    label: 'Calificación',
-    value: '4.8 ★',
-    trendText: '+0.1 esta semana',
-    isPositive: true,
-    icon: Star,
-  },
-];
+// Internal imports
+import { ReservationService } from '@/services/ReservationService';
+import { ReviewService } from '@/services/ReviewService';
+
+// Computed
+const kpiCards = computed(() => {
+  const reservations = ReservationService.getAll();
+  const reviews = ReviewService.getAll();
+
+  const total = reservations.length;
+  const confirmed = reservations.filter((r) => r.status === 'confirmed').length;
+  const pending = reservations.filter((r) => r.status === 'pending').length;
+  const avgRating = reviews.length
+    ? (reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length).toFixed(1)
+    : '5.0';
+
+  return [
+    {
+      id: 'total',
+      label: 'Reservas totales',
+      value: String(total),
+      trendText: 'Registradas en el sistema',
+      icon: Calendar,
+    },
+    {
+      id: 'confirmed',
+      label: 'Confirmadas',
+      value: String(confirmed),
+      trendText: 'Listas para atender',
+      icon: Check,
+    },
+    {
+      id: 'pending',
+      label: 'Pendientes',
+      value: String(pending),
+      trendText: 'Requieren confirmación',
+      icon: AlertCircle,
+    },
+    {
+      id: 'rating',
+      label: 'Calificación',
+      value: `${avgRating} ★`,
+      trendText: 'Opiniones recibidas',
+      icon: Star,
+    },
+  ];
+});
 </script>
 
 <template>
@@ -47,20 +60,12 @@ const kpiCards = [
       :key="card.id"
       class="bg-white rounded-2xl p-5 border border-stone-200/80 shadow-xs flex flex-col justify-between hover:shadow-sm transition-shadow"
     >
-      <!-- Top row: Icon + Trend indicator -->
+      <!-- Top row: Icon -->
       <div class="flex items-center justify-between">
         <div
           class="w-10 h-10 rounded-full bg-[#EEF5F1] text-[#1A3D2B] flex items-center justify-center shrink-0"
         >
           <component :is="card.icon" :size="18" />
-        </div>
-
-        <div
-          class="flex items-center gap-0.5 text-xs font-semibold"
-          :class="card.isPositive ? 'text-emerald-600' : 'text-[#C8552A]'"
-        >
-          <TrendingUp v-if="card.isPositive" :size="15" />
-          <TrendingDown v-else :size="15" />
         </div>
       </div>
 

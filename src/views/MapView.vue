@@ -12,18 +12,18 @@ import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
 
 import { RestaurantService } from '@/services/RestaurantService';
 
+// Variables
+let mapInstance: L.Map | null = null;
+
+// Reactive state
+const mapContainerRef = ref<HTMLDivElement | null>(null);
+
 // Computed
 const allRestaurants = computed(() => RestaurantService.getAll());
 
 const medellinRestaurants = computed<RestaurantInterface[]>(() =>
   allRestaurants.value.filter((restaurant) => restaurant.city.toLowerCase() === 'medellín'),
 );
-
-// Template refs
-const mapContainerRef = ref<HTMLDivElement | null>(null);
-
-// Variables
-let mapInstance: L.Map | null = null;
 
 // Methods
 function initializeMap(): void {
@@ -37,9 +37,11 @@ function initializeMap(): void {
   }).addTo(map);
 
   medellinRestaurants.value.forEach((restaurant) => {
-    L.marker([restaurant.latitude, restaurant.longitude], {
-      title: restaurant.name,
-    }).addTo(map);
+    if (restaurant.latitude !== undefined && restaurant.longitude !== undefined) {
+      L.marker([restaurant.latitude, restaurant.longitude], {
+        title: restaurant.name,
+      }).addTo(map);
+    }
   });
 }
 

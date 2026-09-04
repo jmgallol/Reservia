@@ -7,7 +7,6 @@ import BaseModalComponent from '@/components/common/BaseModalComponent.vue';
 import HeaderComponent from '@/components/layout/HeaderComponent.vue';
 import SidebarComponent from '@/components/layout/SidebarComponent.vue';
 import StatusBadgeComponent from '@/components/common/StatusBadgeComponent.vue';
-
 import type { ReservationStatus } from '@/interfaces/ReservationInterface';
 
 // Reactive state
@@ -31,15 +30,6 @@ const reservationStatuses: ReservationStatus[] = ['pending', 'confirmed', 'compl
       <main class="flex-1 px-8 pb-24 overflow-y-auto space-y-6">
         <div class="max-w-5xl mx-auto space-y-6">
           <div class="flex items-center justify-between">
-            <div>
-              <h2 class="text-xl font-bold text-stone-900 tracking-tight">
-                Control de reservaciones
-              </h2>
-              <p class="text-stone-500 text-xs mt-1">
-                Consulta y gestiona el estado de tus reservas actuales
-              </p>
-            </div>
-
             <button
               type="button"
               class="px-5 py-2.5 bg-[#C8552A] hover:bg-[#b04820] text-white rounded-full text-xs font-semibold transition-colors duration-150 shadow-sm cursor-pointer"

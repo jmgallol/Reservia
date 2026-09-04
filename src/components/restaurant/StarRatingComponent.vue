@@ -1,7 +1,7 @@
 <script setup lang="ts">
-// Imports
-import { ref } from 'vue';
+// External imports
 import { Star } from 'lucide-vue-next';
+import { ref } from 'vue';
 
 // Props
 interface Props {

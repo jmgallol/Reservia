@@ -4,16 +4,20 @@ export type RestaurantStatus = 'active' | 'inactive';
 export interface RestaurantInterface {
   id: number;
   name: string;
+  description?: string;
   address: string;
   city: string;
   category: string;
-  priceLevel: RestaurantPriceLevel;
-  latitude: number;
-  longitude: number;
-  adminId: number;
-  description?: string;
+  priceLevel?: RestaurantPriceLevel; // Diagram equivalent: averagePrice
+  capacity?: number;
+  openingTime?: string;
+  closingTime?: string;
   imageUrl?: string;
-  rating?: number;
-  reviewCount?: number;
   status?: RestaurantStatus;
+  latitude?: number;
+  longitude?: number;
+  rating?: number; // Calculated helper (from diagram: calculateAverageRating())
+  reviewCount?: number;
+  // Primitive relations
+  adminId: number; // Diagram equivalent: user: User (Admin relation)
 }

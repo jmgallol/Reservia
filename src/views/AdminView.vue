@@ -1,15 +1,18 @@
 <script setup lang="ts">
 // External imports
-import type { ChartData, ChartOptions } from 'chart.js';
-import { computed, ref } from 'vue';
+import Chart from 'chart.js/auto';
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
 // Internal imports
-import BaseChartComponent from '@/components/common/BaseChartComponent.vue';
 import KpiGridComponent from '@/components/dashboard/KpiGridComponent.vue';
 import HeaderComponent from '@/components/layout/HeaderComponent.vue';
 import SidebarComponent from '@/components/layout/SidebarComponent.vue';
 
+// Variables
+let chartInstance: Chart | null = null;
+
 // Reactive state
+const chartCanvasRef = ref<HTMLCanvasElement | null>(null);
 const selectedPeriod = ref<'6_months' | '1_year' | 'this_month'>('6_months');
 
 // Selectors
@@ -23,103 +26,63 @@ const periodDataMap = {
   '6_months': {
     labels: ['Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul'],
     data: [38, 45, 62, 80, 95, 72],
-    max: 100,
-    stepSize: 25,
   },
   '1_year': {
     labels: ['Ago', 'Sep', 'Oct', 'Nov', 'Dic', 'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul'],
     data: [28, 35, 42, 50, 65, 48, 38, 45, 62, 80, 95, 72],
-    max: 100,
-    stepSize: 25,
   },
   this_month: {
     labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'],
     data: [15, 22, 28, 18],
-    max: 40,
-    stepSize: 10,
   },
 };
 
-// Computed
-const chartData = computed<ChartData<'line'>>(() => {
+// Methods
+function renderChart(): void {
+  if (!chartCanvasRef.value) return;
+
+  if (chartInstance) {
+    chartInstance.destroy();
+  }
+
   const current = periodDataMap[selectedPeriod.value];
 
-  return {
-    labels: current.labels,
-    datasets: [
-      {
-        label: 'Reservas',
-        data: current.data,
-        fill: true,
-        backgroundColor: 'rgba(26, 61, 43, 0.08)',
-        borderColor: '#1A3D2B',
-        borderWidth: 2.75,
-        tension: 0.45,
-        pointBackgroundColor: '#1A3D2B',
-        pointBorderColor: '#FFFFFF',
-        pointBorderWidth: 2,
-        pointRadius: 4.5,
-        pointHoverRadius: 7,
-        pointHoverBackgroundColor: '#C8552A',
-        pointHoverBorderColor: '#FFFFFF',
-        pointHoverBorderWidth: 2,
-      },
-    ],
-  };
+  chartInstance = new Chart(chartCanvasRef.value, {
+    type: 'line',
+    data: {
+      labels: current.labels,
+      datasets: [
+        {
+          label: 'Reservas',
+          data: current.data,
+          borderColor: '#1A3D2B',
+          backgroundColor: 'rgba(26, 61, 43, 0.08)',
+          tension: 0.45,
+          fill: true,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+    },
+  });
+}
+
+// Watchers
+watch(selectedPeriod, () => {
+  renderChart();
 });
 
-const chartOptions = computed<ChartOptions<'line'>>(() => {
-  const current = periodDataMap[selectedPeriod.value];
+// Lifecycle
+onMounted(() => {
+  renderChart();
+});
 
-  return {
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-      y: {
-        beginAtZero: true,
-        max: current.max,
-        ticks: {
-          stepSize: current.stepSize,
-          color: '#A8A29E',
-          font: { family: 'Plus Jakarta Sans, sans-serif', size: 11 },
-        },
-        grid: {
-          color: '#F0EFEA',
-        },
-        border: {
-          display: false,
-        },
-      },
-      x: {
-        ticks: {
-          color: '#78716C',
-          font: { family: 'Plus Jakarta Sans, sans-serif', size: 11 },
-        },
-        grid: {
-          display: false,
-        },
-        border: {
-          display: false,
-        },
-      },
-    },
-    plugins: {
-      legend: {
-        display: false,
-      },
-      tooltip: {
-        backgroundColor: '#1C1917',
-        titleFont: { size: 12, weight: 'bold' },
-        bodyFont: { size: 12 },
-        padding: 10,
-        cornerRadius: 8,
-        displayColors: false,
-        callbacks: {
-          label: (context) => `${context.parsed.y} reservas`,
-        },
-      },
-    },
-  };
+onBeforeUnmount(() => {
+  if (chartInstance) {
+    chartInstance.destroy();
+  }
 });
 </script>
 
@@ -176,14 +139,9 @@ const chartOptions = computed<ChartOptions<'line'>>(() => {
               </div>
             </div>
 
-            <!-- Chart Display -->
-            <div class="h-72 w-full pt-2">
-              <BaseChartComponent
-                :key="selectedPeriod"
-                type="line"
-                :data="chartData"
-                :options="chartOptions"
-              />
+            <!-- Direct Canvas Chart Display -->
+            <div class="h-72 w-full pt-2 relative">
+              <canvas ref="chartCanvasRef" />
             </div>
           </article>
         </div>

@@ -1,6 +1,6 @@
 import type { ReservationInterface } from '@/interfaces/ReservationInterface';
 
-export const reservationSeedData: ReservationInterface[] = [
+export const reservationSeeder: ReservationInterface[] = [
   {
     id: 1,
     restaurantId: 1,

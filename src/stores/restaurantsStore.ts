@@ -1,14 +1,10 @@
+import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
-import { defineStore } from 'pinia';
-
 import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
-import { restaurantSeedData } from '@/seeders/RestaurantSeeder';
 
-export const useRestaurantStore = defineStore('restaurants', () => {
-  const restaurants = ref<RestaurantInterface[]>([...restaurantSeedData]);
+export const useRestaurantStore = defineStore('restaurant', () => {
+  const restaurants = ref<RestaurantInterface[]>([]);
 
-  return {
-    restaurants,
-  };
+  return { restaurants };
 });
