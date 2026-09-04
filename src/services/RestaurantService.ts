@@ -1,6 +1,9 @@
+// Internal imports
+import type { FilterRestaurantsDTO } from '@/dtos/FilterRestaurantsDTO';
 import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
-
+import { ReviewService } from '@/services/ReviewService';
 import { useRestaurantStore } from '@/stores/restaurantsStore';
+import { StringFormatUtil } from '@/utils/StringFormatUtil';
 
 export class RestaurantService {
   static getAll(): RestaurantInterface[] {
@@ -13,12 +16,51 @@ export class RestaurantService {
     return store.restaurants.find((restaurant) => restaurant.id === id);
   }
 
-  static getByCategory(category: string): RestaurantInterface[] {
+  static getCities(): string[] {
     const store = useRestaurantStore();
-    if (!category || category === 'Todas') {
-      return store.restaurants;
+    const cityNames = store.restaurants.map((restaurant) => restaurant.city);
+    return ['Todas', ...Array.from(new Set(cityNames)).sort((a, b) => a.localeCompare(b))];
+  }
+
+  static getCategories(): string[] {
+    const store = useRestaurantStore();
+    const categoryNames = store.restaurants.map((restaurant) => restaurant.category);
+    return ['Todas', ...Array.from(new Set(categoryNames)).sort((a, b) => a.localeCompare(b))];
+  }
+
+  static filter(dto: FilterRestaurantsDTO): RestaurantInterface[] {
+    const store = useRestaurantStore();
+    const normalizedQuery = StringFormatUtil.normalizeSearchText(dto.query);
+
+    return store.restaurants.filter((restaurant) => {
+      const normalizedName = StringFormatUtil.normalizeSearchText(restaurant.name);
+      const normalizedCity = StringFormatUtil.normalizeSearchText(restaurant.city);
+      const normalizedCategory = StringFormatUtil.normalizeSearchText(restaurant.category);
+
+      const matchesSearch =
+        normalizedQuery === '' ||
+        normalizedName.includes(normalizedQuery) ||
+        normalizedCity.includes(normalizedQuery) ||
+        normalizedCategory.includes(normalizedQuery);
+
+      const matchesCity =
+        dto.city === 'Todas' || restaurant.city.toLowerCase() === dto.city.toLowerCase();
+
+      const matchesCategory =
+        dto.category === 'Todas' ||
+        restaurant.category.toLowerCase() === dto.category.toLowerCase();
+
+      return matchesSearch && matchesCity && matchesCategory;
+    });
+  }
+
+  static calculateAverageRating(restaurantId: number): number {
+    const reviews = ReviewService.getByRestaurantId(restaurantId);
+    if (reviews.length === 0) {
+      return 4.8;
     }
-    return store.restaurants.filter((r) => r.category.toLowerCase() === category.toLowerCase());
+    const total = reviews.reduce((sum, review) => sum + review.rating, 0);
+    return Math.round((total / reviews.length) * 10) / 10;
   }
 
   static create(restaurant: RestaurantInterface): RestaurantInterface {

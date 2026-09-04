@@ -1,6 +1,6 @@
+// Internal imports
 import type { CreateReviewDTO } from '@/dtos/CreateReviewDTO';
 import type { ReviewInterface } from '@/interfaces/ReviewInterface';
-
 import { useReviewStore } from '@/stores/reviewStore';
 
 export class ReviewService {
@@ -26,11 +26,11 @@ export class ReviewService {
     const newReview: ReviewInterface = {
       id: nextId,
       restaurantId: dto.restaurantId,
+      userId: dto.userId ?? 0,
       rating: Math.min(5, Math.max(1, dto.rating)),
       comment: dto.comment,
-      user: dto.user?.trim() || 'Anónimo',
       status: 'approved',
-      createdAt: new Date().toISOString(),
+      reviewDate: new Date().toISOString(),
     };
 
     store.reviews.push(newReview);
@@ -44,7 +44,6 @@ export class ReviewService {
       store.reviews[index] = {
         ...store.reviews[index],
         ...review,
-        updatedAt: new Date().toISOString(),
       };
     }
   }

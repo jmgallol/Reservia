@@ -69,7 +69,11 @@ const restaurant = computed<RestaurantInterface | null>(() => {
                 {{ restaurant.name }}
               </h1>
               <div class="flex items-center gap-1 text-[#E8A020]">
-                <StarRatingComponent :rating="restaurant.rating ?? 5" :readonly="true" :size="18" />
+                <StarRatingComponent
+                  :rating="RestaurantService.calculateAverageRating(restaurant.id)"
+                  :readonly="true"
+                  :size="18"
+                />
               </div>
             </div>
 

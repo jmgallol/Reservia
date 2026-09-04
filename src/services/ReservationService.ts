@@ -1,6 +1,6 @@
+// Internal imports
 import type { CreateReservationDTO } from '@/dtos/CreateReservationDTO';
 import type { ReservationInterface, ReservationStatus } from '@/interfaces/ReservationInterface';
-
 import { useReservationStore } from '@/stores/reservationsStore';
 
 export class ReservationService {
@@ -30,9 +30,9 @@ export class ReservationService {
       userId: dto.userId ?? 0,
       clientName: dto.clientName,
       clientEmail: dto.clientEmail ?? '',
-      date: dto.date,
-      time: dto.time,
-      guests: dto.guests,
+      reservationDate: dto.reservationDate,
+      reservationTime: dto.reservationTime,
+      numberOfPeople: dto.numberOfPeople,
       status: 'pending',
       specialRequest: dto.specialRequest ?? '',
     };
