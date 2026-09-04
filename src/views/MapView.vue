@@ -1,6 +1,8 @@
 <script setup lang="ts">
 // External imports
-import { computed } from 'vue';
+import * as L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 
 // Internal imports
 import HeaderComponent from '@/components/layout/HeaderComponent.vue';
@@ -16,6 +18,42 @@ const allRestaurants = computed(() => RestaurantService.getAll());
 const medellinRestaurants = computed<RestaurantInterface[]>(() =>
   allRestaurants.value.filter((restaurant) => restaurant.city.toLowerCase() === 'medellín'),
 );
+
+// Template refs
+const mapContainerRef = ref<HTMLDivElement | null>(null);
+
+// Variables
+let mapInstance: L.Map | null = null;
+
+// Methods
+function initializeMap(): void {
+  if (!mapContainerRef.value || mapInstance) return;
+
+  const map = L.map(mapContainerRef.value).setView([6.2442, -75.5812], 12);
+  mapInstance = map;
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors',
+  }).addTo(map);
+
+  medellinRestaurants.value.forEach((restaurant) => {
+    L.marker([restaurant.latitude, restaurant.longitude], {
+      title: restaurant.name,
+    }).addTo(map);
+  });
+}
+
+// Lifecycle
+onMounted(() => {
+  initializeMap();
+});
+
+onUnmounted(() => {
+  if (mapInstance) {
+    mapInstance.remove();
+    mapInstance = null;
+  }
+});
 </script>
 
 <template>
@@ -52,18 +90,11 @@ const medellinRestaurants = computed<RestaurantInterface[]>(() =>
           </span>
         </div>
 
-        <section
-          class="min-h-[520px] rounded-2xl border border-dashed border-stone-300 bg-white shadow-xs flex items-center justify-center text-center px-6"
-        >
-          <div class="space-y-2">
-            <p class="text-xl font-bold text-stone-900 tracking-tight font-heading">
-              Mapa de restaurantes en Medellín
-            </p>
-            <p class="text-sm text-stone-500">
-              Próximamente este espacio mostrará el mapa interactivo.
-            </p>
-          </div>
-        </section>
+        <div
+          ref="mapContainerRef"
+          class="min-h-[520px] rounded-2xl border border-stone-200/80 bg-white shadow-xs overflow-hidden"
+          aria-label="Mapa de restaurantes en Medellín"
+        />
       </main>
     </div>
   </div>
