@@ -7,6 +7,9 @@ export const restaurantSeedData: RestaurantInterface[] = [
     address: 'Cra 7 #67-29',
     city: 'Bogotá',
     category: 'Italiana',
+    priceLevel: 3,
+    latitude: 4.6502,
+    longitude: -74.0608,
     adminId: 1,
     description: 'Auténtica pasta artesanal y pizzas al horno de leña.',
     imageUrl:
@@ -21,6 +24,9 @@ export const restaurantSeedData: RestaurantInterface[] = [
     address: 'Calle 10 #35-12',
     city: 'Medellín',
     category: 'Mexicana',
+    priceLevel: 2,
+    latitude: 6.2079,
+    longitude: -75.5675,
     adminId: 2,
     description: 'Sabores tradicionales mexicanos y coctelería.',
     imageUrl:
@@ -35,6 +41,9 @@ export const restaurantSeedData: RestaurantInterface[] = [
     address: 'Av. San Martín #8-45',
     city: 'Cartagena',
     category: 'Japonesa',
+    priceLevel: 4,
+    latitude: 10.3997,
+    longitude: -75.5582,
     adminId: 3,
     description: 'Sushi fresco de alta gama y platos nikkei.',
     imageUrl:
@@ -49,6 +58,9 @@ export const restaurantSeedData: RestaurantInterface[] = [
     address: 'Av. 9 Norte #14-20',
     city: 'Cali',
     category: 'Colombiana',
+    priceLevel: 3,
+    latitude: 3.4644,
+    longitude: -76.5305,
     adminId: 4,
     description: 'Cortes premium a la brasa y comida típica.',
     imageUrl:
@@ -63,6 +75,9 @@ export const restaurantSeedData: RestaurantInterface[] = [
     address: 'Calle 85 #12-50',
     city: 'Bogotá',
     category: 'Mediterránea',
+    priceLevel: 4,
+    latitude: 4.6709,
+    longitude: -74.0541,
     adminId: 5,
     description: 'Tapas, arroces y pescados frescos con aceite de oliva extra virgen.',
     imageUrl:
@@ -77,6 +92,9 @@ export const restaurantSeedData: RestaurantInterface[] = [
     address: 'Carrera 43A #1-50',
     city: 'Medellín',
     category: 'Fusión',
+    priceLevel: 4,
+    latitude: 6.2033,
+    longitude: -75.5736,
     adminId: 6,
     description: 'Innovadora mezcla peruano-japonesa con ingredientes locales.',
     imageUrl:

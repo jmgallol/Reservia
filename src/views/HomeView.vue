@@ -8,43 +8,85 @@ import HeaderComponent from '@/components/layout/HeaderComponent.vue';
 import SidebarComponent from '@/components/layout/SidebarComponent.vue';
 import StarRatingComponent from '@/components/restaurant/StarRatingComponent.vue';
 
-import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
+import type { RestaurantInterface, RestaurantPriceLevel } from '@/interfaces/RestaurantInterface';
 
 import { RestaurantService } from '@/services/RestaurantService';
+import { StringFormatUtil } from '@/utils/StringFormatUtil';
 
 // Reactive state
+const searchQuery = ref('');
 const selectedCity = ref('Todas');
 const selectedCategory = ref('Todas');
+const selectedPrice = ref<RestaurantPriceLevel | 'Todos'>('Todos');
+const selectedRating = ref<number | 'Todas'>('Todas');
 const router = useRouter();
 
 // Computed
 const allRestaurants = computed(() => RestaurantService.getAll());
 
 const filteredRestaurants = computed<RestaurantInterface[]>(() => {
+  const normalizedSearchQuery = StringFormatUtil.normalizeSearchText(searchQuery.value);
+
   return allRestaurants.value.filter((restaurant) => {
+    const minimumRating = selectedRating.value;
+    const priceLevel = selectedPrice.value;
+    const matchesSearch =
+      normalizedSearchQuery === '' ||
+      StringFormatUtil.normalizeSearchText(restaurant.name).includes(normalizedSearchQuery) ||
+      StringFormatUtil.normalizeSearchText(restaurant.city).includes(normalizedSearchQuery) ||
+      StringFormatUtil.normalizeSearchText(restaurant.category).includes(normalizedSearchQuery);
     const matchesCity =
       selectedCity.value === 'Todas' ||
       restaurant.city.toLowerCase() === selectedCity.value.toLowerCase();
     const matchesCategory =
       selectedCategory.value === 'Todas' ||
       restaurant.category.toLowerCase() === selectedCategory.value.toLowerCase();
-    return matchesCity && matchesCategory;
+    const matchesPrice = priceLevel === 'Todos' || restaurant.priceLevel === priceLevel;
+    const matchesRating =
+      minimumRating === 'Todas' ||
+      (restaurant.rating !== undefined && restaurant.rating >= minimumRating);
+    return matchesSearch && matchesCity && matchesCategory && matchesPrice && matchesRating;
   });
 });
 
 // Selectors
-const cities = ['Todas', 'Bogotá', 'Medellín', 'Cali', 'Cartagena'];
-const categories = [
+const cities = computed<string[]>(() => [
   'Todas',
-  'Italiana',
-  'Colombiana',
-  'Asiática',
-  'Mexicana',
-  'Vegetariana',
-  'Comida Rápida',
+  ...Array.from(new Set(allRestaurants.value.map((restaurant) => restaurant.city))).sort((a, b) =>
+    a.localeCompare(b),
+  ),
+]);
+
+const categories = computed<string[]>(() => [
+  'Todas',
+  ...Array.from(new Set(allRestaurants.value.map((restaurant) => restaurant.category))).sort(
+    (a, b) => a.localeCompare(b),
+  ),
+]);
+
+const priceOptions: { label: string; value: RestaurantPriceLevel | 'Todos' }[] = [
+  { label: 'Todos', value: 'Todos' },
+  { label: '$', value: 1 },
+  { label: '$$', value: 2 },
+  { label: '$$$', value: 3 },
+  { label: '$$$$', value: 4 },
+];
+
+const ratingOptions: { label: string; value: number | 'Todas' }[] = [
+  { label: 'Todas', value: 'Todas' },
+  { label: '4.0+', value: 4 },
+  { label: '4.5+', value: 4.5 },
 ];
 
 // Methods
+function clearFilters(): void {
+  searchQuery.value = '';
+  selectedCity.value = 'Todas';
+  selectedCategory.value = 'Todas';
+  selectedPrice.value = 'Todos';
+  selectedRating.value = 'Todas';
+}
+
 function handleViewDetails(id: number): void {
   router.push(`/restaurants/${id}`);
 }
@@ -71,6 +113,23 @@ function handleReserve(id: number): void {
           class="bg-white rounded-2xl p-6 border border-stone-200/80 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
         >
           <div class="flex flex-wrap items-center gap-6">
+            <!-- Search input -->
+            <div class="space-y-1">
+              <label
+                for="restaurant-search"
+                class="block text-[11px] font-bold text-stone-500 uppercase tracking-wider"
+              >
+                BÚSQUEDA
+              </label>
+              <input
+                id="restaurant-search"
+                v-model="searchQuery"
+                type="search"
+                placeholder="Buscar por nombre, ciudad o categoría"
+                class="w-72 max-w-full px-3.5 py-2 bg-[#FAF8F4] border border-stone-200 rounded-xl text-xs font-semibold text-stone-800 outline-none placeholder:text-stone-400 hover:border-stone-400 focus:border-stone-400 transition-colors"
+              />
+            </div>
+
             <!-- City filter -->
             <div class="space-y-1">
               <label
@@ -108,6 +167,53 @@ function handleReserve(id: number): void {
                 </option>
               </select>
             </div>
+
+            <!-- Price filter -->
+            <div class="space-y-1">
+              <label
+                for="price-select"
+                class="block text-[11px] font-bold text-stone-500 uppercase tracking-wider"
+              >
+                PRECIO
+              </label>
+              <select
+                id="price-select"
+                v-model="selectedPrice"
+                class="px-3.5 py-2 bg-[#FAF8F4] border border-stone-200 rounded-xl text-xs font-semibold text-stone-800 outline-none cursor-pointer hover:border-stone-400 transition-colors"
+              >
+                <option v-for="option in priceOptions" :key="option.value" :value="option.value">
+                  {{ option.label }}
+                </option>
+              </select>
+            </div>
+
+            <!-- Rating filter -->
+            <div class="space-y-1">
+              <label
+                for="rating-select"
+                class="block text-[11px] font-bold text-stone-500 uppercase tracking-wider"
+              >
+                CALIFICACIÓN
+              </label>
+              <select
+                id="rating-select"
+                v-model="selectedRating"
+                class="px-3.5 py-2 bg-[#FAF8F4] border border-stone-200 rounded-xl text-xs font-semibold text-stone-800 outline-none cursor-pointer hover:border-stone-400 transition-colors"
+              >
+                <option v-for="option in ratingOptions" :key="option.value" :value="option.value">
+                  {{ option.label }}
+                </option>
+              </select>
+            </div>
+
+            <!-- Clear filters -->
+            <button
+              type="button"
+              class="self-end px-4 py-2 border border-stone-300 rounded-xl text-xs font-semibold text-stone-700 hover:bg-stone-50 transition-colors cursor-pointer"
+              @click="clearFilters"
+            >
+              Limpiar
+            </button>
           </div>
 
           <!-- Counter badge -->
