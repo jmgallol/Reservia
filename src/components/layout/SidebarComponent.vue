@@ -4,7 +4,6 @@ import {
   Calendar,
   LayoutDashboard,
   LogOut,
-  MapPin,
   MessageSquare,
   Store,
   UtensilsCrossed,
@@ -60,9 +59,8 @@ const userInitials = computed(() => StringFormatUtil.getInitials(userName.value)
 // Selectors
 const clientNavItems = [
   { label: 'Restaurantes', to: '/restaurants', icon: UtensilsCrossed },
-  { label: 'Mapa', to: '/map', icon: MapPin },
-  { label: 'Mis Reservas', to: '/my-reservations', icon: Calendar },
-  { label: 'Mis Reseñas', to: '/my-reviews', icon: MessageSquare },
+  { label: 'Mis Reservas', to: '/reservations', icon: Calendar },
+  { label: 'Mis Reseñas', to: '/reviews', icon: MessageSquare },
 ];
 
 const adminNavItems = [
@@ -112,7 +110,7 @@ async function handleLogout(): Promise<void> {
         :to="item.to"
         class="flex items-center gap-3.5 px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-150"
         :class="
-          route.path === item.to || (item.to === '/restaurants' && route.path === '/')
+          route.path === item.to
             ? 'bg-[#1E3A2B] text-white shadow-sm font-semibold'
             : 'text-stone-400 hover:bg-[#162D20] hover:text-white'
         "
@@ -120,11 +118,7 @@ async function handleLogout(): Promise<void> {
         <component
           :is="item.icon"
           :size="18"
-          :class="
-            route.path === item.to || (item.to === '/restaurants' && route.path === '/')
-              ? 'text-white'
-              : 'text-stone-400'
-          "
+          :class="route.path === item.to ? 'text-white' : 'text-stone-400'"
         />
         <span>{{ item.label }}</span>
       </RouterLink>

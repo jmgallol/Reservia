@@ -7,7 +7,6 @@ import BaseModalComponent from '@/components/common/BaseModalComponent.vue';
 import HeaderComponent from '@/components/layout/HeaderComponent.vue';
 import SidebarComponent from '@/components/layout/SidebarComponent.vue';
 import StatusBadgeComponent from '@/components/common/StatusBadgeComponent.vue';
-
 import type { ReservationStatus } from '@/interfaces/ReservationInterface';
 
 // Reactive state

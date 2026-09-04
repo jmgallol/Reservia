@@ -33,7 +33,7 @@ async function handleLogin(): Promise<void> {
     return;
   }
 
-  const destination = user.role === 'admin' ? '/admin/dashboard' : '/my-reservations';
+  const destination = user.role === 'admin' ? '/admin/dashboard' : '/restaurants';
   await router.push(destination);
 }
 </script>

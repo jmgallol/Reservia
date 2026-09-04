@@ -1,8 +1,8 @@
 <script setup lang="ts">
 // External imports
+import { Minus, Plus } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { Minus, Plus } from 'lucide-vue-next';
 
 // Internal imports
 import type { CreateReservationDTO } from '@/dtos/CreateReservationDTO';
@@ -10,11 +10,13 @@ import { AuthService } from '@/services/AuthService';
 import { ReservationService } from '@/services/ReservationService';
 
 // Props
-const props = defineProps<{
+interface Props {
   restaurantId: number;
-}>();
+}
 
-// Non-reactive state
+const props = defineProps<Props>();
+
+// Variables
 const router = useRouter();
 
 // Reactive state
@@ -37,16 +39,16 @@ const handleConfirmReservation = () => {
   };
 
   ReservationService.create(reservationDTO);
-  router.push('/my-reservations');
-};
+  router.push('/reservations');
+}
 
-const decreaseGuests = () => {
+function decreaseGuests(): void {
   if (guests.value > 1) guests.value--;
-};
+}
 
-const increaseGuests = () => {
+function increaseGuests(): void {
   if (guests.value < 20) guests.value++;
-};
+}
 </script>
 
 <template>

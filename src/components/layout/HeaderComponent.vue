@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// Imports
+// External imports
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 
@@ -27,7 +27,6 @@ const headerText = computed(() => {
   }
 
   switch (route.path) {
-    case '/':
     case '/restaurants':
       return {
         title: 'Restaurantes',
@@ -38,12 +37,12 @@ const headerText = computed(() => {
         title: 'Mapa Gastronómico',
         subtitle: 'Explora restaurantes cercanos en tu ciudad',
       };
-    case '/my-reservations':
+    case '/reservations':
       return {
         title: 'Mis Reservas',
         subtitle: 'Consulta y gestiona tus reservas confirmadas y pendientes',
       };
-    case '/my-reviews':
+    case '/reviews':
       return {
         title: 'Mis Reseñas',
         subtitle: 'Opiniones y calificaciones que has compartido',

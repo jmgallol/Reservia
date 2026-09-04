@@ -1,10 +1,12 @@
 export type UserRole = 'client' | 'admin';
+export type UserStatus = 'active' | 'inactive';
 
 export interface UserInterface {
   id: number;
   name: string;
   email: string;
-  phone: string;
   password: string;
+  phone: string;
   role: UserRole;
+  status?: UserStatus;
 }

@@ -1,6 +1,6 @@
 import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
 
-export const restaurantSeedData: RestaurantInterface[] = [
+export const restaurantSeeder: RestaurantInterface[] = [
   {
     id: 1,
     name: 'La Trattoria Di Roma',

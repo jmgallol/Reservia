@@ -12,10 +12,12 @@ import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
 
 import { RestaurantService } from '@/services/RestaurantService';
 
+// Variables
+const router = useRouter();
+
 // Reactive state
 const selectedCity = ref('Todas');
 const selectedCategory = ref('Todas');
-const router = useRouter();
 
 // Computed
 const allRestaurants = computed(() => RestaurantService.getAll());
@@ -45,10 +47,6 @@ const categories = [
 ];
 
 // Methods
-function handleViewDetails(id: number): void {
-  router.push(`/restaurants/${id}`);
-}
-
 function handleReserve(id: number): void {
   router.push(`/restaurants/${id}`);
 }
@@ -144,12 +142,6 @@ function handleReserve(id: number): void {
                   {{ restaurant.name }}
                 </h2>
 
-                <div class="flex items-center gap-3 text-xs text-stone-500 mt-1">
-                  <span>📍 {{ restaurant.city }}</span>
-                  <span>·</span>
-                  <span>🕒 12:00–22:00</span>
-                </div>
-
                 <div class="flex items-center gap-2 mt-2">
                   <StarRatingComponent
                     :rating="restaurant.rating ?? 4.8"
@@ -163,17 +155,10 @@ function handleReserve(id: number): void {
               </div>
 
               <!-- Buttons -->
-              <div class="grid grid-cols-2 gap-2.5 pt-3 border-t border-stone-100">
+              <div class="flex justify-center pt-3 border-t border-stone-100">
                 <button
                   type="button"
-                  class="py-2.5 px-3 rounded-full border border-stone-300 text-stone-700 hover:bg-stone-50 text-xs font-semibold transition-colors cursor-pointer text-center"
-                  @click="handleViewDetails(restaurant.id)"
-                >
-                  Ver detalles
-                </button>
-                <button
-                  type="button"
-                  class="py-2.5 px-3 rounded-full bg-[#C8552A] hover:bg-[#b54a22] text-white text-xs font-semibold shadow-xs transition-colors cursor-pointer text-center"
+                  class="py-2.5 px-8 rounded-full bg-[#C8552A] hover:bg-[#b54a22] text-white text-xs font-semibold shadow-xs transition-colors cursor-pointer text-center"
                   @click="handleReserve(restaurant.id)"
                 >
                   Reservar

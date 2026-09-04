@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// Imports
+// External imports
 import { RouterView } from 'vue-router';
 </script>
 
