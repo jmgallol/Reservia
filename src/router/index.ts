@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import AdminView from '../views/AdminView.vue';
 import AuthView from '../views/AuthView.vue';
 import HomeView from '../views/HomeView.vue';
+import MapView from '../views/MapView.vue';
 import ReservationView from '../views/ReservationView.vue';
 import RestaurantShowView from '../views/RestaurantShowView.vue';
 
@@ -18,6 +19,7 @@ const router = createRouter({
     { path: '/about', name: 'about', component: HomeView, meta: { title: 'Acerca de' } },
     { path: '/auth', name: 'auth', component: AuthView, meta: { title: 'Autenticación' } },
     // Client routes (Protected)
+    { path: '/map', name: 'map', component: MapView, meta: { title: 'Mapa', requiresAuth: true, role: 'client' }, },
     { path: '/my-reservations', name: 'my-reservations', component: ReservationView, meta: { title: 'Mis Reservas', requiresAuth: true, role: 'client' }, },
 
     // Admin routes (Protected)
