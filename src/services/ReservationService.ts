@@ -19,6 +19,11 @@ export class ReservationService {
     return store.reservations.filter((r) => r.status === status);
   }
 
+  static getByRestaurantId(restaurantId: number): ReservationInterface[] {
+    const store = useReservationStore();
+    return store.reservations.filter((r) => r.restaurantId === restaurantId);
+  }
+
   static create(dto: CreateReservationDTO): ReservationInterface {
     const store = useReservationStore();
     const nextId =
@@ -28,8 +33,6 @@ export class ReservationService {
       id: nextId,
       restaurantId: dto.restaurantId,
       userId: dto.userId ?? 0,
-      clientName: dto.clientName,
-      clientEmail: dto.clientEmail ?? '',
       reservationDate: dto.reservationDate,
       reservationTime: dto.reservationTime,
       numberOfPeople: dto.numberOfPeople,

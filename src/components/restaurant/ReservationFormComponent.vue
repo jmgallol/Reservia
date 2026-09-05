@@ -31,8 +31,6 @@ function handleConfirmReservation(): void {
   const reservationDTO: CreateReservationDTO = {
     restaurantId: props.restaurantId,
     userId: user?.id ?? 0,
-    clientName: user?.name,
-    clientEmail: user?.email,
     reservationDate: reservationDate.value,
     reservationTime: reservationTime.value,
     numberOfPeople: guests.value,
