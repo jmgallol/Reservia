@@ -52,7 +52,9 @@ const filteredReservations = computed<ReservationInterface[]>(() => {
       if (selectedPeople.value === '7+') {
         matchesPeople = r.numberOfPeople >= 7;
       } else {
-        const [min, max] = selectedPeople.value.split('-').map(Number);
+        const parts = selectedPeople.value.split('-').map(Number);
+        const min = parts[0] ?? 0;
+        const max = parts[1] ?? 0;
         matchesPeople = r.numberOfPeople >= min && r.numberOfPeople <= max;
       }
     }
