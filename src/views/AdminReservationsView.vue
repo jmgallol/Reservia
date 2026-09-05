@@ -43,24 +43,12 @@ const restaurantReservations = computed<ReservationInterface[]>(() => {
 });
 
 const filteredReservations = computed<ReservationInterface[]>(() => {
-  return restaurantReservations.value.filter((r) => {
-    const matchesStatus =
-      selectedStatus.value === 'Todas' || r.status === selectedStatus.value;
-
-    let matchesPeople = true;
-    if (selectedPeople.value !== 'Todos') {
-      if (selectedPeople.value === '7+') {
-        matchesPeople = r.numberOfPeople >= 7;
-      } else {
-        const parts = selectedPeople.value.split('-').map(Number);
-        const min = parts[0] ?? 0;
-        const max = parts[1] ?? 0;
-        matchesPeople = r.numberOfPeople >= min && r.numberOfPeople <= max;
-      }
-    }
-
-    return matchesStatus && matchesPeople;
-  });
+  if (!currentUser.value?.restaurantId) return [];
+  return ReservationService.filter(
+    currentUser.value.restaurantId,
+    selectedStatus.value,
+    selectedPeople.value
+  );
 });
 
 // Chart data computed from filtered reservations

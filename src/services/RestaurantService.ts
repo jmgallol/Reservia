@@ -1,5 +1,5 @@
 // Internal imports
-import type { FilterRestaurantsDTO } from '@/dtos/FilterRestaurantsDTO';
+
 import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
 import { ReviewService } from '@/services/ReviewService';
 import { useRestaurantStore } from '@/stores/restaurantsStore';
@@ -28,9 +28,9 @@ export class RestaurantService {
     return ['Todas', ...Array.from(new Set(categoryNames)).sort((a, b) => a.localeCompare(b))];
   }
 
-  static filter(dto: FilterRestaurantsDTO): RestaurantInterface[] {
+  static filter(query: string = '', city: string = 'Todas', category: string = 'Todas'): RestaurantInterface[] {
     const store = useRestaurantStore();
-    const normalizedQuery = StringFormatUtil.normalizeSearchText(dto.query);
+    const normalizedQuery = StringFormatUtil.normalizeSearchText(query);
 
     return store.restaurants.filter((restaurant) => {
       const normalizedName = StringFormatUtil.normalizeSearchText(restaurant.name);
@@ -44,11 +44,11 @@ export class RestaurantService {
         normalizedCategory.includes(normalizedQuery);
 
       const matchesCity =
-        dto.city === 'Todas' || restaurant.city.toLowerCase() === dto.city.toLowerCase();
+        city === 'Todas' || restaurant.city.toLowerCase() === city.toLowerCase();
 
       const matchesCategory =
-        dto.category === 'Todas' ||
-        restaurant.category.toLowerCase() === dto.category.toLowerCase();
+        category === 'Todas' ||
+        restaurant.category.toLowerCase() === category.toLowerCase();
 
       return matchesSearch && matchesCity && matchesCategory;
     });
