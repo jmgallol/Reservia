@@ -1,12 +1,16 @@
 <script setup lang="ts">
 // External imports
 import Chart from 'chart.js/auto';
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
 // Internal imports
 import KpiGridComponent from '@/components/dashboard/KpiGridComponent.vue';
 import HeaderComponent from '@/components/layout/HeaderComponent.vue';
 import SidebarComponent from '@/components/layout/SidebarComponent.vue';
+
+import { AuthService } from '@/services/AuthService';
+import { ReservationService } from '@/services/ReservationService';
+import { DateFormatUtil } from '@/utils/DateFormatUtil';
 
 // Variables
 let chartInstance: Chart | null = null;
@@ -22,20 +26,80 @@ const periodOptions = [
   { value: 'this_month', label: 'Este mes' },
 ];
 
-const periodDataMap = {
-  '6_months': {
-    labels: ['Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul'],
-    data: [38, 45, 62, 80, 95, 72],
-  },
-  '1_year': {
-    labels: ['Ago', 'Sep', 'Oct', 'Nov', 'Dic', 'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul'],
-    data: [28, 35, 42, 50, 65, 48, 38, 45, 62, 80, 95, 72],
-  },
-  this_month: {
-    labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'],
-    data: [15, 22, 28, 18],
-  },
-};
+const chartData = computed(() => {
+  const currentUser = AuthService.getCurrentUser();
+  const reservations = currentUser?.restaurantId ? ReservationService.getByRestaurantId(currentUser.restaurantId) : [];
+  
+  const now = new Date();
+  const monthNames = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+
+  if (selectedPeriod.value === '6_months') {
+    const labels: string[] = [];
+    const data = [0, 0, 0, 0, 0, 0];
+    
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const monthName = monthNames[d.getMonth()];
+      if (monthName) labels.push(monthName);
+    }
+    
+    reservations.forEach((r) => {
+      const date = DateFormatUtil.parseDate(r.reservationDate);
+      if (!date) return;
+      
+      const diffMonths = (now.getFullYear() - date.getFullYear()) * 12 + now.getMonth() - date.getMonth();
+      if (diffMonths >= 0 && diffMonths < 6) {
+        const idx = 5 - diffMonths;
+        data[idx] = (data[idx] ?? 0) + 1;
+      }
+    });
+    
+    return { labels, data };
+  }
+  
+  if (selectedPeriod.value === '1_year') {
+    const labels: string[] = [];
+    const data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    
+    for (let i = 11; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const monthName = monthNames[d.getMonth()];
+      if (monthName) labels.push(monthName);
+    }
+    
+    reservations.forEach((r) => {
+      const date = DateFormatUtil.parseDate(r.reservationDate);
+      if (!date) return;
+      
+      const diffMonths = (now.getFullYear() - date.getFullYear()) * 12 + now.getMonth() - date.getMonth();
+      if (diffMonths >= 0 && diffMonths < 12) {
+        const idx = 11 - diffMonths;
+        data[idx] = (data[idx] ?? 0) + 1;
+      }
+    });
+    
+    return { labels, data };
+  }
+  
+  // this_month
+  const labels = ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'];
+  const data = [0, 0, 0, 0];
+  
+  reservations.forEach((r) => {
+    const date = DateFormatUtil.parseDate(r.reservationDate);
+    if (!date) return;
+    
+    if (date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth()) {
+      const day = date.getDate();
+      if (day <= 7) data[0] = (data[0] ?? 0) + 1;
+      else if (day <= 14) data[1] = (data[1] ?? 0) + 1;
+      else if (day <= 21) data[2] = (data[2] ?? 0) + 1;
+      else data[3] = (data[3] ?? 0) + 1;
+    }
+  });
+  
+  return { labels, data };
+});
 
 // Methods
 function renderChart(): void {
@@ -45,34 +109,37 @@ function renderChart(): void {
     chartInstance.destroy();
   }
 
-  const current = periodDataMap[selectedPeriod.value];
+  const current = chartData.value;
 
   chartInstance = new Chart(chartCanvasRef.value, {
-    type: 'line',
+    type: 'bar',
     data: {
       labels: current.labels,
       datasets: [
         {
           label: 'Reservas',
           data: current.data,
-          borderColor: '#1A3D2B',
-          backgroundColor: 'rgba(26, 61, 43, 0.08)',
-          tension: 0.45,
-          fill: true,
+          backgroundColor: '#1A3D2B',
+          borderRadius: 4,
         },
       ],
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false,
+        },
+      },
     },
   });
 }
 
 // Watchers
-watch(selectedPeriod, () => {
+watch(chartData, () => {
   renderChart();
-});
+}, { deep: true });
 
 // Lifecycle
 onMounted(() => {

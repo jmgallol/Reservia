@@ -29,16 +29,26 @@ export class ReservationService {
     return store.reservations.filter((r) => r.restaurantId === restaurantId);
   }
 
+  static getByUserId(userId: number): ReservationInterface[] {
+    const store = useReservationStore();
+    return store.reservations.filter((r) => r.userId === userId);
+  }
+
+  static filterByClient(userId: number, status: string): ReservationInterface[] {
+    const store = useReservationStore();
+    return store.reservations.filter((r) => {
+      if (r.userId !== userId) return false;
+      return status === 'Todas' || r.status === status;
+    });
+  }
+
   static filter(restaurantId: number, status: string, peopleRange: string): ReservationInterface[] {
     const store = useReservationStore();
     return store.reservations.filter((r) => {
-      // First filter by restaurant
       if (r.restaurantId !== restaurantId) return false;
-
-      // Then by status
+      
       const matchesStatus = status === 'Todas' || r.status === status;
 
-      // Then by people range
       let matchesPeople = true;
       if (peopleRange !== 'Todos') {
         if (peopleRange === '7+') {

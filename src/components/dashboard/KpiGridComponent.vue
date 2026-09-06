@@ -4,13 +4,17 @@ import { AlertCircle, Calendar, Check, Star } from 'lucide-vue-next';
 import { computed } from 'vue';
 
 // Internal imports
+import { AuthService } from '@/services/AuthService';
 import { ReservationService } from '@/services/ReservationService';
 import { ReviewService } from '@/services/ReviewService';
 
 // Computed
 const kpiCards = computed(() => {
-  const reservations = ReservationService.getAll();
-  const reviews = ReviewService.getAll();
+  const currentUser = AuthService.getCurrentUser();
+  const restaurantId = currentUser?.restaurantId;
+
+  const reservations = restaurantId ? ReservationService.getByRestaurantId(restaurantId) : [];
+  const reviews = restaurantId ? ReviewService.getByRestaurantId(restaurantId) : [];
 
   const total = reservations.length;
   const confirmed = reservations.filter((r) => r.status === 'confirmed').length;

@@ -38,15 +38,14 @@ const currentUserReservations = computed<ReservationInterface[]>(() => {
   const currentUser = AuthService.getCurrentUser();
   if (!currentUser) return [];
 
-  return ReservationService.getAll().filter((reservation) => reservation.userId === currentUser.id);
+  return ReservationService.getByUserId(currentUser.id);
 });
 
 const visibleReservations = computed<ReservationInterface[]>(() => {
-  if (selectedStatus.value === 'Todas') return currentUserReservations.value;
+  const currentUser = AuthService.getCurrentUser();
+  if (!currentUser) return [];
 
-  return currentUserReservations.value.filter(
-    (reservation) => reservation.status === selectedStatus.value,
-  );
+  return ReservationService.filterByClient(currentUser.id, selectedStatus.value);
 });
 
 const statusChartData = computed<number[]>(() =>
