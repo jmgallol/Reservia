@@ -3,13 +3,15 @@ import { createRouter, createWebHistory, type Router } from 'vue-router';
 
 // Internal imports
 import { AuthService } from '@/services/AuthService';
-import AdminView from '@/views/AdminView.vue';
-import AuthView from '@/views/AuthView.vue';
-import HomeView from '@/views/HomeView.vue';
-import MapView from '@/views/MapView.vue';
-import ReservationView from '@/views/ReservationView.vue';
-import RestaurantShowView from '@/views/RestaurantShowView.vue';
-import ReviewView from '@/views/ReviewView.vue';
+import AdminReservationsView from '@/views/admin/AdminReservationsView.vue';
+import AdminRestaurantView from '@/views/admin/AdminRestaurantView.vue';
+import AdminView from '@/views/admin/AdminView.vue';
+import AuthView from '@/views/auth/AuthView.vue';
+import HomeView from '@/views/client/HomeView.vue';
+import MapView from '@/views/client/MapView.vue';
+import ReservationView from '@/views/client/ReservationView.vue';
+import RestaurantShowView from '@/views/client/RestaurantShowView.vue';
+import ReviewView from '@/views/client/ReviewView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -72,13 +74,13 @@ const router = createRouter({
     {
       path: '/admin/restaurant',
       name: 'admin-restaurant',
-      component: AdminView,
+      component: AdminRestaurantView,
       meta: { title: 'Mi Restaurante', requiresAuth: true, requiresAdmin: true },
     },
     {
       path: '/admin/reservations',
       name: 'admin-reservations',
-      component: AdminView,
+      component: AdminReservationsView,
       meta: { title: 'Reservas', requiresAuth: true, requiresAdmin: true },
     },
     {

@@ -3,6 +3,10 @@
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 
+// Internal imports
+import { AuthService } from '@/services/AuthService';
+import { RestaurantService } from '@/services/RestaurantService';
+
 // Props
 interface Props {
   title?: string;
@@ -47,15 +51,24 @@ const headerText = computed(() => {
         title: 'Mis Reseñas',
         subtitle: 'Opiniones y calificaciones que has compartido',
       };
-    case '/admin/dashboard':
+    case '/admin/dashboard': {
+      const user = AuthService.getCurrentUser();
+      let restaurantName = 'Mi Restaurante';
+      if (user?.restaurantId) {
+        const restaurant = RestaurantService.getById(user.restaurantId);
+        if (restaurant) {
+          restaurantName = restaurant.name;
+        }
+      }
       return {
-        title: 'Dashboard — La Toscana',
+        title: `Dashboard — ${restaurantName}`,
         subtitle: 'Estadísticas del restaurante',
       };
+    }
     case '/admin/restaurant':
       return {
         title: 'Mi Restaurante',
-        subtitle: 'Administración y datos de tu establecimiento',
+        subtitle: 'Administra la información pública de tu establecimiento',
       };
     case '/admin/reservations':
       return {

@@ -26,11 +26,11 @@ const cities = computed<string[]>(() => RestaurantService.getCities());
 const categories = computed<string[]>(() => RestaurantService.getCategories());
 
 const filteredRestaurants = computed<RestaurantInterface[]>(() => {
-  return RestaurantService.filter({
-    query: searchQuery.value,
-    city: selectedCity.value,
-    category: selectedCategory.value,
-  });
+  return RestaurantService.filter(
+    searchQuery.value,
+    selectedCity.value,
+    selectedCategory.value
+  );
 });
 
 // Métodos

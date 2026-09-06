@@ -44,8 +44,10 @@ const activeRole = computed<UserRole>(() => {
 const isAdmin = computed(() => activeRole.value === 'admin');
 
 const currentRestaurant = computed(() => {
-  const restaurants = RestaurantService.getAll();
-  return restaurants[0] ?? { name: 'La Toscana' };
+  if (currentUser.value?.restaurantId) {
+    return RestaurantService.getById(currentUser.value.restaurantId) ?? { name: 'La Toscana' };
+  }
+  return { name: 'La Toscana' };
 });
 
 const userName = computed(() => {

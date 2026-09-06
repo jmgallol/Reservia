@@ -1,11 +1,11 @@
 import type { UserInterface } from '@/interfaces/UserInterface';
 
-import { userSeeder } from '@/seeders/userseeder';
 import { useAuthStore } from '@/stores/authStore';
 
 export class AuthService {
   static getUsers(): UserInterface[] {
-    return userSeeder;
+    const store = useAuthStore();
+    return store.users;
   }
 
   static login(email: string, password: string): UserInterface | undefined {
