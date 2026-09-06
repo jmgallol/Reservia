@@ -88,6 +88,10 @@ export class ReservationService {
     store.updateReservation(id, updates);
   }
 
+  static canManageReservation(status: ReservationStatus): boolean {
+    return status === 'pending' || status === 'confirmed';
+  }
+
   static delete(id: number): void {
     const store = useReservationStore();
     const index = store.reservations.findIndex((r) => r.id === id);
