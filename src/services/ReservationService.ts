@@ -24,6 +24,32 @@ export class ReservationService {
     return store.reservations.filter((r) => r.restaurantId === restaurantId);
   }
 
+  static filter(restaurantId: number, status: string, peopleRange: string): ReservationInterface[] {
+    const store = useReservationStore();
+    return store.reservations.filter((r) => {
+      // First filter by restaurant
+      if (r.restaurantId !== restaurantId) return false;
+
+      // Then by status
+      const matchesStatus = status === 'Todas' || r.status === status;
+
+      // Then by people range
+      let matchesPeople = true;
+      if (peopleRange !== 'Todos') {
+        if (peopleRange === '7+') {
+          matchesPeople = r.numberOfPeople >= 7;
+        } else {
+          const parts = peopleRange.split('-').map(Number);
+          const min = parts[0] ?? 0;
+          const max = parts[1] ?? 0;
+          matchesPeople = r.numberOfPeople >= min && r.numberOfPeople <= max;
+        }
+      }
+
+      return matchesStatus && matchesPeople;
+    });
+  }
+
   static create(dto: CreateReservationDTO): ReservationInterface {
     const store = useReservationStore();
     const nextId =

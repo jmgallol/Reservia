@@ -3,15 +3,15 @@ import { createRouter, createWebHistory, type Router } from 'vue-router';
 
 // Internal imports
 import { AuthService } from '@/services/AuthService';
-import AdminReservationsView from '@/views/AdminReservationsView.vue';
-import AdminRestaurantView from '@/views/AdminRestaurantView.vue';
-import AdminView from '@/views/AdminView.vue';
-import AuthView from '@/views/AuthView.vue';
-import HomeView from '@/views/HomeView.vue';
-import MapView from '@/views/MapView.vue';
-import ReservationView from '@/views/ReservationView.vue';
-import RestaurantShowView from '@/views/RestaurantShowView.vue';
-import ReviewView from '@/views/ReviewView.vue';
+import AdminReservationsView from '@/views/admin/AdminReservationsView.vue';
+import AdminRestaurantView from '@/views/admin/AdminRestaurantView.vue';
+import AdminView from '@/views/admin/AdminView.vue';
+import AuthView from '@/views/auth/AuthView.vue';
+import HomeView from '@/views/client/HomeView.vue';
+import MapView from '@/views/client/MapView.vue';
+import ReservationView from '@/views/client/ReservationView.vue';
+import RestaurantShowView from '@/views/client/RestaurantShowView.vue';
+import ReviewView from '@/views/client/ReviewView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
