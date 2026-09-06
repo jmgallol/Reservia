@@ -3,6 +3,7 @@
 import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 // Internal imports
 import HeaderComponent from '@/components/layout/HeaderComponent.vue';
@@ -14,6 +15,8 @@ import { RestaurantService } from '@/services/RestaurantService';
 
 // Variables
 let mapInstance: L.Map | null = null;
+const restaurantMarkers = new Map<number, L.Marker>();
+const router = useRouter();
 
 // Reactive state
 const mapContainerRef = ref<HTMLDivElement | null>(null);
@@ -26,6 +29,37 @@ const medellinRestaurants = computed<RestaurantInterface[]>(() =>
 );
 
 // Methods
+function getAverageRating(restaurant: RestaurantInterface): string {
+  return RestaurantService.calculateAverageRating(restaurant.id).toFixed(1);
+}
+
+function createRestaurantPopup(restaurant: RestaurantInterface): HTMLElement {
+  const container = document.createElement('div');
+  container.className = 'space-y-2 text-sm text-stone-700';
+
+  const name = document.createElement('h3');
+  name.className = 'font-bold text-stone-900';
+  name.textContent = restaurant.name;
+
+  const category = document.createElement('p');
+  category.textContent = restaurant.category;
+
+  const rating = document.createElement('p');
+  rating.textContent = `Calificación promedio: ${RestaurantService.calculateAverageRating(restaurant.id).toFixed(1)}`;
+
+  const detailButton = document.createElement('button');
+  detailButton.type = 'button';
+  detailButton.className = 'text-sm font-semibold text-[#8B4513] hover:text-[#6B3410]';
+  detailButton.textContent = 'Ver restaurante';
+  detailButton.addEventListener('click', () => {
+    void router.push(`/restaurants/${restaurant.id}`);
+  });
+
+  container.append(name, category, rating, detailButton);
+
+  return container;
+}
+
 function initializeMap(): void {
   if (!mapContainerRef.value || mapInstance) return;
 
@@ -38,11 +72,28 @@ function initializeMap(): void {
 
   medellinRestaurants.value.forEach((restaurant) => {
     if (restaurant.latitude !== undefined && restaurant.longitude !== undefined) {
-      L.marker([restaurant.latitude, restaurant.longitude], {
+      const marker = L.marker([restaurant.latitude, restaurant.longitude], {
         title: restaurant.name,
-      }).addTo(map);
+      })
+        .bindPopup(createRestaurantPopup(restaurant))
+        .addTo(map);
+
+      restaurantMarkers.set(restaurant.id, marker);
     }
   });
+}
+
+function selectRestaurant(restaurant: RestaurantInterface): void {
+  if (!mapInstance || restaurant.latitude === undefined || restaurant.longitude === undefined) {
+    return;
+  }
+
+  const marker = restaurantMarkers.get(restaurant.id);
+  if (!marker) return;
+
+  const coordinates: L.LatLngExpression = [restaurant.latitude, restaurant.longitude];
+  mapInstance.setView(coordinates, 15);
+  marker.openPopup();
 }
 
 // Lifecycle
@@ -55,6 +106,8 @@ onUnmounted(() => {
     mapInstance.remove();
     mapInstance = null;
   }
+
+  restaurantMarkers.clear();
 });
 </script>
 
@@ -92,11 +145,38 @@ onUnmounted(() => {
           </span>
         </div>
 
-        <div
-          ref="mapContainerRef"
-          class="min-h-[520px] rounded-2xl border border-stone-200/80 bg-white shadow-xs overflow-hidden"
-          aria-label="Mapa de restaurantes en Medellín"
-        />
+        <div class="grid gap-6 lg:grid-cols-[320px_minmax(0,1fr)]">
+          <aside
+            class="rounded-2xl border border-stone-200/80 bg-white shadow-xs overflow-hidden"
+            aria-label="Lista de restaurantes en Medellín"
+          >
+            <div class="divide-y divide-stone-100">
+              <button
+                v-for="restaurant in medellinRestaurants"
+                :key="restaurant.id"
+                type="button"
+                class="w-full px-5 py-4 text-left transition-colors hover:bg-stone-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C8552A] focus-visible:ring-inset"
+                @click="selectRestaurant(restaurant)"
+              >
+                <span class="block text-sm font-bold text-stone-900">
+                  {{ restaurant.name }}
+                </span>
+                <span class="mt-1 block text-xs font-medium text-stone-500">
+                  {{ restaurant.category }}
+                </span>
+                <span class="mt-2 block text-xs font-semibold text-stone-700">
+                  Calificación promedio: {{ getAverageRating(restaurant) }}
+                </span>
+              </button>
+            </div>
+          </aside>
+
+          <div
+            ref="mapContainerRef"
+            class="min-h-[520px] rounded-2xl border border-stone-200/80 bg-white shadow-xs overflow-hidden"
+            aria-label="Mapa de restaurantes en Medellín"
+          />
+        </div>
       </main>
     </div>
   </div>
