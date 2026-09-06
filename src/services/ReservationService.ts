@@ -3,6 +3,11 @@ import type { CreateReservationDTO } from '@/dtos/CreateReservationDTO';
 import type { ReservationInterface, ReservationStatus } from '@/interfaces/ReservationInterface';
 import { useReservationStore } from '@/stores/reservationsStore';
 
+type UpdateReservationDTO = Pick<
+  ReservationInterface,
+  'reservationDate' | 'reservationTime' | 'numberOfPeople' | 'specialRequest'
+>;
+
 export class ReservationService {
   static getAll(): ReservationInterface[] {
     const store = useReservationStore();
@@ -28,8 +33,6 @@ export class ReservationService {
       id: nextId,
       restaurantId: dto.restaurantId,
       userId: dto.userId ?? 0,
-      clientName: dto.clientName,
-      clientEmail: dto.clientEmail ?? '',
       reservationDate: dto.reservationDate,
       reservationTime: dto.reservationTime,
       numberOfPeople: dto.numberOfPeople,
@@ -47,6 +50,11 @@ export class ReservationService {
     if (index !== -1 && store.reservations[index]) {
       store.reservations[index].status = status;
     }
+  }
+
+  static updateReservation(id: number, updates: UpdateReservationDTO): void {
+    const store = useReservationStore();
+    store.updateReservation(id, updates);
   }
 
   static delete(id: number): void {
