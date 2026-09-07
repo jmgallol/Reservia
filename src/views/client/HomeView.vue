@@ -1,9 +1,8 @@
-<script setup lang="ts">
-// External imports
+﻿<script setup lang="ts">
+// Imports
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-// Internal imports
 import HeaderComponent from '@/components/layout/HeaderComponent.vue';
 import SidebarComponent from '@/components/layout/SidebarComponent.vue';
 import StarRatingComponent from '@/components/restaurant/StarRatingComponent.vue';
@@ -15,7 +14,7 @@ import { RestaurantService } from '@/services/RestaurantService';
 // Variables
 const router = useRouter();
 
-// Variables reactivas
+// Reactive variables
 const searchQuery = ref('');
 const selectedCity = ref('Todas');
 const selectedCategory = ref('Todas');
@@ -33,7 +32,7 @@ const filteredRestaurants = computed<RestaurantInterface[]>(() => {
   );
 });
 
-// Métodos
+// Methods
 function clearFilters(): void {
   searchQuery.value = '';
   selectedCity.value = 'Todas';

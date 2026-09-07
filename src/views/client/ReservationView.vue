@@ -1,8 +1,7 @@
-<script setup lang="ts">
-// External imports
+﻿<script setup lang="ts">
+// Imports
 import { computed, ref } from 'vue';
 
-// Internal imports
 import StatusBadgeComponent from '@/components/common/StatusBadgeComponent.vue';
 import DoughnutChartComponent from '@/components/dashboard/DoughnutChartComponent.vue';
 import HeaderComponent from '@/components/layout/HeaderComponent.vue';
@@ -28,7 +27,7 @@ const statusOptions: { label: string; value: 'Todas' | ReservationStatus }[] = [
   { label: 'Canceladas', value: 'cancelled' },
 ];
 
-// Reactive state
+// Reactive variables
 const selectedStatus = ref<'Todas' | ReservationStatus>('Todas');
 const showEditModal = ref(false);
 const selectedReservation = ref<ReservationInterface | null>(null);

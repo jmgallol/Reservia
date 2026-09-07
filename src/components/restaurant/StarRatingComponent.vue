@@ -1,5 +1,5 @@
-<script setup lang="ts">
-// External imports
+﻿<script setup lang="ts">
+// Imports
 import { Star } from 'lucide-vue-next';
 import { ref } from 'vue';
 
@@ -23,7 +23,7 @@ const emit = defineEmits<{
   'update:rating': [rating: number];
 }>();
 
-// Reactive state
+// Reactive variables
 const hoverRating = ref(0);
 
 // Methods

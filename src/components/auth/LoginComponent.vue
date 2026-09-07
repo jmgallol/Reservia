@@ -1,16 +1,15 @@
-<script setup lang="ts">
-// External imports
+﻿<script setup lang="ts">
+// Imports
 import { Eye, EyeOff, Lock, Mail } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-// Internal imports
 import { AuthService } from '@/services/AuthService';
 
 // Variables
 const router = useRouter();
 
-// Reactive state
+// Reactive variables
 const email = ref('');
 const errorMessage = ref('');
 const password = ref('');

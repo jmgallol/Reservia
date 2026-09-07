@@ -1,9 +1,8 @@
-<script setup lang="ts">
-// External imports
+﻿<script setup lang="ts">
+// Imports
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 
-// Internal imports
 import { AuthService } from '@/services/AuthService';
 import { RestaurantService } from '@/services/RestaurantService';
 

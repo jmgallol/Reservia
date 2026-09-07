@@ -1,9 +1,8 @@
-<script setup lang="ts">
-// External imports
+﻿<script setup lang="ts">
+// Imports
 import Chart from 'chart.js/auto';
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
-// Internal imports
 import KpiGridComponent from '@/components/dashboard/KpiGridComponent.vue';
 import HeaderComponent from '@/components/layout/HeaderComponent.vue';
 import SidebarComponent from '@/components/layout/SidebarComponent.vue';
@@ -15,7 +14,7 @@ import { DateFormatUtil } from '@/utils/DateFormatUtil';
 // Variables
 let chartInstance: Chart | null = null;
 
-// Reactive state
+// Reactive variables
 const chartCanvasRef = ref<HTMLCanvasElement | null>(null);
 const selectedPeriod = ref<'6_months' | '1_year' | 'this_month'>('6_months');
 

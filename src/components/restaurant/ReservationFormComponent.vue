@@ -1,10 +1,9 @@
-<script setup lang="ts">
-// External imports
+﻿<script setup lang="ts">
+// Imports
 import { Minus, Plus } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-// Internal imports
 import type { CreateReservationDTO } from '@/dtos/CreateReservationDTO';
 import { AuthService } from '@/services/AuthService';
 import { ReservationService } from '@/services/ReservationService';
@@ -19,7 +18,7 @@ const props = defineProps<Props>();
 // Variables
 const router = useRouter();
 
-// Reactive state
+// Reactive variables
 const reservationDate = ref('2026-07-20');
 const reservationTime = ref('19:30');
 const guests = ref(2);

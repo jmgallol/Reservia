@@ -1,8 +1,7 @@
-<script setup lang="ts">
-// External imports
+﻿<script setup lang="ts">
+// Imports
 import { ref, watch } from 'vue';
 
-// Internal imports
 import BaseModalComponent from '@/components/common/BaseModalComponent.vue';
 
 import type { ReservationInterface } from '@/interfaces/ReservationInterface';
@@ -20,7 +19,7 @@ const emit = defineEmits<{
   saved: [];
 }>();
 
-// Reactive state
+// Reactive variables
 const editReservationDate = ref('');
 const editReservationTime = ref('');
 const editNumberOfPeople = ref(1);

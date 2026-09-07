@@ -1,4 +1,4 @@
-// Internal imports
+// Imports
 import { useAuthStore } from '@/stores/authStore';
 
 export class UserService {

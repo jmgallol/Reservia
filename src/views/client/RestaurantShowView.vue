@@ -1,10 +1,9 @@
-<script setup lang="ts">
-// External imports
+﻿<script setup lang="ts">
+// Imports
 import { ChevronLeft, Clock, MapPin } from 'lucide-vue-next';
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 
-// Internal imports
 import HeaderComponent from '@/components/layout/HeaderComponent.vue';
 import ReservationFormComponent from '@/components/restaurant/ReservationFormComponent.vue';
 import SidebarComponent from '@/components/layout/SidebarComponent.vue';

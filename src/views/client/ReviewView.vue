@@ -1,8 +1,7 @@
-<script setup lang="ts">
-// External imports
+﻿<script setup lang="ts">
+// Imports
 import { computed, ref } from 'vue';
 
-// Internal imports
 import HeaderComponent from '@/components/layout/HeaderComponent.vue';
 import SidebarComponent from '@/components/layout/SidebarComponent.vue';
 import StarRatingComponent from '@/components/restaurant/StarRatingComponent.vue';
@@ -16,7 +15,7 @@ import { ReviewService } from '@/services/ReviewService';
 import { DateFormatUtil } from '@/utils/DateFormatUtil';
 import { StringFormatUtil } from '@/utils/StringFormatUtil';
 
-// Reactive state
+// Reactive variables
 const showEditModal = ref(false);
 const selectedReview = ref<ReviewInterface | null>(null);
 

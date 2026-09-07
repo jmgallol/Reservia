@@ -1,9 +1,8 @@
-<script setup lang="ts">
-// External imports
+﻿<script setup lang="ts">
+// Imports
 import { SquarePen } from 'lucide-vue-next';
 import { reactive, ref, watch } from 'vue';
 
-// Internal imports
 import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
 import { RestaurantService } from '@/services/RestaurantService';
 
@@ -14,7 +13,7 @@ interface Props {
 
 const props = defineProps<Props>();
 
-// Reactive state — form model
+// Reactive variables — form model
 const form = reactive({
   name: '',
   address: '',

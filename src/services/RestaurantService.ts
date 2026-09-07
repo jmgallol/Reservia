@@ -1,5 +1,4 @@
-// Internal imports
-
+// Imports
 import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
 import { ReviewService } from '@/services/ReviewService';
 import { useRestaurantStore } from '@/stores/restaurantsStore';
@@ -80,7 +79,9 @@ export class RestaurantService {
   static update(restaurant: RestaurantInterface): void {
     const store = useRestaurantStore();
     const index = store.restaurants.findIndex((r) => r.id === restaurant.id);
-    if (index !== -1) {
+    const existing = store.restaurants[index];
+
+    if (index !== -1 && existing) {
       store.restaurants[index] = { ...restaurant };
     }
   }

@@ -1,8 +1,7 @@
-<script setup lang="ts">
-// External imports
+﻿<script setup lang="ts">
+// Imports
 import { computed } from 'vue';
 
-// Internal imports
 import HeaderComponent from '@/components/layout/HeaderComponent.vue';
 import SidebarComponent from '@/components/layout/SidebarComponent.vue';
 import RestaurantEditFormComponent from '@/components/restaurant/RestaurantEditFormComponent.vue';

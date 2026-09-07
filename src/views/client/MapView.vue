@@ -1,11 +1,10 @@
-<script setup lang="ts">
-// External imports
+﻿<script setup lang="ts">
+// Imports
 import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-// Internal imports
 import HeaderComponent from '@/components/layout/HeaderComponent.vue';
 import SidebarComponent from '@/components/layout/SidebarComponent.vue';
 
@@ -18,7 +17,7 @@ let mapInstance: L.Map | null = null;
 const restaurantMarkers = new Map<number, L.Marker>();
 const router = useRouter();
 
-// Reactive state
+// Reactive variables
 const mapContainerRef = ref<HTMLDivElement | null>(null);
 
 // Computed

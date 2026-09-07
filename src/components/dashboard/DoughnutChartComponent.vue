@@ -1,5 +1,5 @@
-<script setup lang="ts">
-// External imports
+﻿<script setup lang="ts">
+// Imports
 import Chart from 'chart.js/auto';
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
@@ -19,7 +19,7 @@ const props = withDefaults(defineProps<Props>(), {
 // Variables
 let chartInstance: Chart | null = null;
 
-// Reactive state
+// Reactive variables
 const chartCanvasRef = ref<HTMLCanvasElement | null>(null);
 
 // Methods
