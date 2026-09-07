@@ -199,4 +199,46 @@ export const reviewSeeder: ReviewInterface[] = [
     status: 'approved',
     reviewDate: '2026-08-24T19:15:00Z',
   },
+
+  // Cliente Prueba (userId: 2)
+  {
+    id: 20,
+    restaurantId: 1,
+    userId: 2,
+    rating: 5,
+    comment:
+      'Increíble experiencia. La pasta fresca es de otro nivel y el servicio fue excepcional.',
+    status: 'approved',
+    reviewDate: '2026-08-29T20:00:00Z',
+  },
+  {
+    id: 21,
+    restaurantId: 3,
+    userId: 2,
+    rating: 4,
+    comment:
+      'El sushi estaba muy fresco y la presentación impecable. El ambiente es perfecto para una cena especial.',
+    status: 'approved',
+    reviewDate: '2026-08-27T21:00:00Z',
+  },
+  {
+    id: 22,
+    restaurantId: 5,
+    userId: 2,
+    rating: 3,
+    comment:
+      'Buena comida mediterránea pero el servicio fue un poco lento. Las tapas estuvieron bien.',
+    status: 'approved',
+    reviewDate: '2026-08-25T19:30:00Z',
+  },
+  {
+    id: 23,
+    restaurantId: 6,
+    userId: 2,
+    rating: 5,
+    comment:
+      'La fusión peruano-japonesa mejor lograda que he probado. El ceviche nikkei es imperdible.',
+    status: 'approved',
+    reviewDate: '2026-08-23T20:45:00Z',
+  },
 ];

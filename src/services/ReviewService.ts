@@ -19,6 +19,11 @@ export class ReviewService {
     return store.reviews.filter((review) => review.restaurantId === id);
   }
 
+  static getByUserId(userId: number): ReviewInterface[] {
+    const store = useReviewStore();
+    return store.reviews.filter((review) => review.userId === userId);
+  }
+
   static create(dto: CreateReviewDTO): ReviewInterface {
     const store = useReviewStore();
     const nextId = store.reviews.length > 0 ? Math.max(...store.reviews.map((r) => r.id)) + 1 : 1;

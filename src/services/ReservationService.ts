@@ -29,16 +29,26 @@ export class ReservationService {
     return store.reservations.filter((r) => r.restaurantId === restaurantId);
   }
 
+  static getByUserId(userId: number): ReservationInterface[] {
+    const store = useReservationStore();
+    return store.reservations.filter((r) => r.userId === userId);
+  }
+
+  static filterByClient(userId: number, status: string): ReservationInterface[] {
+    const store = useReservationStore();
+    return store.reservations.filter((r) => {
+      if (r.userId !== userId) return false;
+      return status === 'Todas' || r.status === status;
+    });
+  }
+
   static filter(restaurantId: number, status: string, peopleRange: string): ReservationInterface[] {
     const store = useReservationStore();
     return store.reservations.filter((r) => {
-      // First filter by restaurant
       if (r.restaurantId !== restaurantId) return false;
-
-      // Then by status
+      
       const matchesStatus = status === 'Todas' || r.status === status;
 
-      // Then by people range
       let matchesPeople = true;
       if (peopleRange !== 'Todos') {
         if (peopleRange === '7+') {
@@ -85,7 +95,17 @@ export class ReservationService {
 
   static updateReservation(id: number, updates: UpdateReservationDTO): void {
     const store = useReservationStore();
-    store.updateReservation(id, updates);
+    const index = store.reservations.findIndex((r) => r.id === id);
+    if (index !== -1 && store.reservations[index]) {
+      store.reservations[index] = {
+        ...store.reservations[index],
+        ...updates,
+      };
+    }
+  }
+
+  static canManageReservation(status: ReservationStatus): boolean {
+    return status === 'pending' || status === 'confirmed';
   }
 
   static delete(id: number): void {
