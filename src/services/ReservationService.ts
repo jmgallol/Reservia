@@ -95,7 +95,13 @@ export class ReservationService {
 
   static updateReservation(id: number, updates: UpdateReservationDTO): void {
     const store = useReservationStore();
-    store.updateReservation(id, updates);
+    const index = store.reservations.findIndex((r) => r.id === id);
+    if (index !== -1 && store.reservations[index]) {
+      store.reservations[index] = {
+        ...store.reservations[index],
+        ...updates,
+      };
+    }
   }
 
   static canManageReservation(status: ReservationStatus): boolean {
