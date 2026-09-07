@@ -5,6 +5,7 @@ import { createRouter, createWebHistory, type Router } from 'vue-router';
 import { AuthService } from '@/services/AuthService';
 import AdminReservationsView from '@/views/admin/AdminReservationsView.vue';
 import AdminRestaurantView from '@/views/admin/AdminRestaurantView.vue';
+import AdminReviewsView from '@/views/admin/AdminReviewsView.vue';
 import AdminView from '@/views/admin/AdminView.vue';
 import AuthView from '@/views/auth/AuthView.vue';
 import HomeView from '@/views/client/HomeView.vue';
@@ -40,7 +41,7 @@ const router = createRouter({
       meta: { title: 'Autenticación', guestOnly: true },
     },
 
-    // Client routes (Protected)
+    // Client routes
     {
       path: '/reservations',
       name: 'reservations',
@@ -60,7 +61,7 @@ const router = createRouter({
       meta: { title: 'Mapa', requiresAuth: true },
     },
 
-    // Admin routes (Protected)
+    // Admin routes
     {
       path: '/admin',
       redirect: '/admin/dashboard',
@@ -86,7 +87,7 @@ const router = createRouter({
     {
       path: '/admin/reviews',
       name: 'admin-reviews',
-      component: AdminView,
+      component: AdminReviewsView,
       meta: { title: 'Reseñas', requiresAuth: true, requiresAdmin: true },
     },
   ],

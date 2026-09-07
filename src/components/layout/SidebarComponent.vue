@@ -1,5 +1,5 @@
-<script setup lang="ts">
-// External imports
+﻿<script setup lang="ts">
+// Imports
 import {
   Calendar,
   LayoutDashboard,
@@ -12,7 +12,6 @@ import {
 import { computed } from 'vue';
 import { RouterLink, useRoute, useRouter } from 'vue-router';
 
-// Internal imports
 import logoImage from '@/assets/images/logo.png';
 import type { UserRole } from '@/interfaces/UserInterface';
 import { AuthService } from '@/services/AuthService';

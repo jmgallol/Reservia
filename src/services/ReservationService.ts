@@ -1,8 +1,9 @@
-// Internal imports
+// Imports
 import type { CreateReservationDTO } from '@/dtos/CreateReservationDTO';
 import type { ReservationInterface, ReservationStatus } from '@/interfaces/ReservationInterface';
 import { useReservationStore } from '@/stores/reservationsStore';
 
+// Types
 type UpdateReservationDTO = Pick<
   ReservationInterface,
   'reservationDate' | 'reservationTime' | 'numberOfPeople' | 'specialRequest'
@@ -96,9 +97,11 @@ export class ReservationService {
   static updateReservation(id: number, updates: UpdateReservationDTO): void {
     const store = useReservationStore();
     const index = store.reservations.findIndex((r) => r.id === id);
-    if (index !== -1 && store.reservations[index]) {
+    const existing = store.reservations[index];
+
+    if (index !== -1 && existing) {
       store.reservations[index] = {
-        ...store.reservations[index],
+        ...existing,
         ...updates,
       };
     }

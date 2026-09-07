@@ -1,4 +1,4 @@
-// Internal imports
+// Imports
 import type { CreateReviewDTO } from '@/dtos/CreateReviewDTO';
 import type { ReviewInterface } from '@/interfaces/ReviewInterface';
 import { useReviewStore } from '@/stores/reviewStore';
@@ -59,5 +59,13 @@ export class ReviewService {
     if (index !== -1) {
       store.reviews.splice(index, 1);
     }
+  }
+
+  static getAverageRating(restaurantId: number): number {
+    const reviews = ReviewService.getByRestaurantId(restaurantId);
+    if (reviews.length === 0) return 0;
+
+    const total = reviews.reduce((sum, review) => sum + review.rating, 0);
+    return Math.round((total / reviews.length) * 10) / 10;
   }
 }

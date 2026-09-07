@@ -1,8 +1,7 @@
-<script setup lang="ts">
-// External imports
+﻿<script setup lang="ts">
+// Imports
 import { computed, ref } from 'vue';
 
-// Internal imports
 import DoughnutChartComponent from '@/components/dashboard/DoughnutChartComponent.vue';
 import StatusBadgeComponent from '@/components/common/StatusBadgeComponent.vue';
 import HeaderComponent from '@/components/layout/HeaderComponent.vue';
@@ -13,7 +12,7 @@ import { ReservationService } from '@/services/ReservationService';
 import { UserService } from '@/services/UserService';
 import { StringFormatUtil } from '@/utils/StringFormatUtil';
 
-// Reactive state
+// Reactive variables
 const selectedStatus = ref<'Todas' | ReservationStatus>('Todas');
 const selectedPeople = ref<string>('Todos');
 

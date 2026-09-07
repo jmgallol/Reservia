@@ -1,8 +1,7 @@
-<script setup lang="ts">
-// External imports
+﻿<script setup lang="ts">
+// Imports
 import { ref, watch } from 'vue';
 
-// Internal imports
 import BaseModalComponent from '@/components/common/BaseModalComponent.vue';
 import StarRatingComponent from '@/components/restaurant/StarRatingComponent.vue';
 
@@ -21,7 +20,7 @@ const emit = defineEmits<{
   saved: [];
 }>();
 
-// Reactive state
+// Reactive variables
 const editRating = ref(1);
 const editComment = ref('');
 const editErrorMessage = ref('');

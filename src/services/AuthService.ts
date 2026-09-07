@@ -1,3 +1,4 @@
+// Imports
 import type { UserInterface } from '@/interfaces/UserInterface';
 
 import { useAuthStore } from '@/stores/authStore';

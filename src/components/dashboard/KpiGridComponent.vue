@@ -1,9 +1,8 @@
-<script setup lang="ts">
-// External imports
+﻿<script setup lang="ts">
+// Imports
 import { AlertCircle, Calendar, Check, Star } from 'lucide-vue-next';
 import { computed } from 'vue';
 
-// Internal imports
 import { AuthService } from '@/services/AuthService';
 import { ReservationService } from '@/services/ReservationService';
 import { ReviewService } from '@/services/ReviewService';
