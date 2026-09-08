@@ -3,10 +3,10 @@ import { createPinia } from 'pinia';
 import { watch } from 'vue';
 
 // Internal imports
-import { reservationSeeder } from '@/seeders/reservationseeder';
-import { restaurantSeeder } from '@/seeders/restaurantseeder';
-import { reviewSeeder } from '@/seeders/reviewseeder';
-import { userSeeder } from '@/seeders/userseeder';
+import { reservationSeeder } from '@/seeders/ReservationSeeder';
+import { restaurantSeeder } from '@/seeders/RestaurantSeeder';
+import { reviewSeeder } from '@/seeders/ReviewSeeder';
+import { userSeeder } from '@/seeders/UserSeeder';
 
 export default class PiniaConfig {
   public static init() {
