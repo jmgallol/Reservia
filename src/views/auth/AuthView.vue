@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 // Internal imports
 import LoginComponent from '@/components/common/auth/LoginComponent.vue';
 </script>
