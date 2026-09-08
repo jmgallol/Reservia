@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // External imports
 import { ChevronLeft, Clock, MapPin } from 'lucide-vue-next';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 // Internal imports
@@ -11,9 +11,11 @@ import HeaderComponent from '@/components/layout/HeaderComponent.vue';
 import SidebarComponent from '@/components/layout/SidebarComponent.vue';
 import StarRatingComponent from '@/components/common/StarRatingComponent.vue';
 import ReservationFormComponent from '@/components/client/restaurant/ReservationFormComponent.vue';
+import CreateReviewModalComponent from '@/components/client/review/CreateReviewModalComponent.vue';
 
 // Variables
 const route = useRoute();
+const isCreateReviewModalOpen = ref(false);
 
 // Computed
 const restaurant = computed<RestaurantInterface | null>(() => {
@@ -90,15 +92,27 @@ const restaurant = computed<RestaurantInterface | null>(() => {
             </div>
 
             <div class="border-t border-stone-100 pt-6 mt-auto">
-              <p class="text-stone-600 text-[15px] leading-relaxed">
+              <p class="text-stone-600 text-[15px] leading-relaxed mb-6">
                 {{ restaurant.description }}
               </p>
+              <button
+                @click="isCreateReviewModalOpen = true"
+                class="px-5 py-2.5 bg-[#F8F7F4] text-[#C8552A] border border-[#C8552A]/20 hover:bg-stone-50 hover:border-[#C8552A]/40 rounded-xl text-sm font-semibold transition-colors inline-block"
+              >
+                Escribir Reseña
+              </button>
             </div>
           </div>
 
           <!-- Right Col: Reservation Form -->
           <ReservationFormComponent :restaurant-id="restaurant.id" />
         </div>
+
+        <!-- Create Review Modal -->
+        <CreateReviewModalComponent
+          v-model="isCreateReviewModalOpen"
+          :restaurant-id="restaurant.id"
+        />
       </main>
     </div>
   </div>
