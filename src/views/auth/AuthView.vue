@@ -5,11 +5,12 @@ import LoginComponent from '@/components/common/auth/LoginComponent.vue';
 
 <template>
   <div class="grid grid-cols-1 md:grid-cols-2 min-h-screen">
-    <!-- Auth Form -->
+    <!-- Left panel: Form -->
     <div
       class="flex items-start justify-center px-4 py-6 md:px-8 md:py-12 overflow-y-auto bg-white"
     >
       <div class="w-full max-w-[420px]">
+        <!-- Logo -->
         <div class="flex items-center gap-2.5 mb-8">
           <img src="@/assets/images/logo.png" alt="Reservia" class="h-9 w-auto" />
           <span class="text-[20px] font-bold tracking-tight">
@@ -17,6 +18,7 @@ import LoginComponent from '@/components/common/auth/LoginComponent.vue';
           </span>
         </div>
 
+        <!-- Form panel -->
         <div class="mt-8">
           <LoginComponent />
         </div>

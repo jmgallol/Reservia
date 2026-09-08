@@ -99,11 +99,12 @@ function handleCancel(id: number): void {
         <div class="flex gap-6 max-w-7xl mx-auto">
           <!-- Left Column: Filters + Table -->
           <div class="flex-1 min-w-0 space-y-6">
-            <!-- Filters -->
+            <!-- Filter Card -->
             <div
               class="bg-white rounded-2xl p-6 border border-stone-200/80 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
             >
               <div class="flex flex-wrap items-center gap-6">
+                <!-- Status filter -->
                 <div class="space-y-1">
                   <label
                     for="status-select"
@@ -126,6 +127,7 @@ function handleCancel(id: number): void {
                   </select>
                 </div>
 
+                <!-- People filter -->
                 <div class="space-y-1">
                   <label
                     for="people-select"
@@ -149,12 +151,13 @@ function handleCancel(id: number): void {
                 </div>
               </div>
 
+              <!-- Counter badge -->
               <span class="text-xs font-semibold text-stone-400">
                 <strong class="text-stone-800">{{ filteredReservations.length }}</strong> reservas
               </span>
             </div>
 
-            <!-- Data Table -->
+            <!-- Reservations Table -->
             <div class="bg-white rounded-2xl border border-stone-200/80 shadow-xs overflow-hidden">
               <table class="w-full text-left">
                 <thead>
@@ -197,6 +200,7 @@ function handleCancel(id: number): void {
                     :key="reservation.id"
                     class="border-b border-stone-50 last:border-b-0 hover:bg-stone-50/50 transition-colors"
                   >
+                    <!-- Client -->
                     <td class="px-6 py-4">
                       <div class="flex items-center gap-3">
                         <div
@@ -215,24 +219,30 @@ function handleCancel(id: number): void {
                       </div>
                     </td>
 
+                    <!-- Date -->
                     <td class="px-4 py-4 text-sm text-stone-700 font-medium">
                       {{ reservation.reservationDate }}
                     </td>
 
+                    <!-- Time -->
                     <td class="px-4 py-4 text-sm text-stone-700 font-medium">
                       {{ reservation.reservationTime }}
                     </td>
 
+                    <!-- People -->
                     <td class="px-4 py-4 text-sm font-semibold text-stone-800">
                       {{ reservation.numberOfPeople }}
                     </td>
 
+                    <!-- Status -->
                     <td class="px-4 py-4">
                       <StatusBadgeComponent :status="reservation.status" />
                     </td>
 
+                    <!-- Actions -->
                     <td class="px-4 py-4">
                       <div class="flex items-center gap-2">
+                        <!-- Pending: Confirm + Cancel -->
                         <template v-if="reservation.status === 'pending'">
                           <button
                             type="button"
@@ -250,6 +260,7 @@ function handleCancel(id: number): void {
                           </button>
                         </template>
 
+                        <!-- Confirmed: Complete + Cancel -->
                         <template v-else-if="reservation.status === 'confirmed'">
                           <button
                             type="button"

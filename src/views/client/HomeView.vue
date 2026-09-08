@@ -51,11 +51,12 @@ function handleReserve(id: number): void {
 
       <!-- Main Page Content -->
       <main class="flex-1 px-8 pb-24 overflow-y-auto space-y-6">
-        <!-- Filters -->
+        <!-- Filter Card -->
         <div
           class="bg-white rounded-2xl p-6 border border-stone-200/80 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
         >
           <div class="flex flex-wrap items-center gap-6">
+            <!-- Search input -->
             <div class="space-y-1">
               <label
                 for="restaurant-search"
@@ -72,6 +73,7 @@ function handleReserve(id: number): void {
               />
             </div>
 
+            <!-- City filter -->
             <div class="space-y-1">
               <label
                 for="city-select"
@@ -90,6 +92,7 @@ function handleReserve(id: number): void {
               </select>
             </div>
 
+            <!-- Category filter -->
             <div class="space-y-1">
               <label
                 for="category-select"
@@ -108,6 +111,7 @@ function handleReserve(id: number): void {
               </select>
             </div>
 
+            <!-- Clear filters -->
             <button
               type="button"
               class="self-end px-4 py-2 border border-stone-300 rounded-xl text-xs font-semibold text-stone-700 hover:bg-stone-50 transition-colors cursor-pointer"
@@ -117,6 +121,7 @@ function handleReserve(id: number): void {
             </button>
           </div>
 
+          <!-- Counter badge -->
           <span class="text-xs font-semibold text-stone-400">
             <strong class="text-stone-800">{{ filteredRestaurants.length }}</strong> resultados
           </span>
@@ -129,6 +134,7 @@ function handleReserve(id: number): void {
             :key="restaurant.id"
             class="bg-white rounded-2xl border border-stone-200/80 shadow-xs overflow-hidden flex flex-col justify-between hover:shadow-md transition-all duration-200"
           >
+            <!-- Image with Category Badge -->
             <div class="relative h-48 w-full bg-stone-100 overflow-hidden">
               <img
                 :src="restaurant.imageUrl"
@@ -142,6 +148,7 @@ function handleReserve(id: number): void {
               </span>
             </div>
 
+            <!-- Details -->
             <div class="p-5 space-y-3 flex-1 flex flex-col justify-between">
               <div>
                 <h2 class="text-lg font-bold text-stone-900 tracking-tight font-heading">
@@ -160,6 +167,7 @@ function handleReserve(id: number): void {
                 </div>
               </div>
 
+              <!-- Buttons -->
               <div class="flex justify-center pt-3 border-t border-stone-100">
                 <button
                   type="button"
