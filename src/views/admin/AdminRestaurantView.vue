@@ -1,13 +1,14 @@
 ﻿<script setup lang="ts">
-// Imports
+// External imports
 import { computed } from 'vue';
 
-import HeaderComponent from '@/components/layout/HeaderComponent.vue';
-import SidebarComponent from '@/components/layout/SidebarComponent.vue';
-import RestaurantEditFormComponent from '@/components/restaurant/RestaurantEditFormComponent.vue';
+// Internal imports
 import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
 import { AuthService } from '@/services/AuthService';
 import { RestaurantService } from '@/services/RestaurantService';
+import HeaderComponent from '@/components/layout/HeaderComponent.vue';
+import SidebarComponent from '@/components/layout/SidebarComponent.vue';
+import RestaurantEditFormComponent from '@/components/admin/restaurant/RestaurantEditFormComponent.vue';
 
 // Computed
 const currentUser = computed(() => AuthService.getCurrentUser());
@@ -16,8 +17,6 @@ const restaurant = computed<RestaurantInterface | undefined>(() => {
   if (!currentUser.value?.restaurantId) return undefined;
   return RestaurantService.getById(currentUser.value.restaurantId);
 });
-
-
 </script>
 
 <template>
@@ -46,14 +45,17 @@ const restaurant = computed<RestaurantInterface | undefined>(() => {
             />
 
             <!-- Dark gradient overlay -->
-            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"
+            />
 
             <!-- Restaurant Info (bottom-left) -->
             <div class="absolute bottom-5 left-6">
-              <h2 class="text-2xl md:text-3xl font-bold text-white font-heading tracking-tight drop-shadow-md">
+              <h2
+                class="text-2xl md:text-3xl font-bold text-white font-heading tracking-tight drop-shadow-md"
+              >
                 {{ restaurant.name }}
               </h2>
-
             </div>
           </section>
 

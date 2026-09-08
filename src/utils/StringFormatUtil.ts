@@ -17,13 +17,4 @@ export class StringFormatUtil {
       .replace(/[\u0300-\u036f]/g, '');
   }
 
-  static formatReviewStatus(status?: string): string {
-    const labels: Record<string, string> = {
-      approved: 'Aprobada',
-      pending: 'Pendiente',
-      rejected: 'Rechazada',
-    };
-
-    return status ? labels[status] ?? status : '';
-  }
 }

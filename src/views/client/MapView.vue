@@ -1,16 +1,15 @@
 ﻿<script setup lang="ts">
-// Imports
+// External imports
 import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
+// Internal imports
+import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
+import { RestaurantService } from '@/services/RestaurantService';
 import HeaderComponent from '@/components/layout/HeaderComponent.vue';
 import SidebarComponent from '@/components/layout/SidebarComponent.vue';
-
-import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
-
-import { RestaurantService } from '@/services/RestaurantService';
 
 // Variables
 let mapInstance: L.Map | null = null;

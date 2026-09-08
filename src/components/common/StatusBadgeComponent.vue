@@ -1,22 +1,17 @@
-﻿<script setup lang="ts">
-// Imports
+<script setup lang="ts">
+// External imports
 import { computed } from 'vue';
 
+// Internal imports
 import type { ReservationStatus } from '@/interfaces/ReservationInterface';
-import type { RestaurantStatus } from '@/interfaces/RestaurantInterface';
 
-// Props
-type StatusType = ReservationStatus | RestaurantStatus;
-
-interface Props {
-  status: StatusType;
-}
-
-const props = defineProps<Props>();
+const props = defineProps<{
+  status: ReservationStatus;
+}>();
 
 // Computed
 const statusConfig = computed<{ label: string; classes: string }>(() => {
-  const configs: Record<StatusType, { label: string; classes: string }> = {
+  const configs: Record<ReservationStatus, { label: string; classes: string }> = {
     pending: {
       label: 'Pendiente',
       classes: 'bg-amber-100 text-amber-600',
@@ -32,14 +27,6 @@ const statusConfig = computed<{ label: string; classes: string }>(() => {
     cancelled: {
       label: 'Cancelada',
       classes: 'bg-red-100 text-red-500',
-    },
-    active: {
-      label: 'Activo',
-      classes: 'bg-green-100 text-green-700',
-    },
-    inactive: {
-      label: 'Inactivo',
-      classes: 'bg-gray-100 text-gray-500',
     },
   };
 

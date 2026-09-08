@@ -1,3 +1,4 @@
+// Internal imports
 import type { ReviewInterface } from '@/interfaces/ReviewInterface';
 
 export const reviewSeeder: ReviewInterface[] = [

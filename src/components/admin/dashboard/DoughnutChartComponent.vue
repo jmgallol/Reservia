@@ -1,20 +1,21 @@
-﻿<script setup lang="ts">
-// Imports
-import Chart from 'chart.js/auto';
+<script setup lang="ts">
+// External imports
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import Chart from 'chart.js/auto';
 
 // Props
-interface Props {
-  title: string;
-  subtitle?: string;
-  labels: string[];
-  data: number[];
-  colors: string[];
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  subtitle: undefined,
-});
+const props = withDefaults(
+  defineProps<{
+    title: string;
+    subtitle?: string;
+    labels: string[];
+    data: number[];
+    colors: string[];
+  }>(),
+  {
+    subtitle: undefined,
+  },
+);
 
 // Variables
 let chartInstance: Chart | null = null;
@@ -95,15 +96,8 @@ onBeforeUnmount(() => {
 
     <!-- Legend -->
     <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 pt-2">
-      <div
-        v-for="(label, index) in labels"
-        :key="label"
-        class="flex items-center gap-1.5"
-      >
-        <span
-          class="w-2.5 h-2.5 rounded-sm shrink-0"
-          :style="{ backgroundColor: colors[index] }"
-        />
+      <div v-for="(label, index) in labels" :key="label" class="flex items-center gap-1.5">
+        <span class="w-2.5 h-2.5 rounded-sm shrink-0" :style="{ backgroundColor: colors[index] }" />
         <span class="text-[11px] font-medium text-stone-500">{{ label }}</span>
       </div>
     </div>

@@ -1,37 +1,36 @@
-// Imports
+// Internal imports
 import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
 import { ReviewService } from '@/services/ReviewService';
-import { useRestaurantStore } from '@/stores/restaurantsStore';
 import { StringFormatUtil } from '@/utils/StringFormatUtil';
+import { useRestaurantStore } from '@/stores/restaurantsStore';
 
 export class RestaurantService {
   static getAll(): RestaurantInterface[] {
-    const store = useRestaurantStore();
-    return store.restaurants;
+    return useRestaurantStore().restaurants;
   }
 
   static getById(id: number): RestaurantInterface | undefined {
-    const store = useRestaurantStore();
-    return store.restaurants.find((restaurant) => restaurant.id === id);
+    return useRestaurantStore().restaurants.find((restaurant) => restaurant.id === id);
   }
 
   static getCities(): string[] {
-    const store = useRestaurantStore();
-    const cityNames = store.restaurants.map((restaurant) => restaurant.city);
+    const cityNames = useRestaurantStore().restaurants.map((restaurant) => restaurant.city);
     return ['Todas', ...Array.from(new Set(cityNames)).sort((a, b) => a.localeCompare(b))];
   }
 
   static getCategories(): string[] {
-    const store = useRestaurantStore();
-    const categoryNames = store.restaurants.map((restaurant) => restaurant.category);
+    const categoryNames = useRestaurantStore().restaurants.map((restaurant) => restaurant.category);
     return ['Todas', ...Array.from(new Set(categoryNames)).sort((a, b) => a.localeCompare(b))];
   }
 
-  static filter(query: string = '', city: string = 'Todas', category: string = 'Todas'): RestaurantInterface[] {
-    const store = useRestaurantStore();
+  static filter(
+    query: string = '',
+    city: string = 'Todas',
+    category: string = 'Todas',
+  ): RestaurantInterface[] {
     const normalizedQuery = StringFormatUtil.normalizeSearchText(query);
 
-    return store.restaurants.filter((restaurant) => {
+    return useRestaurantStore().restaurants.filter((restaurant) => {
       const normalizedName = StringFormatUtil.normalizeSearchText(restaurant.name);
       const normalizedCity = StringFormatUtil.normalizeSearchText(restaurant.city);
       const normalizedCategory = StringFormatUtil.normalizeSearchText(restaurant.category);
@@ -42,12 +41,10 @@ export class RestaurantService {
         normalizedCity.includes(normalizedQuery) ||
         normalizedCategory.includes(normalizedQuery);
 
-      const matchesCity =
-        city === 'Todas' || restaurant.city.toLowerCase() === city.toLowerCase();
+      const matchesCity = city === 'Todas' || restaurant.city.toLowerCase() === city.toLowerCase();
 
       const matchesCategory =
-        category === 'Todas' ||
-        restaurant.category.toLowerCase() === category.toLowerCase();
+        category === 'Todas' || restaurant.category.toLowerCase() === category.toLowerCase();
 
       return matchesSearch && matchesCity && matchesCategory;
     });
@@ -63,34 +60,34 @@ export class RestaurantService {
   }
 
   static create(restaurant: RestaurantInterface): RestaurantInterface {
-    const store = useRestaurantStore();
-    const nextId =
-      store.restaurants.length > 0 ? Math.max(...store.restaurants.map((r) => r.id)) + 1 : 1;
+    const restaurants = useRestaurantStore().restaurants;
+    const nextId = restaurants.length > 0 ? Math.max(...restaurants.map((r) => r.id)) + 1 : 1;
 
     const newRestaurant: RestaurantInterface = {
       ...restaurant,
       id: nextId,
     };
 
-    store.restaurants.push(newRestaurant);
+    useRestaurantStore().restaurants.push(newRestaurant);
+
     return newRestaurant;
   }
 
   static update(restaurant: RestaurantInterface): void {
-    const store = useRestaurantStore();
-    const index = store.restaurants.findIndex((r) => r.id === restaurant.id);
-    const existing = store.restaurants[index];
+    const restaurants = useRestaurantStore().restaurants;
+    const index = restaurants.findIndex((r) => r.id === restaurant.id);
+    const existing = restaurants[index];
 
     if (index !== -1 && existing) {
-      store.restaurants[index] = { ...restaurant };
+      restaurants[index] = { ...restaurant };
     }
   }
 
   static delete(id: number): void {
-    const store = useRestaurantStore();
-    const index = store.restaurants.findIndex((r) => r.id === id);
+    const restaurants = useRestaurantStore().restaurants;
+    const index = restaurants.findIndex((r) => r.id === id);
     if (index !== -1) {
-      store.restaurants.splice(index, 1);
+      restaurants.splice(index, 1);
     }
   }
 }

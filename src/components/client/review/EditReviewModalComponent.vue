@@ -1,13 +1,12 @@
-﻿<script setup lang="ts">
-// Imports
+<script setup lang="ts">
+// External imports
 import { ref, watch } from 'vue';
 
-import BaseModalComponent from '@/components/common/BaseModalComponent.vue';
-import StarRatingComponent from '@/components/restaurant/StarRatingComponent.vue';
-
+// Internal imports
 import type { ReviewInterface } from '@/interfaces/ReviewInterface';
-
 import { ReviewService } from '@/services/ReviewService';
+import BaseModalComponent from '@/components/common/BaseModalComponent.vue';
+import StarRatingComponent from '@/components/common/StarRatingComponent.vue';
 
 // Props & Emits
 const props = defineProps<{
@@ -21,8 +20,10 @@ const emit = defineEmits<{
 }>();
 
 // Reactive variables
-const editRating = ref(1);
-const editComment = ref('');
+const form = ref({
+  rating: 1,
+  comment: '',
+});
 const editErrorMessage = ref('');
 
 // Watchers
@@ -31,8 +32,8 @@ watch(
   (review) => {
     if (!review) return;
 
-    editRating.value = review.rating;
-    editComment.value = review.comment;
+    form.value.rating = review.rating;
+    form.value.comment = review.comment;
     editErrorMessage.value = '';
   },
 );
@@ -44,7 +45,7 @@ function closeModal(): void {
 }
 
 function isFormValid(): boolean {
-  return editRating.value >= 1 && editRating.value <= 5 && editComment.value.trim() !== '';
+  return form.value.rating >= 1 && form.value.rating <= 5 && form.value.comment.trim() !== '';
 }
 
 function handleSave(): void {
@@ -57,8 +58,8 @@ function handleSave(): void {
 
   ReviewService.update({
     ...props.review,
-    rating: editRating.value,
-    comment: editComment.value.trim(),
+    rating: form.value.rating,
+    comment: form.value.comment.trim(),
   });
 
   emit('saved');
@@ -67,13 +68,14 @@ function handleSave(): void {
 </script>
 
 <template>
-  <BaseModalComponent :model-value="modelValue" @update:model-value="emit('update:modelValue', $event)">
+  <BaseModalComponent
+    :model-value="modelValue"
+    @update:model-value="emit('update:modelValue', $event)"
+  >
     <form class="space-y-5" @submit.prevent="handleSave">
       <div>
         <h2 class="text-lg font-bold text-stone-900 font-heading">Editar reseña</h2>
-        <p class="mt-1 text-xs text-stone-500">
-          Actualiza tu calificación y comentario.
-        </p>
+        <p class="mt-1 text-xs text-stone-500">Actualiza tu calificación y comentario.</p>
       </div>
 
       <p
@@ -88,8 +90,8 @@ function handleSave(): void {
           Calificación
         </label>
         <div class="flex flex-wrap items-center gap-3">
-          <StarRatingComponent v-model:rating="editRating" :size="22" />
-          <span class="text-sm font-bold text-stone-700">{{ editRating }}/5</span>
+          <StarRatingComponent v-model:rating="form.rating" :size="22" />
+          <span class="text-sm font-bold text-stone-700">{{ form.rating }}/5</span>
         </div>
       </div>
 
@@ -102,7 +104,7 @@ function handleSave(): void {
         </label>
         <textarea
           id="edit-review-comment"
-          v-model="editComment"
+          v-model="form.comment"
           rows="4"
           class="w-full px-4 py-3 bg-[#FAF8F4] border border-stone-200 rounded-xl text-sm text-stone-800 outline-none focus:border-stone-400 transition-colors resize-none"
         />

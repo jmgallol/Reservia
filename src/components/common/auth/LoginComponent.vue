@@ -1,31 +1,34 @@
-﻿<script setup lang="ts">
-// Imports
+<script setup lang="ts">
+// External imports
 import { Eye, EyeOff, Lock, Mail } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
+// Internal imports
 import { AuthService } from '@/services/AuthService';
 
 // Variables
 const router = useRouter();
 
 // Reactive variables
-const email = ref('');
+const form = ref({
+  email: '',
+  password: '',
+  rememberMe: false,
+});
 const errorMessage = ref('');
-const password = ref('');
-const rememberMe = ref(false);
 const showPassword = ref(false);
 
 // Methods
 async function handleLogin(): Promise<void> {
   errorMessage.value = '';
 
-  if (!email.value || !password.value) {
+  if (!form.value.email || !form.value.password) {
     errorMessage.value = 'Por favor completa todos los campos.';
     return;
   }
 
-  const user = AuthService.login(email.value, password.value);
+  const user = AuthService.login(form.value.email, form.value.password);
 
   if (!user) {
     errorMessage.value = 'Correo o contraseña incorrectos.';
@@ -64,7 +67,7 @@ async function handleLogin(): Promise<void> {
         />
         <input
           id="login-email"
-          v-model="email"
+          v-model="form.email"
           type="email"
           placeholder="maria@email.com"
           class="w-full py-3.5 pr-3.5 pl-11 border border-border rounded-[10px] text-sm text-text-primary bg-white transition-colors duration-150 outline-none placeholder:text-text-placeholder focus:border-border-focus"
@@ -85,7 +88,7 @@ async function handleLogin(): Promise<void> {
         />
         <input
           id="login-password"
-          v-model="password"
+          v-model="form.password"
           :type="showPassword ? 'text' : 'password'"
           placeholder="••••••••"
           class="w-full py-3.5 pr-3.5 pl-11 border border-border rounded-[10px] text-sm text-text-primary bg-white transition-colors duration-150 outline-none placeholder:text-text-placeholder focus:border-border-focus"
@@ -104,7 +107,7 @@ async function handleLogin(): Promise<void> {
     <div class="flex items-center justify-between mb-6">
       <label class="flex items-center gap-2 text-[13px] text-text-secondary cursor-pointer">
         <input
-          v-model="rememberMe"
+          v-model="form.rememberMe"
           type="checkbox"
           class="w-4 h-4 accent-green-dark cursor-pointer"
         />

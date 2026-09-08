@@ -23,6 +23,7 @@ export class DateFormatUtil {
     if (value.toLowerCase() === 'mañana' || value.toLowerCase() === 'manana') {
       const tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
+      
       return tomorrow;
     }
 
