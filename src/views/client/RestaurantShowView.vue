@@ -5,12 +5,12 @@ import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 
 // Internal imports
-import HeaderComponent from '@/components/layout/HeaderComponent.vue';
-import ReservationFormComponent from '@/components/restaurant/ReservationFormComponent.vue';
-import SidebarComponent from '@/components/layout/SidebarComponent.vue';
-import StarRatingComponent from '@/components/restaurant/StarRatingComponent.vue';
 import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
 import { RestaurantService } from '@/services/RestaurantService';
+import HeaderComponent from '@/components/layout/HeaderComponent.vue';
+import SidebarComponent from '@/components/layout/SidebarComponent.vue';
+import StarRatingComponent from '@/components/common/StarRatingComponent.vue';
+import ReservationFormComponent from '@/components/client/restaurant/ReservationFormComponent.vue';
 
 // Variables
 const route = useRoute();
@@ -51,11 +51,6 @@ const restaurant = computed<RestaurantInterface | null>(() => {
             :alt="restaurant.name"
             class="w-full h-full object-cover"
           />
-          <span
-            class="absolute top-4 right-4 px-4 py-1.5 rounded-full text-[13px] font-bold bg-emerald-500 text-white shadow-sm"
-          >
-            Abierto ahora
-          </span>
         </div>
 
         <!-- Content Grid -->

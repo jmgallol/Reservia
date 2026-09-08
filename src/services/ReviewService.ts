@@ -5,23 +5,24 @@ import { useReviewStore } from '@/stores/reviewStore';
 
 export class ReviewService {
   static getAll(): ReviewInterface[] {
-    const store = useReviewStore();
-    return store.reviews;
+    return useReviewStore().reviews;
   }
 
   static getById(id: number): ReviewInterface | undefined {
-    const store = useReviewStore();
-    return store.reviews.find((review) => review.id === id);
+    return useReviewStore().reviews.find((review) => review.id === id);
   }
 
   static getByRestaurantId(id: number): ReviewInterface[] {
-    const store = useReviewStore();
-    return store.reviews.filter((review) => review.restaurantId === id);
+    return useReviewStore().reviews.filter((review) => review.restaurantId === id);
+  }
+
+  static getByUserId(userId: number): ReviewInterface[] {
+    return useReviewStore().reviews.filter((review) => review.userId === userId);
   }
 
   static create(dto: CreateReviewDTO): ReviewInterface {
-    const store = useReviewStore();
-    const nextId = store.reviews.length > 0 ? Math.max(...store.reviews.map((r) => r.id)) + 1 : 1;
+    const reviews = useReviewStore().reviews;
+    const nextId = reviews.length > 0 ? Math.max(...reviews.map((r) => r.id)) + 1 : 1;
 
     const newReview: ReviewInterface = {
       id: nextId,
@@ -33,26 +34,36 @@ export class ReviewService {
       reviewDate: new Date().toISOString(),
     };
 
-    store.reviews.push(newReview);
+    useReviewStore().reviews.push(newReview);
+
     return newReview;
   }
 
   static update(review: ReviewInterface): void {
-    const store = useReviewStore();
-    const index = store.reviews.findIndex((r) => r.id === review.id);
-    if (index !== -1) {
-      store.reviews[index] = {
-        ...store.reviews[index],
+    const reviews = useReviewStore().reviews;
+    const index = reviews.findIndex((r) => r.id === review.id);
+    if (index !== -1 && reviews[index]) {
+      reviews[index] = {
+        ...reviews[index],
         ...review,
       };
     }
   }
 
   static delete(id: number): void {
-    const store = useReviewStore();
-    const index = store.reviews.findIndex((r) => r.id === id);
+    const reviews = useReviewStore().reviews;
+    const index = reviews.findIndex((r) => r.id === id);
     if (index !== -1) {
-      store.reviews.splice(index, 1);
+      reviews.splice(index, 1);
     }
+  }
+
+  static getAverageRating(restaurantId: number): number {
+    const reviews = ReviewService.getByRestaurantId(restaurantId);
+    if (reviews.length === 0) return 0;
+
+    const total = reviews.reduce((sum, review) => sum + review.rating, 0);
+
+    return Math.round((total / reviews.length) * 10) / 10;
   }
 }

@@ -1,10 +1,8 @@
 <script setup lang="ts">
 // Props
-interface Props {
+const props = defineProps<{
   modelValue: boolean;
-}
-
-const props = defineProps<Props>();
+}>();
 
 // Emits
 const emit = defineEmits<{
@@ -20,7 +18,12 @@ function close(): void {
 <template>
   <!-- Overlay -->
   <Teleport to="body">
-    <Transition name="modal">
+    <Transition
+      enter-active-class="transition duration-200 ease-out [&_.relative]:transition-all [&_.relative]:duration-200 [&_.relative]:ease-out"
+      enter-from-class="opacity-0 [&_.relative]:scale-95 [&_.relative]:translate-y-2"
+      leave-active-class="transition duration-200 ease-in [&_.relative]:transition-all [&_.relative]:duration-200 [&_.relative]:ease-in"
+      leave-to-class="opacity-0 [&_.relative]:scale-95 [&_.relative]:translate-y-2"
+    >
       <div v-if="props.modelValue" class="fixed inset-0 z-50 flex items-center justify-center p-4">
         <!-- Dark blurred background -->
         <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" @click="close" />
@@ -61,20 +64,3 @@ function close(): void {
     </Transition>
   </Teleport>
 </template>
-
-<style scoped>
-.modal-enter-active,
-.modal-leave-active {
-  transition: opacity 0.2s ease;
-}
-
-.modal-enter-from,
-.modal-leave-to {
-  opacity: 0;
-}
-
-.modal-enter-from .relative,
-.modal-leave-from .relative {
-  transform: scale(0.96) translateY(8px);
-}
-</style>

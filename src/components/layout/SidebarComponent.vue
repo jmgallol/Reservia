@@ -13,20 +13,21 @@ import { computed } from 'vue';
 import { RouterLink, useRoute, useRouter } from 'vue-router';
 
 // Internal imports
-import logoImage from '@/assets/images/logo.png';
 import type { UserRole } from '@/interfaces/UserInterface';
 import { AuthService } from '@/services/AuthService';
 import { RestaurantService } from '@/services/RestaurantService';
 import { StringFormatUtil } from '@/utils/StringFormatUtil';
+import logoImage from '@/assets/images/logo.png';
 
 // Props
-interface Props {
-  role?: UserRole;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  role: undefined,
-});
+const props = withDefaults(
+  defineProps<{
+    role?: UserRole;
+  }>(),
+  {
+    role: undefined,
+  },
+);
 
 // Variables
 const route = useRoute();
@@ -44,8 +45,10 @@ const activeRole = computed<UserRole>(() => {
 const isAdmin = computed(() => activeRole.value === 'admin');
 
 const currentRestaurant = computed(() => {
-  const restaurants = RestaurantService.getAll();
-  return restaurants[0] ?? { name: 'La Toscana' };
+  if (currentUser.value?.restaurantId) {
+    return RestaurantService.getById(currentUser.value.restaurantId) ?? { name: 'La Toscana' };
+  }
+  return { name: 'La Toscana' };
 });
 
 const userName = computed(() => {

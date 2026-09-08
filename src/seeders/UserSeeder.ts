@@ -1,3 +1,4 @@
+// Internal imports
 import type { UserInterface } from '@/interfaces/UserInterface';
 
 export const userSeeder: UserInterface[] = [
@@ -8,7 +9,52 @@ export const userSeeder: UserInterface[] = [
     phone: '555-000-1111',
     password: 'password123',
     role: 'admin',
-    status: 'active',
+    restaurantId: 1,
+  },
+  {
+    id: 7,
+    name: 'Admin Elcielo',
+    email: 'admin@elcielo.com',
+    phone: '555-000-0007',
+    password: 'password123',
+    role: 'admin',
+    restaurantId: 7,
+  },
+  {
+    id: 8,
+    name: 'Admin Carmen',
+    email: 'admin@carmen.com',
+    phone: '555-000-0008',
+    password: 'password123',
+    role: 'admin',
+    restaurantId: 8,
+  },
+  {
+    id: 9,
+    name: 'Admin Alambique',
+    email: 'admin@alambique.com',
+    phone: '555-000-0009',
+    password: 'password123',
+    role: 'admin',
+    restaurantId: 9,
+  },
+  {
+    id: 10,
+    name: 'Admin Mondongos',
+    email: 'admin@mondongos.com',
+    phone: '555-000-0010',
+    password: 'password123',
+    role: 'admin',
+    restaurantId: 10,
+  },
+  {
+    id: 11,
+    name: 'Admin Colosal',
+    email: 'admin@colosal.com',
+    phone: '555-000-0011',
+    password: 'password123',
+    role: 'admin',
+    restaurantId: 11,
   },
   {
     id: 2,
@@ -17,7 +63,6 @@ export const userSeeder: UserInterface[] = [
     phone: '555-000-2222',
     password: 'password123',
     role: 'client',
-    status: 'active',
   },
   {
     id: 101,
@@ -26,7 +71,6 @@ export const userSeeder: UserInterface[] = [
     phone: '555-000-0101',
     password: 'password123',
     role: 'client',
-    status: 'active',
   },
   {
     id: 102,
@@ -35,7 +79,6 @@ export const userSeeder: UserInterface[] = [
     phone: '555-000-0102',
     password: 'password123',
     role: 'client',
-    status: 'active',
   },
   {
     id: 103,
@@ -44,7 +87,6 @@ export const userSeeder: UserInterface[] = [
     phone: '555-000-0103',
     password: 'password123',
     role: 'client',
-    status: 'active',
   },
   {
     id: 104,
@@ -53,7 +95,6 @@ export const userSeeder: UserInterface[] = [
     phone: '555-000-0104',
     password: 'password123',
     role: 'client',
-    status: 'active',
   },
   {
     id: 105,
@@ -62,7 +103,6 @@ export const userSeeder: UserInterface[] = [
     phone: '555-000-0105',
     password: 'password123',
     role: 'client',
-    status: 'active',
   },
   {
     id: 106,
@@ -71,7 +111,6 @@ export const userSeeder: UserInterface[] = [
     phone: '555-000-0106',
     password: 'password123',
     role: 'client',
-    status: 'active',
   },
   {
     id: 107,
@@ -80,7 +119,6 @@ export const userSeeder: UserInterface[] = [
     phone: '555-000-0107',
     password: 'password123',
     role: 'client',
-    status: 'active',
   },
   {
     id: 108,
@@ -89,7 +127,6 @@ export const userSeeder: UserInterface[] = [
     phone: '555-000-0108',
     password: 'password123',
     role: 'client',
-    status: 'active',
   },
   {
     id: 109,
@@ -98,7 +135,6 @@ export const userSeeder: UserInterface[] = [
     phone: '555-000-0109',
     password: 'password123',
     role: 'client',
-    status: 'active',
   },
   {
     id: 110,
@@ -107,6 +143,5 @@ export const userSeeder: UserInterface[] = [
     phone: '555-000-0110',
     password: 'password123',
     role: 'client',
-    status: 'active',
   },
 ];

@@ -10,19 +10,19 @@ import { AuthService } from '@/services/AuthService';
 import { ReservationService } from '@/services/ReservationService';
 
 // Props
-interface Props {
+const props = defineProps<{
   restaurantId: number;
-}
-
-const props = defineProps<Props>();
+}>();
 
 // Variables
 const router = useRouter();
 
-// Reactive state
-const reservationDate = ref('2026-07-20');
-const reservationTime = ref('19:30');
-const guests = ref(2);
+// Reactive variables
+const form = ref({
+  reservationDate: '2026-07-20',
+  reservationTime: '19:30',
+  guests: 2,
+});
 
 // Methods
 function handleConfirmReservation(): void {
@@ -31,11 +31,9 @@ function handleConfirmReservation(): void {
   const reservationDTO: CreateReservationDTO = {
     restaurantId: props.restaurantId,
     userId: user?.id ?? 0,
-    clientName: user?.name,
-    clientEmail: user?.email,
-    reservationDate: reservationDate.value,
-    reservationTime: reservationTime.value,
-    numberOfPeople: guests.value,
+    reservationDate: form.value.reservationDate,
+    reservationTime: form.value.reservationTime,
+    numberOfPeople: form.value.guests,
   };
 
   ReservationService.create(reservationDTO);
@@ -43,11 +41,11 @@ function handleConfirmReservation(): void {
 }
 
 function decreaseGuests(): void {
-  if (guests.value > 1) guests.value--;
+  if (form.value.guests > 1) form.value.guests--;
 }
 
 function increaseGuests(): void {
-  if (guests.value < 20) guests.value++;
+  if (form.value.guests < 20) form.value.guests++;
 }
 </script>
 
@@ -62,7 +60,7 @@ function increaseGuests(): void {
           >Fecha</label
         >
         <input
-          v-model="reservationDate"
+          v-model="form.reservationDate"
           type="date"
           class="w-full px-4 py-3 bg-white border border-stone-200 rounded-xl text-[14px] font-medium text-stone-800 outline-none focus:border-stone-400 transition-colors"
         />
@@ -74,7 +72,7 @@ function increaseGuests(): void {
           >Hora</label
         >
         <select
-          v-model="reservationTime"
+          v-model="form.reservationTime"
           class="w-full px-4 py-3 bg-white border border-stone-200 rounded-xl text-[14px] font-medium text-stone-800 outline-none focus:border-stone-400 transition-colors appearance-none cursor-pointer"
         >
           <option value="12:00">12:00</option>
@@ -102,7 +100,9 @@ function increaseGuests(): void {
           >
             <Minus :size="14" stroke-width="3" />
           </button>
-          <span class="w-10 text-center text-[15px] font-bold text-stone-800">{{ guests }}</span>
+          <span class="w-10 text-center text-[15px] font-bold text-stone-800">{{
+            form.guests
+          }}</span>
           <button
             type="button"
             class="w-8 h-8 rounded-full flex items-center justify-center text-stone-600 hover:bg-stone-100 transition-colors cursor-pointer"

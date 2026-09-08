@@ -3,33 +3,70 @@ import type { CreateReservationDTO } from '@/dtos/CreateReservationDTO';
 import type { ReservationInterface, ReservationStatus } from '@/interfaces/ReservationInterface';
 import { useReservationStore } from '@/stores/reservationsStore';
 
+// Types
+type UpdateReservationDTO = Pick<
+  ReservationInterface,
+  'reservationDate' | 'reservationTime' | 'numberOfPeople' | 'specialRequest'
+>;
+
 export class ReservationService {
   static getAll(): ReservationInterface[] {
-    const store = useReservationStore();
-    return store.reservations;
+    return useReservationStore().reservations;
   }
 
   static getById(id: number): ReservationInterface | undefined {
-    const store = useReservationStore();
-    return store.reservations.find((r) => r.id === id);
+    return useReservationStore().reservations.find((r) => r.id === id);
   }
 
   static getByStatus(status: ReservationStatus): ReservationInterface[] {
-    const store = useReservationStore();
-    return store.reservations.filter((r) => r.status === status);
+    return useReservationStore().reservations.filter((r) => r.status === status);
+  }
+
+  static getByRestaurantId(restaurantId: number): ReservationInterface[] {
+    return useReservationStore().reservations.filter((r) => r.restaurantId === restaurantId);
+  }
+
+  static getByUserId(userId: number): ReservationInterface[] {
+    return useReservationStore().reservations.filter((r) => r.userId === userId);
+  }
+
+  static filterByClient(userId: number, status: string): ReservationInterface[] {
+    return useReservationStore().reservations.filter((r) => {
+      if (r.userId !== userId) return false;
+      return status === 'Todas' || r.status === status;
+    });
+  }
+
+  static filter(restaurantId: number, status: string, peopleRange: string): ReservationInterface[] {
+    return useReservationStore().reservations.filter((r) => {
+      if (r.restaurantId !== restaurantId) return false;
+
+      const matchesStatus = status === 'Todas' || r.status === status;
+
+      let matchesPeople = true;
+      if (peopleRange !== 'Todos') {
+        if (peopleRange === '7+') {
+          matchesPeople = r.numberOfPeople >= 7;
+        } else {
+          const parts = peopleRange.split('-').map(Number);
+          const min = parts[0] ?? 0;
+          const max = parts[1] ?? 0;
+          matchesPeople = r.numberOfPeople >= min && r.numberOfPeople <= max;
+        }
+      }
+
+      return matchesStatus && matchesPeople;
+    });
   }
 
   static create(dto: CreateReservationDTO): ReservationInterface {
-    const store = useReservationStore();
-    const nextId =
-      store.reservations.length > 0 ? Math.max(...store.reservations.map((r) => r.id)) + 1 : 1;
+    const reservations = useReservationStore().reservations;
+    const nextId = reservations.length > 0 ? Math.max(...reservations.map((r) => r.id)) + 1 : 1;
 
     const newReservation: ReservationInterface = {
       id: nextId,
       restaurantId: dto.restaurantId,
       userId: dto.userId ?? 0,
-      clientName: dto.clientName,
-      clientEmail: dto.clientEmail ?? '',
       reservationDate: dto.reservationDate,
       reservationTime: dto.reservationTime,
       numberOfPeople: dto.numberOfPeople,
@@ -37,23 +74,41 @@ export class ReservationService {
       specialRequest: dto.specialRequest ?? '',
     };
 
-    store.reservations.push(newReservation);
+    useReservationStore().reservations.push(newReservation);
+
     return newReservation;
   }
 
   static updateStatus(id: number, status: ReservationStatus): void {
-    const store = useReservationStore();
-    const index = store.reservations.findIndex((r) => r.id === id);
-    if (index !== -1 && store.reservations[index]) {
-      store.reservations[index].status = status;
+    const reservations = useReservationStore().reservations;
+    const index = reservations.findIndex((r) => r.id === id);
+    if (index !== -1 && reservations[index]) {
+      reservations[index].status = status;
     }
   }
 
+  static updateReservation(id: number, updates: UpdateReservationDTO): void {
+    const reservations = useReservationStore().reservations;
+    const index = reservations.findIndex((r) => r.id === id);
+    const existing = reservations[index];
+
+    if (index !== -1 && existing) {
+      reservations[index] = {
+        ...existing,
+        ...updates,
+      };
+    }
+  }
+
+  static canManageReservation(status: ReservationStatus): boolean {
+    return status === 'pending' || status === 'confirmed';
+  }
+
   static delete(id: number): void {
-    const store = useReservationStore();
-    const index = store.reservations.findIndex((r) => r.id === id);
+    const reservations = useReservationStore().reservations;
+    const index = reservations.findIndex((r) => r.id === id);
     if (index !== -1) {
-      store.reservations.splice(index, 1);
+      reservations.splice(index, 1);
     }
   }
 }

@@ -7,7 +7,6 @@ export interface ReservationInterface {
   numberOfPeople: number;
   status: ReservationStatus;
   specialRequest?: string;
-  createdAt?: string;
   userId: number;
   restaurantId: number;
 }

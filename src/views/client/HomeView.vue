@@ -4,18 +4,16 @@ import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 // Internal imports
+import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
+import { RestaurantService } from '@/services/RestaurantService';
 import HeaderComponent from '@/components/layout/HeaderComponent.vue';
 import SidebarComponent from '@/components/layout/SidebarComponent.vue';
-import StarRatingComponent from '@/components/restaurant/StarRatingComponent.vue';
-
-import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
-
-import { RestaurantService } from '@/services/RestaurantService';
+import StarRatingComponent from '@/components/common/StarRatingComponent.vue';
 
 // Variables
 const router = useRouter();
 
-// Variables reactivas
+// Reactive variables
 const searchQuery = ref('');
 const selectedCity = ref('Todas');
 const selectedCategory = ref('Todas');
@@ -26,14 +24,10 @@ const cities = computed<string[]>(() => RestaurantService.getCities());
 const categories = computed<string[]>(() => RestaurantService.getCategories());
 
 const filteredRestaurants = computed<RestaurantInterface[]>(() => {
-  return RestaurantService.filter({
-    query: searchQuery.value,
-    city: selectedCity.value,
-    category: selectedCategory.value,
-  });
+  return RestaurantService.filter(searchQuery.value, selectedCity.value, selectedCategory.value);
 });
 
-// Métodos
+// Methods
 function clearFilters(): void {
   searchQuery.value = '';
   selectedCity.value = 'Todas';
@@ -116,7 +110,6 @@ function handleReserve(id: number): void {
                 </option>
               </select>
             </div>
-
 
             <!-- Clear filters -->
             <button

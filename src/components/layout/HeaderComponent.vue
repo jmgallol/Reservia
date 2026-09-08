@@ -3,16 +3,21 @@
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 
-// Props
-interface Props {
-  title?: string;
-  subtitle?: string;
-}
+// Internal imports
+import { AuthService } from '@/services/AuthService';
+import { RestaurantService } from '@/services/RestaurantService';
 
-const props = withDefaults(defineProps<Props>(), {
-  title: undefined,
-  subtitle: undefined,
-});
+// Props
+const props = withDefaults(
+  defineProps<{
+    title?: string;
+    subtitle?: string;
+  }>(),
+  {
+    title: undefined,
+    subtitle: undefined,
+  },
+);
 
 // Variables
 const route = useRoute();
@@ -26,53 +31,23 @@ const headerText = computed(() => {
     };
   }
 
-  switch (route.path) {
-    case '/restaurants':
-      return {
-        title: 'Restaurantes',
-        subtitle: 'Encuentra tu próxima experiencia gastronómica',
-      };
-    case '/map':
-      return {
-        title: 'Mapa Gastronómico',
-        subtitle: 'Explora restaurantes cercanos en tu ciudad',
-      };
-    case '/reservations':
-      return {
-        title: 'Mis Reservas',
-        subtitle: 'Consulta y gestiona tus reservas confirmadas y pendientes',
-      };
-    case '/reviews':
-      return {
-        title: 'Mis Reseñas',
-        subtitle: 'Opiniones y calificaciones que has compartido',
-      };
-    case '/admin/dashboard':
-      return {
-        title: 'Dashboard — La Toscana',
-        subtitle: 'Estadísticas del restaurante',
-      };
-    case '/admin/restaurant':
-      return {
-        title: 'Mi Restaurante',
-        subtitle: 'Administración y datos de tu establecimiento',
-      };
-    case '/admin/reservations':
-      return {
-        title: 'Reservas del Restaurante',
-        subtitle: 'Control y confirmación de reservaciones',
-      };
-    case '/admin/reviews':
-      return {
-        title: 'Reseñas de Clientes',
-        subtitle: 'Comentarios y valoraciones recibidas',
-      };
-    default:
-      return {
-        title: 'Reservia',
-        subtitle: 'Plataforma gastronómica',
-      };
+  let title = (route.meta.title as string) || 'Reservia';
+  const subtitle = (route.meta.subtitle as string) || '';
+
+  // Dynamic override for the admin dashboard
+  if (route.name === 'admin-dashboard') {
+    const user = AuthService.getCurrentUser();
+    let restaurantName = 'Mi Restaurante';
+    if (user?.restaurantId) {
+      const restaurant = RestaurantService.getById(user.restaurantId);
+      if (restaurant) {
+        restaurantName = restaurant.name;
+      }
+    }
+    title = `Dashboard — ${restaurantName}`;
   }
+
+  return { title, subtitle };
 });
 </script>
 
