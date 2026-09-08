@@ -73,14 +73,12 @@ function getClientInitial(userId: number): string {
       <!-- Main Page Content -->
       <main class="flex-1 px-8 pb-20 overflow-y-auto">
         <div class="max-w-7xl mx-auto space-y-6">
-          <!-- Filter + Average Rating Row -->
+          <!-- Filters -->
           <div class="flex gap-4 items-stretch">
-            <!-- Filter Card -->
             <div
               class="flex-1 bg-white rounded-2xl p-6 border border-stone-200/80 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
             >
               <div class="flex flex-wrap items-center gap-6">
-                <!-- Rating filter -->
                 <div class="space-y-1">
                   <label
                     for="rating-select"
@@ -104,13 +102,12 @@ function getClientInitial(userId: number): string {
                 </div>
               </div>
 
-              <!-- Counter badge -->
               <span class="text-xs font-semibold text-stone-400">
                 <strong class="text-stone-800">{{ filteredReviews.length }}</strong> reseñas
               </span>
             </div>
 
-            <!-- Average Rating Card -->
+            <!-- Summary Card -->
             <article
               class="bg-white rounded-2xl border border-stone-200/80 shadow-xs px-8 py-4 shrink-0"
             >
@@ -128,7 +125,7 @@ function getClientInitial(userId: number): string {
             </article>
           </div>
 
-          <!-- Reviews Table -->
+          <!-- Data Table -->
           <div class="bg-white rounded-2xl border border-stone-200/80 shadow-xs overflow-hidden">
             <table class="w-full text-left">
               <thead>
@@ -161,7 +158,6 @@ function getClientInitial(userId: number): string {
                   :key="review.id"
                   class="border-b border-stone-50 last:border-b-0 hover:bg-stone-50/50 transition-colors"
                 >
-                  <!-- Client -->
                   <td class="px-6 py-4">
                     <div class="flex items-center gap-3">
                       <div
@@ -175,25 +171,21 @@ function getClientInitial(userId: number): string {
                     </div>
                   </td>
 
-                  <!-- Rating -->
                   <td class="px-4 py-4">
                     <StarRatingComponent :rating="review.rating" :readonly="true" :size="16" />
                   </td>
 
-                  <!-- Comment -->
                   <td class="px-4 py-4 max-w-xs">
                     <p class="text-sm text-stone-600 line-clamp-2">
                       {{ review.comment }}
                     </p>
                   </td>
 
-                  <!-- Date -->
                   <td class="px-4 py-4 text-sm text-stone-700 font-medium whitespace-nowrap">
                     {{ DateFormatUtil.formatShortDate(review.reviewDate) }}
                   </td>
                 </tr>
 
-                <!-- Empty state -->
                 <tr v-if="filteredReviews.length === 0">
                   <td colspan="4" class="px-6 py-12 text-center">
                     <p class="text-sm text-stone-400 font-medium">

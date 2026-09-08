@@ -54,7 +54,7 @@ function increaseGuests(): void {
     <h2 class="text-lg font-bold font-heading text-stone-900 mb-6">Hacer una reserva</h2>
 
     <div class="space-y-5">
-      <!-- Date -->
+      <!-- Form Fields -->
       <div>
         <label class="block text-[11px] font-bold text-stone-500 uppercase tracking-wider mb-2"
           >Fecha</label
@@ -66,7 +66,6 @@ function increaseGuests(): void {
         />
       </div>
 
-      <!-- Time -->
       <div>
         <label class="block text-[11px] font-bold text-stone-500 uppercase tracking-wider mb-2"
           >Hora</label
@@ -87,7 +86,6 @@ function increaseGuests(): void {
         </select>
       </div>
 
-      <!-- Guests -->
       <div>
         <label class="block text-[11px] font-bold text-stone-500 uppercase tracking-wider mb-2"
           >Personas</label
@@ -114,7 +112,6 @@ function increaseGuests(): void {
       </div>
     </div>
 
-    <!-- Submit Button -->
     <button
       type="button"
       class="w-full mt-5 py-3.5 bg-[#C8552A] hover:bg-[#b54a22] text-white rounded-xl text-[15px] font-bold transition-all shadow-sm active:scale-[0.98] cursor-pointer"
