@@ -1,3 +1,4 @@
+// Internal imports
 import type { ReservationInterface } from '@/interfaces/ReservationInterface';
 
 export const reservationSeeder: ReservationInterface[] = [
@@ -110,5 +111,5 @@ export const reservationSeeder: ReservationInterface[] = [
     numberOfPeople: 5,
     status: 'completed',
     specialRequest: 'Celebración de aniversario',
-  }
+  },
 ];

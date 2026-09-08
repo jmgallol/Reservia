@@ -1,15 +1,14 @@
-﻿<script setup lang="ts">
-// Imports
+<script setup lang="ts">
+// External imports
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
+// Internal imports
+import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
+import { RestaurantService } from '@/services/RestaurantService';
 import HeaderComponent from '@/components/layout/HeaderComponent.vue';
 import SidebarComponent from '@/components/layout/SidebarComponent.vue';
-import StarRatingComponent from '@/components/restaurant/StarRatingComponent.vue';
-
-import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
-
-import { RestaurantService } from '@/services/RestaurantService';
+import StarRatingComponent from '@/components/common/StarRatingComponent.vue';
 
 // Variables
 const router = useRouter();
@@ -25,11 +24,7 @@ const cities = computed<string[]>(() => RestaurantService.getCities());
 const categories = computed<string[]>(() => RestaurantService.getCategories());
 
 const filteredRestaurants = computed<RestaurantInterface[]>(() => {
-  return RestaurantService.filter(
-    searchQuery.value,
-    selectedCity.value,
-    selectedCategory.value
-  );
+  return RestaurantService.filter(searchQuery.value, selectedCity.value, selectedCategory.value);
 });
 
 // Methods
@@ -115,7 +110,6 @@ function handleReserve(id: number): void {
                 </option>
               </select>
             </div>
-
 
             <!-- Clear filters -->
             <button

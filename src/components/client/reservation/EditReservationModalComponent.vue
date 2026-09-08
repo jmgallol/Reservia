@@ -1,12 +1,11 @@
-﻿<script setup lang="ts">
-// Imports
+<script setup lang="ts">
+// External imports
 import { ref, watch } from 'vue';
 
-import BaseModalComponent from '@/components/common/BaseModalComponent.vue';
-
+// Internal imports
 import type { ReservationInterface } from '@/interfaces/ReservationInterface';
-
 import { ReservationService } from '@/services/ReservationService';
+import BaseModalComponent from '@/components/common/BaseModalComponent.vue';
 
 // Props & Emits
 const props = defineProps<{
@@ -20,10 +19,12 @@ const emit = defineEmits<{
 }>();
 
 // Reactive variables
-const editReservationDate = ref('');
-const editReservationTime = ref('');
-const editNumberOfPeople = ref(1);
-const editSpecialRequest = ref('');
+const form = ref({
+  reservationDate: '',
+  reservationTime: '',
+  numberOfPeople: 1,
+  specialRequest: '',
+});
 const editErrorMessage = ref('');
 
 // Watchers
@@ -32,10 +33,10 @@ watch(
   (reservation) => {
     if (!reservation) return;
 
-    editReservationDate.value = reservation.reservationDate;
-    editReservationTime.value = reservation.reservationTime;
-    editNumberOfPeople.value = reservation.numberOfPeople;
-    editSpecialRequest.value = reservation.specialRequest ?? '';
+    form.value.reservationDate = reservation.reservationDate;
+    form.value.reservationTime = reservation.reservationTime;
+    form.value.numberOfPeople = reservation.numberOfPeople;
+    form.value.specialRequest = reservation.specialRequest ?? '';
     editErrorMessage.value = '';
   },
 );
@@ -48,10 +49,10 @@ function closeModal(): void {
 
 function isFormValid(): boolean {
   return (
-    editReservationDate.value.trim() !== '' &&
-    editReservationTime.value.trim() !== '' &&
-    Number.isInteger(editNumberOfPeople.value) &&
-    editNumberOfPeople.value >= 1
+    form.value.reservationDate.trim() !== '' &&
+    form.value.reservationTime.trim() !== '' &&
+    Number.isInteger(form.value.numberOfPeople) &&
+    form.value.numberOfPeople >= 1
   );
 }
 
@@ -64,10 +65,10 @@ function handleSave(): void {
   }
 
   ReservationService.updateReservation(props.reservation.id, {
-    reservationDate: editReservationDate.value,
-    reservationTime: editReservationTime.value,
-    numberOfPeople: editNumberOfPeople.value,
-    specialRequest: editSpecialRequest.value.trim(),
+    reservationDate: form.value.reservationDate,
+    reservationTime: form.value.reservationTime,
+    numberOfPeople: form.value.numberOfPeople,
+    specialRequest: form.value.specialRequest.trim(),
   });
 
   emit('saved');
@@ -76,13 +77,14 @@ function handleSave(): void {
 </script>
 
 <template>
-  <BaseModalComponent :model-value="modelValue" @update:model-value="emit('update:modelValue', $event)">
+  <BaseModalComponent
+    :model-value="modelValue"
+    @update:model-value="emit('update:modelValue', $event)"
+  >
     <form class="space-y-5" @submit.prevent="handleSave">
       <div>
         <h2 class="text-lg font-bold text-stone-900 font-heading">Modificar reserva</h2>
-        <p class="mt-1 text-xs text-stone-500">
-          Actualiza los datos principales de tu reserva.
-        </p>
+        <p class="mt-1 text-xs text-stone-500">Actualiza los datos principales de tu reserva.</p>
       </div>
 
       <p
@@ -101,7 +103,7 @@ function handleSave(): void {
         </label>
         <input
           id="edit-reservation-date"
-          v-model="editReservationDate"
+          v-model="form.reservationDate"
           type="date"
           class="w-full px-4 py-3 bg-[#FAF8F4] border border-stone-200 rounded-xl text-sm text-stone-800 outline-none focus:border-stone-400 transition-colors"
         />
@@ -116,7 +118,7 @@ function handleSave(): void {
         </label>
         <input
           id="edit-reservation-time"
-          v-model="editReservationTime"
+          v-model="form.reservationTime"
           type="time"
           class="w-full px-4 py-3 bg-[#FAF8F4] border border-stone-200 rounded-xl text-sm text-stone-800 outline-none focus:border-stone-400 transition-colors"
         />
@@ -131,7 +133,7 @@ function handleSave(): void {
         </label>
         <input
           id="edit-reservation-people"
-          v-model.number="editNumberOfPeople"
+          v-model.number="form.numberOfPeople"
           type="number"
           min="1"
           class="w-full px-4 py-3 bg-[#FAF8F4] border border-stone-200 rounded-xl text-sm text-stone-800 outline-none focus:border-stone-400 transition-colors"
@@ -147,7 +149,7 @@ function handleSave(): void {
         </label>
         <textarea
           id="edit-special-request"
-          v-model="editSpecialRequest"
+          v-model="form.specialRequest"
           rows="3"
           class="w-full px-4 py-3 bg-[#FAF8F4] border border-stone-200 rounded-xl text-sm text-stone-800 outline-none focus:border-stone-400 transition-colors resize-none"
         />

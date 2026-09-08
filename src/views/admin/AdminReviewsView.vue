@@ -1,18 +1,17 @@
-﻿<script setup lang="ts">
-// Imports
+<script setup lang="ts">
+// External imports
 import { computed, ref } from 'vue';
 
+// Internal imports
+import type { ReviewInterface } from '@/interfaces/ReviewInterface';
+import { AuthService } from '@/services/AuthService';
+import { DateFormatUtil } from '@/utils/DateFormatUtil';
+import { ReviewService } from '@/services/ReviewService';
+import { StringFormatUtil } from '@/utils/StringFormatUtil';
+import { UserService } from '@/services/UserService';
 import HeaderComponent from '@/components/layout/HeaderComponent.vue';
 import SidebarComponent from '@/components/layout/SidebarComponent.vue';
-import StarRatingComponent from '@/components/restaurant/StarRatingComponent.vue';
-
-import type { ReviewInterface } from '@/interfaces/ReviewInterface';
-
-import { AuthService } from '@/services/AuthService';
-import { ReviewService } from '@/services/ReviewService';
-import { UserService } from '@/services/UserService';
-import { DateFormatUtil } from '@/utils/DateFormatUtil';
-import { StringFormatUtil } from '@/utils/StringFormatUtil';
+import StarRatingComponent from '@/components/common/StarRatingComponent.vue';
 
 type RatingFilter = 'Todas' | '5' | '4' | '3' | '2' | '1';
 
@@ -74,7 +73,6 @@ function getClientInitial(userId: number): string {
       <!-- Main Page Content -->
       <main class="flex-1 px-8 pb-20 overflow-y-auto">
         <div class="max-w-7xl mx-auto space-y-6">
-
           <!-- Filter + Average Rating Row -->
           <div class="flex gap-4 items-stretch">
             <!-- Filter Card -->
@@ -113,7 +111,9 @@ function getClientInitial(userId: number): string {
             </div>
 
             <!-- Average Rating Card -->
-            <article class="bg-white rounded-2xl border border-stone-200/80 shadow-xs px-8 py-4 shrink-0">
+            <article
+              class="bg-white rounded-2xl border border-stone-200/80 shadow-xs px-8 py-4 shrink-0"
+            >
               <div class="flex items-center gap-4">
                 <p class="text-3xl font-bold text-stone-900 font-heading">
                   {{ averageRating }}

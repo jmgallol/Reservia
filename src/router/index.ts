@@ -26,13 +26,19 @@ const router = createRouter({
       path: '/restaurants',
       name: 'restaurants',
       component: HomeView,
-      meta: { title: 'Restaurantes' },
+      meta: {
+        title: 'Restaurantes',
+        subtitle: 'Encuentra tu próxima experiencia gastronómica',
+      },
     },
     {
       path: '/restaurants/:id',
       name: 'restaurant-show',
       component: RestaurantShowView,
-      meta: { title: 'Detalles del Restaurante' },
+      meta: {
+        title: 'Detalles del Restaurante',
+        subtitle: 'Información y reservas',
+      },
     },
     {
       path: '/auth',
@@ -46,19 +52,31 @@ const router = createRouter({
       path: '/reservations',
       name: 'reservations',
       component: ReservationView,
-      meta: { title: 'Mis Reservas', requiresAuth: true },
+      meta: {
+        title: 'Mis Reservas',
+        subtitle: 'Consulta y gestiona tus reservas confirmadas y pendientes',
+        requiresAuth: true,
+      },
     },
     {
       path: '/reviews',
       name: 'reviews',
       component: ReviewView,
-      meta: { title: 'Mis Reseñas', requiresAuth: true },
+      meta: {
+        title: 'Mis Reseñas',
+        subtitle: 'Opiniones y calificaciones que has compartido',
+        requiresAuth: true,
+      },
     },
     {
       path: '/map',
       name: 'map',
       component: MapView,
-      meta: { title: 'Mapa', requiresAuth: true },
+      meta: {
+        title: 'Mapa Gastronómico',
+        subtitle: 'Explora restaurantes cercanos en tu ciudad',
+        requiresAuth: true,
+      },
     },
 
     // Admin routes
@@ -70,25 +88,45 @@ const router = createRouter({
       path: '/admin/dashboard',
       name: 'admin-dashboard',
       component: AdminView,
-      meta: { title: 'Dashboard', requiresAuth: true, requiresAdmin: true },
+      meta: {
+        title: 'Dashboard',
+        subtitle: 'Estadísticas del restaurante',
+        requiresAuth: true,
+        requiresAdmin: true,
+      },
     },
     {
       path: '/admin/restaurant',
       name: 'admin-restaurant',
       component: AdminRestaurantView,
-      meta: { title: 'Mi Restaurante', requiresAuth: true, requiresAdmin: true },
+      meta: {
+        title: 'Mi Restaurante',
+        subtitle: 'Administra la información pública de tu establecimiento',
+        requiresAuth: true,
+        requiresAdmin: true,
+      },
     },
     {
       path: '/admin/reservations',
       name: 'admin-reservations',
       component: AdminReservationsView,
-      meta: { title: 'Reservas', requiresAuth: true, requiresAdmin: true },
+      meta: {
+        title: 'Reservas del Restaurante',
+        subtitle: 'Control y confirmación de reservaciones',
+        requiresAuth: true,
+        requiresAdmin: true,
+      },
     },
     {
       path: '/admin/reviews',
       name: 'admin-reviews',
       component: AdminReviewsView,
-      meta: { title: 'Reseñas', requiresAuth: true, requiresAdmin: true },
+      meta: {
+        title: 'Reseñas de Clientes',
+        subtitle: 'Comentarios y valoraciones recibidas',
+        requiresAuth: true,
+        requiresAdmin: true,
+      },
     },
   ],
 });

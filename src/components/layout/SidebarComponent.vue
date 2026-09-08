@@ -1,5 +1,5 @@
-﻿<script setup lang="ts">
-// Imports
+<script setup lang="ts">
+// External imports
 import {
   Calendar,
   LayoutDashboard,
@@ -12,20 +12,22 @@ import {
 import { computed } from 'vue';
 import { RouterLink, useRoute, useRouter } from 'vue-router';
 
-import logoImage from '@/assets/images/logo.png';
+// Internal imports
 import type { UserRole } from '@/interfaces/UserInterface';
 import { AuthService } from '@/services/AuthService';
 import { RestaurantService } from '@/services/RestaurantService';
 import { StringFormatUtil } from '@/utils/StringFormatUtil';
+import logoImage from '@/assets/images/logo.png';
 
 // Props
-interface Props {
-  role?: UserRole;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  role: undefined,
-});
+const props = withDefaults(
+  defineProps<{
+    role?: UserRole;
+  }>(),
+  {
+    role: undefined,
+  },
+);
 
 // Variables
 const route = useRoute();

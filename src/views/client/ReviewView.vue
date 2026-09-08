@@ -1,19 +1,17 @@
-﻿<script setup lang="ts">
-// Imports
+<script setup lang="ts">
+// External imports
 import { computed, ref } from 'vue';
 
-import HeaderComponent from '@/components/layout/HeaderComponent.vue';
-import SidebarComponent from '@/components/layout/SidebarComponent.vue';
-import StarRatingComponent from '@/components/restaurant/StarRatingComponent.vue';
-import EditReviewModalComponent from '@/components/review/EditReviewModalComponent.vue';
-
+// Internal imports
 import type { ReviewInterface } from '@/interfaces/ReviewInterface';
-
 import { AuthService } from '@/services/AuthService';
+import { DateFormatUtil } from '@/utils/DateFormatUtil';
 import { RestaurantService } from '@/services/RestaurantService';
 import { ReviewService } from '@/services/ReviewService';
-import { DateFormatUtil } from '@/utils/DateFormatUtil';
-import { StringFormatUtil } from '@/utils/StringFormatUtil';
+import StarRatingComponent from '@/components/common/StarRatingComponent.vue';
+import HeaderComponent from '@/components/layout/HeaderComponent.vue';
+import SidebarComponent from '@/components/layout/SidebarComponent.vue';
+import EditReviewModalComponent from '@/components/client/review/EditReviewModalComponent.vue';
 
 // Reactive variables
 const showEditModal = ref(false);
@@ -43,8 +41,6 @@ function handleDeleteReview(review: ReviewInterface): void {
 
   ReviewService.delete(review.id);
 }
-
-
 </script>
 
 <template>
@@ -94,7 +90,6 @@ function handleDeleteReview(review: ReviewInterface): void {
           </div>
 
           <div v-else class="space-y-5">
-
             <article
               v-for="review in currentUserReviews"
               :key="review.id"
@@ -110,12 +105,6 @@ function handleDeleteReview(review: ReviewInterface): void {
                   </h3>
                 </div>
 
-                <span
-                  v-if="review.status"
-                  class="inline-flex w-fit items-center px-3 py-1 rounded-full bg-stone-100 text-xs font-medium text-stone-600"
-                >
-                  {{ StringFormatUtil.formatReviewStatus(review.status) }}
-                </span>
               </div>
 
               <div class="flex flex-wrap items-center gap-2">
@@ -150,9 +139,6 @@ function handleDeleteReview(review: ReviewInterface): void {
     </div>
 
     <!-- Edit Review Modal -->
-    <EditReviewModalComponent
-      v-model="showEditModal"
-      :review="selectedReview"
-    />
+    <EditReviewModalComponent v-model="showEditModal" :review="selectedReview" />
   </div>
 </template>

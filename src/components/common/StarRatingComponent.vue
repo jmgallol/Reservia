@@ -1,21 +1,22 @@
-﻿<script setup lang="ts">
-// Imports
-import { Star } from 'lucide-vue-next';
+<script setup lang="ts">
+// External imports
 import { ref } from 'vue';
+import { Star } from 'lucide-vue-next';
 
 // Props
-interface Props {
-  rating: number;
-  readonly?: boolean;
-  maxStars?: number;
-  size?: number;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  readonly: false,
-  maxStars: 5,
-  size: 20,
-});
+const props = withDefaults(
+  defineProps<{
+    rating: number;
+    readonly?: boolean;
+    maxStars?: number;
+    size?: number;
+  }>(),
+  {
+    readonly: false,
+    maxStars: 5,
+    size: 20,
+  },
+);
 
 // Emits
 const emit = defineEmits<{

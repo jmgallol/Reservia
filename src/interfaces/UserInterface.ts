@@ -9,4 +9,3 @@ export interface UserInterface {
   role: UserRole;
   restaurantId?: number;
 }
-

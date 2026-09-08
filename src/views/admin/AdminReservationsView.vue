@@ -1,16 +1,17 @@
-﻿<script setup lang="ts">
-// Imports
+<script setup lang="ts">
+// External imports
 import { computed, ref } from 'vue';
 
-import DoughnutChartComponent from '@/components/dashboard/DoughnutChartComponent.vue';
-import StatusBadgeComponent from '@/components/common/StatusBadgeComponent.vue';
-import HeaderComponent from '@/components/layout/HeaderComponent.vue';
-import SidebarComponent from '@/components/layout/SidebarComponent.vue';
+// Internal imports
 import type { ReservationInterface, ReservationStatus } from '@/interfaces/ReservationInterface';
 import { AuthService } from '@/services/AuthService';
 import { ReservationService } from '@/services/ReservationService';
-import { UserService } from '@/services/UserService';
 import { StringFormatUtil } from '@/utils/StringFormatUtil';
+import { UserService } from '@/services/UserService';
+import DoughnutChartComponent from '@/components/admin/dashboard/DoughnutChartComponent.vue';
+import HeaderComponent from '@/components/layout/HeaderComponent.vue';
+import StatusBadgeComponent from '@/components/common/StatusBadgeComponent.vue';
+import SidebarComponent from '@/components/layout/SidebarComponent.vue';
 
 // Reactive variables
 const selectedStatus = ref<'Todas' | ReservationStatus>('Todas');
@@ -36,17 +37,12 @@ const peopleOptions = [
 // Computed
 const currentUser = computed(() => AuthService.getCurrentUser());
 
-const restaurantReservations = computed<ReservationInterface[]>(() => {
-  if (!currentUser.value?.restaurantId) return [];
-  return ReservationService.getByRestaurantId(currentUser.value.restaurantId);
-});
-
 const filteredReservations = computed<ReservationInterface[]>(() => {
   if (!currentUser.value?.restaurantId) return [];
   return ReservationService.filter(
     currentUser.value.restaurantId,
     selectedStatus.value,
-    selectedPeople.value
+    selectedPeople.value,
   );
 });
 

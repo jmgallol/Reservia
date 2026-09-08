@@ -1,3 +1,4 @@
+// Internal imports
 import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
 
 export const restaurantSeeder: RestaurantInterface[] = [
@@ -101,7 +102,8 @@ export const restaurantSeeder: RestaurantInterface[] = [
     longitude: -75.565,
     adminId: 8,
     description: 'Sabores locales con técnicas modernas en un ambiente elegante.',
-    imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCOSgTvjESain2lcef2wAlDQb22BSGzojIvyYfnKnpuQ&s=10',
+    imageUrl:
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCOSgTvjESain2lcef2wAlDQb22BSGzojIvyYfnKnpuQ&s=10',
   },
   {
     id: 9,
@@ -113,7 +115,8 @@ export const restaurantSeeder: RestaurantInterface[] = [
     longitude: -75.5685,
     adminId: 9,
     description: 'Laboratorio gastronómico de comida tradicional con un toque rústico.',
-    imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAKOsSFZUAGKZGs6tzk5rE3d9x7eVjG-wfREUI4qQ-Yw&s=10',
+    imageUrl:
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAKOsSFZUAGKZGs6tzk5rE3d9x7eVjG-wfREUI4qQ-Yw&s=10',
   },
   {
     id: 10,
@@ -125,7 +128,8 @@ export const restaurantSeeder: RestaurantInterface[] = [
     longitude: -75.5665,
     adminId: 10,
     description: 'El sabor tradicional de Antioquia, famoso por su mondongo.',
-    imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRihLEQ-RiU6AthTN133X0Ota0BZTtovM7naAs_BgN_dg&s=10',
+    imageUrl:
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRihLEQ-RiU6AthTN133X0Ota0BZTtovM7naAs_BgN_dg&s=10',
   },
   {
     id: 11,
@@ -137,6 +141,7 @@ export const restaurantSeeder: RestaurantInterface[] = [
     longitude: -75.56,
     adminId: 11,
     description: 'Restaurante con vista espectacular y comida de autor.',
-    imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSe3UduExibTGEsbYczIzpeob5Oi9k5p19XO401QldL9g&s=10',
+    imageUrl:
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSe3UduExibTGEsbYczIzpeob5Oi9k5p19XO401QldL9g&s=10',
   },
 ];

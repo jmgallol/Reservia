@@ -1,36 +1,34 @@
-// Imports
+// Internal imports
 import type { UserInterface } from '@/interfaces/UserInterface';
-
 import { useAuthStore } from '@/stores/authStore';
 
 export class AuthService {
+  // Getters
   static getUsers(): UserInterface[] {
-    const store = useAuthStore();
-    return store.users;
+    return useAuthStore().users;
   }
 
+  static getCurrentUser(): UserInterface | null {
+    return useAuthStore().currentUser;
+  }
+
+  static isAuthenticated(): boolean {
+    return useAuthStore().isAuthenticated();
+  }
+
+  // Auth Methods
   static login(email: string, password: string): UserInterface | undefined {
-    const users = AuthService.getUsers();
-    const user = users.find((user) => user.email === email && user.password === password);
+    const user = AuthService.getUsers().find(
+      (user) => user.email === email && user.password === password,
+    );
     if (user) {
-      const store = useAuthStore();
-      store.login(user);
+      useAuthStore().login(user);
     }
+
     return user;
   }
 
   static logout(): void {
-    const store = useAuthStore();
-    store.logout();
-  }
-
-  static getCurrentUser(): UserInterface | null {
-    const store = useAuthStore();
-    return store.currentUser;
-  }
-
-  static isAuthenticated(): boolean {
-    const store = useAuthStore();
-    return store.isAuthenticated();
+    useAuthStore().logout();
   }
 }

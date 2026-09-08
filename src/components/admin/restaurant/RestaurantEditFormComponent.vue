@@ -1,20 +1,19 @@
-﻿<script setup lang="ts">
-// Imports
+<script setup lang="ts">
+// External imports
+import { ref, watch } from 'vue';
 import { SquarePen } from 'lucide-vue-next';
-import { reactive, ref, watch } from 'vue';
 
+// Internal imports
 import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
 import { RestaurantService } from '@/services/RestaurantService';
 
 // Props
-interface Props {
+const props = defineProps<{
   restaurant: RestaurantInterface;
-}
+}>();
 
-const props = defineProps<Props>();
-
-// Reactive variables — form model
-const form = reactive({
+// Reactive variables
+const form = ref({
   name: '',
   address: '',
   city: '',
@@ -28,26 +27,26 @@ const saveSuccess = ref(false);
 
 // Methods
 function loadFormData(): void {
-  form.name = props.restaurant.name;
-  form.address = props.restaurant.address;
-  form.city = props.restaurant.city;
-  form.category = props.restaurant.category;
-  form.openingTime = props.restaurant.openingTime ?? '';
-  form.closingTime = props.restaurant.closingTime ?? '';
-  form.description = props.restaurant.description ?? '';
+  form.value.name = props.restaurant.name;
+  form.value.address = props.restaurant.address;
+  form.value.city = props.restaurant.city;
+  form.value.category = props.restaurant.category;
+  form.value.openingTime = props.restaurant.openingTime ?? '';
+  form.value.closingTime = props.restaurant.closingTime ?? '';
+  form.value.description = props.restaurant.description ?? '';
   saveSuccess.value = false;
 }
 
 function handleSave(): void {
   const updatedRestaurant: RestaurantInterface = {
     ...props.restaurant,
-    name: form.name,
-    address: form.address,
-    city: form.city,
-    category: form.category,
-    openingTime: form.openingTime,
-    closingTime: form.closingTime,
-    description: form.description,
+    name: form.value.name,
+    address: form.value.address,
+    city: form.value.city,
+    category: form.value.category,
+    openingTime: form.value.openingTime,
+    closingTime: form.value.closingTime,
+    description: form.value.description,
   };
 
   RestaurantService.update(updatedRestaurant);
