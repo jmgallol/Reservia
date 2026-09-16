@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { setActivePinia, createPinia } from 'pinia';
 import { useAuthStore } from '@/stores/authStore';
 import { AuthService } from '../AuthService';
+import type { UserInterface } from '@/interfaces/UserInterface';
 
 describe('AuthService', () => {
   beforeEach(() => {
@@ -15,7 +16,7 @@ describe('AuthService', () => {
 
   it('should login a valid user successfully', () => {
     const store = useAuthStore();
-    const testUser = { id: 1, name: 'Test User', email: 'test@example.com', password: 'password123' } as any;
+    const testUser = { id: 1, name: 'Test User', email: 'test@example.com', password: 'password123', phone: '123', role: 'client' } as UserInterface;
     store.users = [testUser];
 
     const loggedUser = AuthService.login('test@example.com', 'password123');
@@ -27,7 +28,7 @@ describe('AuthService', () => {
 
   it('should return undefined and not login with invalid credentials', () => {
     const store = useAuthStore();
-    const testUser = { id: 1, name: 'Test User', email: 'test@example.com', password: 'password123' } as any;
+    const testUser = { id: 1, name: 'Test User', email: 'test@example.com', password: 'password123', phone: '123', role: 'client' } as UserInterface;
     store.users = [testUser];
 
     const loggedUser = AuthService.login('test@example.com', 'wrongpassword');
@@ -39,7 +40,7 @@ describe('AuthService', () => {
 
   it('should logout correctly', () => {
     const store = useAuthStore();
-    const testUser = { id: 1, name: 'Test User', email: 'test@example.com', password: 'password123' } as any;
+    const testUser = { id: 1, name: 'Test User', email: 'test@example.com', password: 'password123', phone: '123', role: 'client' } as UserInterface;
     store.users = [testUser];
 
     AuthService.login('test@example.com', 'password123');

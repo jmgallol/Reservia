@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { setActivePinia, createPinia } from 'pinia';
 import { useAuthStore } from '@/stores/authStore';
 import { UserService } from '../UserService';
+import type { UserInterface } from '@/interfaces/UserInterface';
 
 describe('UserService', () => {
   beforeEach(() => {
@@ -18,7 +19,7 @@ describe('UserService', () => {
     const store = useAuthStore();
     // mock a user
     store.users = [
-      { id: 1, name: 'Juan Perez', email: 'juan@test.com', password: '123' } as any
+      { id: 1, name: 'Juan Perez', email: 'juan@test.com', password: '123', phone: '123', role: 'client' } as UserInterface
     ];
     
     expect(UserService.getNameById(1)).toBe('Juan Perez');
