@@ -12,17 +12,17 @@ import StarRatingComponent from '@/components/common/StarRatingComponent.vue';
 
 // Variables
 const router = useRouter();
+const cities = RestaurantService.getCities();
+const categories = RestaurantService.getCategories();
 
 // Reactive variables
 const searchQuery = ref('');
+
+// Selectors
 const selectedCity = ref('Todas');
 const selectedCategory = ref('Todas');
 
 // Computed
-const cities = computed<string[]>(() => RestaurantService.getCities());
-
-const categories = computed<string[]>(() => RestaurantService.getCategories());
-
 const filteredRestaurants = computed<RestaurantInterface[]>(() => {
   return RestaurantService.filter(searchQuery.value, selectedCity.value, selectedCategory.value);
 });
@@ -34,7 +34,7 @@ function clearFilters(): void {
   selectedCategory.value = 'Todas';
 }
 
-function handleReserve(id: number): void {
+function handleViewRestaurant(id: number): void {
   router.push(`/restaurants/${id}`);
 }
 </script>
@@ -172,9 +172,9 @@ function handleReserve(id: number): void {
                 <button
                   type="button"
                   class="py-2.5 px-8 rounded-full bg-[#C8552A] hover:bg-[#b54a22] text-white text-xs font-semibold shadow-xs transition-colors cursor-pointer text-center"
-                  @click="handleReserve(restaurant.id)"
+                  @click="handleViewRestaurant(restaurant.id)"
                 >
-                  Reservar
+                  Ver detalles
                 </button>
               </div>
             </div>

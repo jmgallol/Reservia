@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 // External imports
 import { computed, ref } from 'vue';
 
@@ -18,6 +18,8 @@ import StatusBadgeComponent from '@/components/common/StatusBadgeComponent.vue';
 const statusLabels = ['Pendientes', 'Confirmadas', 'Completadas', 'Canceladas'];
 const statusColors = ['#F59E0B', '#22C55E', '#9CA3AF', '#EF4444'];
 const statusOrder: ReservationStatus[] = ['pending', 'confirmed', 'completed', 'cancelled'];
+
+// Selectors
 const statusOptions: { label: string; value: 'Todas' | ReservationStatus }[] = [
   { label: 'Todas', value: 'Todas' },
   { label: 'Pendientes', value: 'pending' },
@@ -26,24 +28,26 @@ const statusOptions: { label: string; value: 'Todas' | ReservationStatus }[] = [
   { label: 'Canceladas', value: 'cancelled' },
 ];
 
+// Variables
+const currentUser = AuthService.getCurrentUser();
+
 // Reactive variables
-const selectedStatus = ref<'Todas' | ReservationStatus>('Todas');
 const showEditModal = ref(false);
+
+// Selectors
+const selectedStatus = ref<'Todas' | ReservationStatus>('Todas');
 const selectedReservation = ref<ReservationInterface | null>(null);
 
 // Computed
 const currentUserReservations = computed<ReservationInterface[]>(() => {
-  const currentUser = AuthService.getCurrentUser();
   if (!currentUser) return [];
 
   return ReservationService.getByUserId(currentUser.id);
 });
 
 const visibleReservations = computed<ReservationInterface[]>(() => {
-  const currentUser = AuthService.getCurrentUser();
-  if (!currentUser) return [];
-
-  return ReservationService.filterByClient(currentUser.id, selectedStatus.value);
+  if (selectedStatus.value === 'Todas') return currentUserReservations.value;
+  return currentUserReservations.value.filter((r) => r.status === selectedStatus.value);
 });
 
 const statusChartData = computed<number[]>(() =>
@@ -53,20 +57,18 @@ const statusChartData = computed<number[]>(() =>
   ),
 );
 
-const activeCount = computed<number>(
-  () =>
-    currentUserReservations.value.filter(
-      (reservation) => reservation.status === 'pending' || reservation.status === 'confirmed',
-    ).length,
-);
-
-const completedCount = computed<number>(
-  () =>
-    currentUserReservations.value.filter((reservation) => reservation.status === 'completed')
-      .length,
-);
-
 // Methods
+function getActiveCount(): number {
+  return currentUserReservations.value.filter(
+    (reservation) => reservation.status === 'pending' || reservation.status === 'confirmed',
+  ).length;
+}
+
+function getCompletedCount(): number {
+  return currentUserReservations.value.filter(
+    (reservation) => reservation.status === 'completed',
+  ).length;
+}
 function getRestaurantName(restaurantId: number): string {
   return RestaurantService.getById(restaurantId)?.name ?? 'Restaurante no encontrado';
 }
@@ -252,14 +254,14 @@ function openEditModal(reservation: ReservationInterface): void {
                     <span class="w-2.5 h-2.5 rounded-full bg-amber-400 shrink-0" />
                     <span class="text-sm font-medium text-stone-600">Activas</span>
                   </span>
-                  <span class="text-sm font-bold text-amber-500">{{ activeCount }}</span>
+                  <span class="text-sm font-bold text-amber-500">{{ getActiveCount() }}</span>
                 </li>
                 <li class="flex items-center justify-between">
                   <span class="flex items-center gap-2.5">
                     <span class="w-2.5 h-2.5 rounded-full bg-green-500 shrink-0" />
                     <span class="text-sm font-medium text-stone-600">Completadas</span>
                   </span>
-                  <span class="text-sm font-bold text-green-500">{{ completedCount }}</span>
+                  <span class="text-sm font-bold text-green-500">{{ getCompletedCount() }}</span>
                 </li>
               </ul>
             </section>

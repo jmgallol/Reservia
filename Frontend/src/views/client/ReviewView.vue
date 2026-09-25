@@ -13,13 +13,15 @@ import HeaderComponent from '@/components/layout/HeaderComponent.vue';
 import SidebarComponent from '@/components/layout/SidebarComponent.vue';
 import EditReviewModalComponent from '@/components/client/review/EditReviewModalComponent.vue';
 
+// Variables
+const currentUser = AuthService.getCurrentUser();
+
 // Reactive variables
 const showEditModal = ref(false);
 const selectedReview = ref<ReviewInterface | null>(null);
 
 // Computed
 const currentUserReviews = computed<ReviewInterface[]>(() => {
-  const currentUser = AuthService.getCurrentUser();
   if (!currentUser) return [];
 
   return ReviewService.getByUserId(currentUser.id);
