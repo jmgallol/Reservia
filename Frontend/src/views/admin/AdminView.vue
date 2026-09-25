@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 // External imports
 import Chart from 'chart.js/auto';
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
@@ -25,6 +25,7 @@ const periodOptions = [
   { value: 'this_month', label: 'Este mes' },
 ];
 
+// Computed
 const chartData = computed(() => {
   const currentUser = AuthService.getCurrentUser();
   const reservations = currentUser?.restaurantId

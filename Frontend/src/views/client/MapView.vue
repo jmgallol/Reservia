@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 // External imports
 import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -20,10 +20,8 @@ const router = useRouter();
 const mapContainerRef = ref<HTMLDivElement | null>(null);
 
 // Computed
-const allRestaurants = computed(() => RestaurantService.getAll());
-
 const medellinRestaurants = computed<RestaurantInterface[]>(() =>
-  allRestaurants.value.filter((restaurant) => restaurant.city.toLowerCase() === 'medellín'),
+  RestaurantService.getAll().filter((restaurant) => restaurant.city.toLowerCase() === 'medellín'),
 );
 
 // Methods

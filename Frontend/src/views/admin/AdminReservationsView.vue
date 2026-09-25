@@ -13,9 +13,10 @@ import HeaderComponent from '@/components/layout/HeaderComponent.vue';
 import StatusBadgeComponent from '@/components/common/StatusBadgeComponent.vue';
 import SidebarComponent from '@/components/layout/SidebarComponent.vue';
 
-// Reactive variables
-const selectedStatus = ref<'Todas' | ReservationStatus>('Todas');
-const selectedPeople = ref<string>('Todos');
+// Variables
+const currentUser = AuthService.getCurrentUser();
+const chartLabels = ['Pendientes', 'Confirmadas', 'Completadas', 'Canceladas'];
+const chartColors = ['#F59E0B', '#22C55E', '#9CA3AF', '#EF4444'];
 
 // Selectors
 const statusOptions: { value: 'Todas' | ReservationStatus; label: string }[] = [
@@ -34,21 +35,18 @@ const peopleOptions = [
   { value: '7+', label: '7+' },
 ];
 
-// Computed
-const currentUser = computed(() => AuthService.getCurrentUser());
+const selectedStatus = ref<'Todas' | ReservationStatus>('Todas');
+const selectedPeople = ref<string>('Todos');
 
+// Computed
 const filteredReservations = computed<ReservationInterface[]>(() => {
-  if (!currentUser.value?.restaurantId) return [];
+  if (!currentUser?.restaurantId) return [];
   return ReservationService.filter(
-    currentUser.value.restaurantId,
+    currentUser.restaurantId,
     selectedStatus.value,
     selectedPeople.value,
   );
 });
-
-// Chart data computed from filtered reservations
-const chartLabels = ['Pendientes', 'Confirmadas', 'Completadas', 'Canceladas'];
-const chartColors = ['#F59E0B', '#22C55E', '#9CA3AF', '#EF4444'];
 
 const chartData = computed<number[]>(() => {
   const statuses: ReservationStatus[] = ['pending', 'confirmed', 'completed', 'cancelled'];

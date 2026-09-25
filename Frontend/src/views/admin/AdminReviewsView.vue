@@ -15,8 +15,8 @@ import StarRatingComponent from '@/components/common/StarRatingComponent.vue';
 
 type RatingFilter = 'Todas' | '5' | '4' | '3' | '2' | '1';
 
-// Reactive variables
-const selectedRating = ref<RatingFilter>('Todas');
+// Variables
+const currentUser = AuthService.getCurrentUser();
 
 // Selectors
 const ratingOptions: { value: RatingFilter; label: string }[] = [
@@ -28,12 +28,12 @@ const ratingOptions: { value: RatingFilter; label: string }[] = [
   { value: '1', label: '1 ★' },
 ];
 
-// Computed
-const currentUser = computed(() => AuthService.getCurrentUser());
+const selectedRating = ref<RatingFilter>('Todas');
 
+// Computed
 const restaurantReviews = computed<ReviewInterface[]>(() => {
-  if (!currentUser.value?.restaurantId) return [];
-  return ReviewService.getByRestaurantId(currentUser.value.restaurantId);
+  if (!currentUser?.restaurantId) return [];
+  return ReviewService.getByRestaurantId(currentUser.restaurantId);
 });
 
 const filteredReviews = computed<ReviewInterface[]>(() => {
@@ -43,11 +43,9 @@ const filteredReviews = computed<ReviewInterface[]>(() => {
 });
 
 const averageRating = computed<number>(() => {
-  if (!currentUser.value?.restaurantId) return 0;
-  return ReviewService.getAverageRating(currentUser.value.restaurantId);
+  if (!currentUser?.restaurantId) return 0;
+  return ReviewService.getAverageRating(currentUser.restaurantId);
 });
-
-const totalReviews = computed<number>(() => restaurantReviews.value.length);
 
 // Methods
 function getClientName(userId: number): string {
@@ -121,7 +119,7 @@ function getClientInitial(userId: number): string {
                 <div class="space-y-1">
                   <StarRatingComponent :rating="averageRating" :readonly="true" :size="18" />
                   <p class="text-[11px] text-stone-400 font-medium">
-                    {{ totalReviews }} reseñas totales
+                    {{ restaurantReviews.length }} reseñas totales
                   </p>
                 </div>
               </div>

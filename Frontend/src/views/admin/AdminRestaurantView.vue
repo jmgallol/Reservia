@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 // External imports
 import { computed } from 'vue';
 
@@ -10,12 +10,13 @@ import HeaderComponent from '@/components/layout/HeaderComponent.vue';
 import SidebarComponent from '@/components/layout/SidebarComponent.vue';
 import RestaurantEditFormComponent from '@/components/admin/restaurant/RestaurantEditFormComponent.vue';
 
-// Computed
-const currentUser = computed(() => AuthService.getCurrentUser());
+// Variables
+const currentUser = AuthService.getCurrentUser();
 
+// Computed
 const restaurant = computed<RestaurantInterface | undefined>(() => {
-  if (!currentUser.value?.restaurantId) return undefined;
-  return RestaurantService.getById(currentUser.value.restaurantId);
+  if (!currentUser?.restaurantId) return undefined;
+  return RestaurantService.getById(currentUser.restaurantId);
 });
 </script>
 
