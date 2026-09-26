@@ -4,7 +4,6 @@ import { watch } from 'vue';
 
 // Internal imports
 import { reservationSeeder } from '@/seeders/ReservationSeeder';
-import { restaurantSeeder } from '@/seeders/RestaurantSeeder';
 import { reviewSeeder } from '@/seeders/ReviewSeeder';
 import { userSeeder } from '@/seeders/UserSeeder';
 
@@ -19,9 +18,6 @@ export default class PiniaConfig {
       pinia.state.value = {
         reservation: {
           reservations: reservationSeeder,
-        },
-        restaurant: {
-          restaurants: restaurantSeeder,
         },
         review: {
           reviews: reviewSeeder,

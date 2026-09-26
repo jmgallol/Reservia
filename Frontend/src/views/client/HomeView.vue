@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // External imports
-import { computed, ref } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 // Internal imports
@@ -12,8 +12,9 @@ import StarRatingComponent from '@/components/common/StarRatingComponent.vue';
 
 // Variables
 const router = useRouter();
-const cities = RestaurantService.getCities();
-const categories = RestaurantService.getCategories();
+const cities = ref<string[]>(['Todas']);
+const categories = ref<string[]>(['Todas']);
+const filteredRestaurants = ref<RestaurantInterface[]>([]);
 
 // Reactive variables
 const searchQuery = ref('');
@@ -22,10 +23,18 @@ const searchQuery = ref('');
 const selectedCity = ref('Todas');
 const selectedCategory = ref('Todas');
 
-// Computed
-const filteredRestaurants = computed<RestaurantInterface[]>(() => {
-  return RestaurantService.filter(searchQuery.value, selectedCity.value, selectedCategory.value);
+onMounted(async () => {
+  cities.value = await RestaurantService.getCities();
+  categories.value = await RestaurantService.getCategories();
 });
+
+watch(
+  [searchQuery, selectedCity, selectedCategory],
+  async ([query, city, category]) => {
+    filteredRestaurants.value = await RestaurantService.filter(query, city, category);
+  },
+  { immediate: true }
+);
 
 // Methods
 function clearFilters(): void {
