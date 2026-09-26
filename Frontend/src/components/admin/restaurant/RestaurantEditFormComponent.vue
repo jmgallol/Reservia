@@ -37,7 +37,7 @@ function loadFormData(): void {
   saveSuccess.value = false;
 }
 
-function handleSave(): void {
+async function handleSave(): Promise<void> {
   const updatedRestaurant: RestaurantInterface = {
     ...props.restaurant,
     name: form.value.name,
@@ -49,7 +49,7 @@ function handleSave(): void {
     description: form.value.description,
   };
 
-  RestaurantService.update(updatedRestaurant);
+  await RestaurantService.update(updatedRestaurant);
 }
 
 function handleDiscard(): void {
