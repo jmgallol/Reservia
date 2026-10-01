@@ -9,7 +9,7 @@ import {
   Store,
   UtensilsCrossed,
 } from 'lucide-vue-next';
-import { computed } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import { RouterLink, useRoute, useRouter } from 'vue-router';
 
 // Internal imports
@@ -44,11 +44,15 @@ const activeRole = computed<UserRole>(() => {
 
 const isAdmin = computed(() => activeRole.value === 'admin');
 
-const currentRestaurant = computed(() => {
+const currentRestaurantName = ref('La Toscana');
+
+onMounted(async () => {
   if (currentUser.value?.restaurantId) {
-    return RestaurantService.getById(currentUser.value.restaurantId) ?? { name: 'La Toscana' };
+    const restaurant = await RestaurantService.getById(currentUser.value.restaurantId);
+    if (restaurant) {
+      currentRestaurantName.value = restaurant.name;
+    }
   }
-  return { name: 'La Toscana' };
 });
 
 const userName = computed(() => {
@@ -102,7 +106,7 @@ async function handleLogout(): Promise<void> {
       >
         <p class="text-[11px] font-bold tracking-wider text-[#E8A020] uppercase">ADMINISTRADOR</p>
         <p class="text-xs text-stone-300 font-medium truncate mt-0.5">
-          {{ currentRestaurant.name }}
+          {{ currentRestaurantName }}
         </p>
       </div>
     </div>

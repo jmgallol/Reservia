@@ -1,20 +1,37 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 // External imports
 import { AlertCircle, Calendar, Check, Star } from 'lucide-vue-next';
-import { computed } from 'vue';
+import { onMounted, ref } from 'vue';
+import type { Component } from 'vue';
 
 // Internal imports
 import { AuthService } from '@/services/AuthService';
 import { ReservationService } from '@/services/ReservationService';
 import { ReviewService } from '@/services/ReviewService';
 
-// Computed
-const kpiCards = computed(() => {
+// Interfaces
+interface KpiCard {
+  id: string;
+  label: string;
+  value: string;
+  trendText: string;
+  icon: Component;
+}
+
+// Reactive variables
+const kpiCards = ref<KpiCard[]>([
+  { id: 'total', label: 'Reservas totales', value: '0', trendText: 'Cargando...', icon: Calendar },
+  { id: 'confirmed', label: 'Confirmadas', value: '0', trendText: 'Cargando...', icon: Check },
+  { id: 'pending', label: 'Pendientes', value: '0', trendText: 'Cargando...', icon: AlertCircle },
+  { id: 'rating', label: 'Calificación', value: '5.0 ★', trendText: 'Cargando...', icon: Star },
+]);
+
+onMounted(async () => {
   const currentUser = AuthService.getCurrentUser();
   const restaurantId = currentUser?.restaurantId;
 
-  const reservations = restaurantId ? ReservationService.getByRestaurantId(restaurantId) : [];
-  const reviews = restaurantId ? ReviewService.getByRestaurantId(restaurantId) : [];
+  const reservations = restaurantId ? await ReservationService.getByRestaurantId(restaurantId) : [];
+  const reviews = restaurantId ? await ReviewService.getByRestaurantId(restaurantId) : [];
 
   const total = reservations.length;
   const confirmed = reservations.filter((r) => r.status === 'confirmed').length;
@@ -23,7 +40,7 @@ const kpiCards = computed(() => {
     ? (reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length).toFixed(1)
     : '5.0';
 
-  return [
+  kpiCards.value = [
     {
       id: 'total',
       label: 'Reservas totales',

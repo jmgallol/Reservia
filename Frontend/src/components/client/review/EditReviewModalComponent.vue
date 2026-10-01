@@ -48,7 +48,7 @@ function isFormValid(): boolean {
   return form.value.rating >= 1 && form.value.rating <= 5 && form.value.comment.trim() !== '';
 }
 
-function handleSave(): void {
+async function handleSave(): Promise<void> {
   if (!props.review) return;
 
   if (!isFormValid()) {
@@ -56,11 +56,13 @@ function handleSave(): void {
     return;
   }
 
-  ReviewService.update({
+  const updateDto = {
     ...props.review,
     rating: form.value.rating,
     comment: form.value.comment.trim(),
-  });
+  };
+
+  await ReviewService.update(updateDto);
 
   emit('saved');
   closeModal();
