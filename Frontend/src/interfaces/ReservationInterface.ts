@@ -1,3 +1,6 @@
+import type { UserInterface } from './UserInterface';
+import type { RestaurantInterface } from './RestaurantInterface';
+
 export type ReservationStatus = 'pending' | 'confirmed' | 'completed' | 'cancelled';
 
 export interface ReservationInterface {
@@ -9,4 +12,6 @@ export interface ReservationInterface {
   specialRequest?: string;
   userId: number;
   restaurantId: number;
+  user?: UserInterface;
+  restaurant?: RestaurantInterface;
 }

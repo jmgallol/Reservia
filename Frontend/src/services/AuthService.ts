@@ -1,13 +1,10 @@
 // Internal imports
 import type { UserInterface } from '@/interfaces/UserInterface';
 import { useAuthStore } from '@/stores/authStore';
+import axios from 'axios';
 
 export class AuthService {
   // Getters
-  static getUsers(): UserInterface[] {
-    return useAuthStore().users;
-  }
-
   static getCurrentUser(): UserInterface | null {
     return useAuthStore().currentUser;
   }
@@ -17,15 +14,22 @@ export class AuthService {
   }
 
   // Auth Methods
-  static login(email: string, password: string): UserInterface | undefined {
-    const user = AuthService.getUsers().find(
-      (user) => user.email === email && user.password === password,
-    );
-    if (user) {
-      useAuthStore().login(user);
+  static async login(email: string, password: string): Promise<UserInterface | undefined> {
+    try {
+      const { data } = await axios.post('http://localhost:3000/api/users/login', {
+        email,
+        password,
+      });
+      
+      if (data) {
+        useAuthStore().login(data);
+        return data;
+      }
+    } catch (error) {
+      console.error('Login failed:', error);
+      return undefined;
     }
-
-    return user;
+    return undefined;
   }
 
   static logout(): void {

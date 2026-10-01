@@ -7,7 +7,6 @@ import type { UserInterface } from '@/interfaces/UserInterface';
 
 export const useAuthStore = defineStore('user', () => {
   const currentUser = ref<UserInterface | null>(null);
-  const users = ref<UserInterface[]>([]);
 
   function login(user: UserInterface): void {
     currentUser.value = user;
@@ -23,7 +22,6 @@ export const useAuthStore = defineStore('user', () => {
 
   return {
     currentUser,
-    users,
     login,
     logout,
     isAuthenticated,

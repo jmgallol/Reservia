@@ -65,13 +65,8 @@ export class RestaurantService {
     }
   }
 
-  static calculateAverageRating(restaurantId: number): number {
-    const reviews = ReviewService.getByRestaurantId(restaurantId);
-    if (reviews.length === 0) {
-      return 4.8;
-    }
-    const total = reviews.reduce((sum, review) => sum + review.rating, 0);
-    return Math.round((total / reviews.length) * 10) / 10;
+  static calculateAverageRating(restaurant: RestaurantInterface): number {
+    return restaurant.averageRating ?? 4.8;
   }
 
   static async create(restaurant: Omit<RestaurantInterface, 'id'>): Promise<RestaurantInterface | undefined> {
