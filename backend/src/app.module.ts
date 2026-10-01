@@ -1,7 +1,9 @@
-import { HomeModule } from './home/home.module.js'
 import { Module } from '@nestjs/common';
-import { RestaurantsModule } from './restaurants/restaurants.module.js';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { RestaurantsModule } from './restaurants/restaurants.module.js';
+import { UsersModule } from './users/users.module.js';
+import { ReservationsModule } from './reservations/reservations.module.js';
+import { ReviewsModule } from './reviews/reviews.module.js';
 
 @Module({
   imports: [
@@ -11,8 +13,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       autoLoadEntities: true,
       synchronize: true,
     }),
-    HomeModule,
     RestaurantsModule,
+    UsersModule,
+    ReservationsModule,
+    ReviewsModule,
   ],
 })
 export class AppModule {}
