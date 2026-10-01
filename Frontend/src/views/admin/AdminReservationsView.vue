@@ -1,13 +1,12 @@
 <script setup lang="ts">
 // External imports
-import { computed, ref } from 'vue';
+import { onMounted, computed, ref, watch } from 'vue';
 
 // Internal imports
 import type { ReservationInterface, ReservationStatus } from '@/interfaces/ReservationInterface';
 import { AuthService } from '@/services/AuthService';
 import { ReservationService } from '@/services/ReservationService';
 import { StringFormatUtil } from '@/utils/StringFormatUtil';
-import { UserService } from '@/services/UserService';
 import DoughnutChartComponent from '@/components/admin/dashboard/DoughnutChartComponent.vue';
 import HeaderComponent from '@/components/layout/HeaderComponent.vue';
 import StatusBadgeComponent from '@/components/common/StatusBadgeComponent.vue';
@@ -35,17 +34,39 @@ const peopleOptions = [
   { value: '7+', label: '7+' },
 ];
 
+const rawReservations = ref<ReservationInterface[]>([]);
 const selectedStatus = ref<'Todas' | ReservationStatus>('Todas');
 const selectedPeople = ref<string>('Todos');
 
+async function loadReservations() {
+  if (currentUser?.restaurantId) {
+    rawReservations.value = await ReservationService.getByRestaurantId(currentUser.restaurantId);
+  }
+}
+
+onMounted(() => {
+  loadReservations();
+});
+
 // Computed
 const filteredReservations = computed<ReservationInterface[]>(() => {
-  if (!currentUser?.restaurantId) return [];
-  return ReservationService.filter(
-    currentUser.restaurantId,
-    selectedStatus.value,
-    selectedPeople.value,
-  );
+  return rawReservations.value.filter((r) => {
+    const matchesStatus = selectedStatus.value === 'Todas' || r.status === selectedStatus.value;
+    
+    let matchesPeople = true;
+    if (selectedPeople.value !== 'Todos') {
+      if (selectedPeople.value === '7+') {
+        matchesPeople = r.numberOfPeople >= 7;
+      } else {
+        const parts = selectedPeople.value.split('-').map(Number);
+        const min = parts[0] ?? 0;
+        const max = parts[1] ?? 0;
+        matchesPeople = r.numberOfPeople >= min && r.numberOfPeople <= max;
+      }
+    }
+
+    return matchesStatus && matchesPeople;
+  });
 });
 
 const chartData = computed<number[]>(() => {
@@ -56,12 +77,12 @@ const chartData = computed<number[]>(() => {
 });
 
 // Methods
-function getClientName(userId: number): string {
-  return UserService.getNameById(userId);
+function getClientName(reservation: ReservationInterface): string {
+  return reservation.user?.name || 'Usuario Desconocido';
 }
 
-function getClientInitial(userId: number): string {
-  const name = UserService.getNameById(userId);
+function getClientInitial(reservation: ReservationInterface): string {
+  const name = getClientName(reservation);
   return StringFormatUtil.getInitials(name).charAt(0);
 }
 
@@ -69,16 +90,19 @@ function formatReservationId(id: number): string {
   return `RES-${String(id).padStart(3, '0')}`;
 }
 
-function handleConfirm(id: number): void {
-  ReservationService.updateStatus(id, 'confirmed');
+async function handleConfirm(id: number): Promise<void> {
+  await ReservationService.updateStatus(id, 'confirmed');
+  await loadReservations();
 }
 
-function handleComplete(id: number): void {
-  ReservationService.updateStatus(id, 'completed');
+async function handleComplete(id: number): Promise<void> {
+  await ReservationService.updateStatus(id, 'completed');
+  await loadReservations();
 }
 
-function handleCancel(id: number): void {
-  ReservationService.updateStatus(id, 'cancelled');
+async function handleCancel(id: number): Promise<void> {
+  await ReservationService.updateStatus(id, 'cancelled');
+  await loadReservations();
 }
 </script>
 
@@ -204,11 +228,11 @@ function handleCancel(id: number): void {
                         <div
                           class="w-9 h-9 rounded-full bg-[#1E3A2B] text-white flex items-center justify-center text-xs font-bold shrink-0"
                         >
-                          {{ getClientInitial(reservation.userId) }}
+                          {{ getClientInitial(reservation) }}
                         </div>
                         <div>
                           <p class="text-sm font-semibold text-stone-800 leading-tight">
-                            {{ getClientName(reservation.userId) }}
+                            {{ getClientName(reservation) }}
                           </p>
                           <p class="text-[11px] text-stone-400 font-medium mt-0.5">
                             {{ formatReservationId(reservation.id) }}

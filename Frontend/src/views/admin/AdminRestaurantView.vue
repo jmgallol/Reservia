@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // External imports
-import { computed } from 'vue';
+import { onMounted, ref } from 'vue';
 
 // Internal imports
 import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
@@ -12,11 +12,12 @@ import RestaurantEditFormComponent from '@/components/admin/restaurant/Restauran
 
 // Variables
 const currentUser = AuthService.getCurrentUser();
+const restaurant = ref<RestaurantInterface | undefined>(undefined);
 
-// Computed
-const restaurant = computed<RestaurantInterface | undefined>(() => {
-  if (!currentUser?.restaurantId) return undefined;
-  return RestaurantService.getById(currentUser.restaurantId);
+onMounted(async () => {
+  if (currentUser?.restaurantId) {
+    restaurant.value = await RestaurantService.getById(currentUser.restaurantId);
+  }
 });
 </script>
 
@@ -61,7 +62,11 @@ const restaurant = computed<RestaurantInterface | undefined>(() => {
           </section>
 
           <!-- Edit Information Form -->
-          <RestaurantEditFormComponent v-if="restaurant" :restaurant="restaurant" />
+          <RestaurantEditFormComponent 
+            v-if="restaurant" 
+            :restaurant="restaurant" 
+            @update="restaurant = $event" 
+          />
         </div>
       </main>
     </div>
