@@ -1,13 +1,12 @@
 <script setup lang="ts">
 // External imports
-import { computed, ref } from 'vue';
+import { onMounted, computed, ref } from 'vue';
 
 // Internal imports
 import type { ReservationInterface, ReservationStatus } from '@/interfaces/ReservationInterface';
 import { AuthService } from '@/services/AuthService';
 import { DateFormatUtil } from '@/utils/DateFormatUtil';
 import { ReservationService } from '@/services/ReservationService';
-import { RestaurantService } from '@/services/RestaurantService';
 import DoughnutChartComponent from '@/components/admin/dashboard/DoughnutChartComponent.vue';
 import EditReservationModalComponent from '@/components/client/reservation/EditReservationModalComponent.vue';
 import HeaderComponent from '@/components/layout/HeaderComponent.vue';
@@ -38,11 +37,16 @@ const showEditModal = ref(false);
 const selectedStatus = ref<'Todas' | ReservationStatus>('Todas');
 const selectedReservation = ref<ReservationInterface | null>(null);
 
-// Computed
-const currentUserReservations = computed<ReservationInterface[]>(() => {
-  if (!currentUser) return [];
+const currentUserReservations = ref<ReservationInterface[]>([]);
 
-  return ReservationService.getByUserId(currentUser.id);
+async function loadReservations() {
+  if (currentUser) {
+    currentUserReservations.value = await ReservationService.getByUserId(currentUser.id);
+  }
+}
+
+onMounted(() => {
+  loadReservations();
 });
 
 const visibleReservations = computed<ReservationInterface[]>(() => {
@@ -53,31 +57,32 @@ const visibleReservations = computed<ReservationInterface[]>(() => {
 const statusChartData = computed<number[]>(() =>
   statusOrder.map(
     (status) =>
-      currentUserReservations.value.filter((reservation) => reservation.status === status).length,
+      visibleReservations.value.filter((reservation) => reservation.status === status).length,
   ),
 );
 
 // Methods
 function getActiveCount(): number {
-  return currentUserReservations.value.filter(
+  return visibleReservations.value.filter(
     (reservation) => reservation.status === 'pending' || reservation.status === 'confirmed',
   ).length;
 }
 
 function getCompletedCount(): number {
-  return currentUserReservations.value.filter(
+  return visibleReservations.value.filter(
     (reservation) => reservation.status === 'completed',
   ).length;
 }
-function getRestaurantName(restaurantId: number): string {
-  return RestaurantService.getById(restaurantId)?.name ?? 'Restaurante no encontrado';
+function getRestaurantName(reservation: ReservationInterface): string {
+  return reservation.restaurant?.name || 'Restaurante no encontrado';
 }
 
-function handleCancelReservation(reservation: ReservationInterface): void {
+async function handleCancelReservation(reservation: ReservationInterface): Promise<void> {
   const confirmed = confirm('¿Cancelar esta reserva?');
   if (!confirmed) return;
 
-  ReservationService.updateStatus(reservation.id, 'cancelled');
+  await ReservationService.updateStatus(reservation.id, 'cancelled');
+  await loadReservations();
 }
 
 function openEditModal(reservation: ReservationInterface): void {
@@ -157,7 +162,7 @@ function openEditModal(reservation: ReservationInterface): void {
                 <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
                   <div>
                     <h3 class="text-lg font-bold text-stone-900 font-heading">
-                      {{ getRestaurantName(reservation.restaurantId) }}
+                      {{ getRestaurantName(reservation) }}
                     </h3>
                   </div>
 
@@ -246,7 +251,7 @@ function openEditModal(reservation: ReservationInterface): void {
                     <span class="text-sm font-medium text-stone-600">Total reservas</span>
                   </span>
                   <span class="text-sm font-bold text-stone-900">{{
-                    currentUserReservations.length
+                    visibleReservations.length
                   }}</span>
                 </li>
                 <li class="flex items-center justify-between">
@@ -271,6 +276,10 @@ function openEditModal(reservation: ReservationInterface): void {
     </div>
 
     <!-- Edit Reservation Modal -->
-    <EditReservationModalComponent v-model="showEditModal" :reservation="selectedReservation" />
+    <EditReservationModalComponent 
+      v-model="showEditModal" 
+      :reservation="selectedReservation" 
+      @saved="loadReservations" 
+    />
   </div>
 </template>

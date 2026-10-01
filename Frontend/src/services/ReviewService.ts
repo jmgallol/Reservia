@@ -1,65 +1,81 @@
 // Internal imports
 import type { CreateReviewDTO } from '@/dtos/CreateReviewDTO';
 import type { ReviewInterface } from '@/interfaces/ReviewInterface';
-import { useReviewStore } from '@/stores/reviewStore';
+import axios from 'axios';
 
 export class ReviewService {
-  static getAll(): ReviewInterface[] {
-    return useReviewStore().reviews;
-  }
+  private static readonly API_URL = 'http://localhost:3000/api/reviews';
 
-  static getById(id: number): ReviewInterface | undefined {
-    return useReviewStore().reviews.find((review) => review.id === id);
-  }
-
-  static getByRestaurantId(id: number): ReviewInterface[] {
-    return useReviewStore().reviews.filter((review) => review.restaurantId === id);
-  }
-
-  static getByUserId(userId: number): ReviewInterface[] {
-    return useReviewStore().reviews.filter((review) => review.userId === userId);
-  }
-
-  static create(dto: CreateReviewDTO): ReviewInterface {
-    const reviews = useReviewStore().reviews;
-    const nextId = reviews.length > 0 ? Math.max(...reviews.map((r) => r.id)) + 1 : 1;
-
-    const newReview: ReviewInterface = {
-      id: nextId,
-      restaurantId: dto.restaurantId,
-      userId: dto.userId ?? 0,
-      rating: Math.min(5, Math.max(1, dto.rating)),
-      comment: dto.comment,
-      status: 'approved',
-      reviewDate: new Date().toISOString(),
-    };
-
-    useReviewStore().reviews.push(newReview);
-
-    return newReview;
-  }
-
-  static update(review: ReviewInterface): void {
-    const reviews = useReviewStore().reviews;
-    const index = reviews.findIndex((r) => r.id === review.id);
-    if (index !== -1 && reviews[index]) {
-      reviews[index] = {
-        ...reviews[index],
-        ...review,
-      };
+  static async getAll(): Promise<ReviewInterface[]> {
+    try {
+      const { data } = await axios.get(this.API_URL);
+      return data;
+    } catch (error) {
+      console.error(error);
+      return [];
     }
   }
 
-  static delete(id: number): void {
-    const reviews = useReviewStore().reviews;
-    const index = reviews.findIndex((r) => r.id === id);
-    if (index !== -1) {
-      reviews.splice(index, 1);
+  static async getById(id: number): Promise<ReviewInterface | undefined> {
+    try {
+      const { data } = await axios.get(`${this.API_URL}/${id}`);
+      return data;
+    } catch (error) {
+      console.error(error);
+      return undefined;
     }
   }
 
-  static getAverageRating(restaurantId: number): number {
-    const reviews = ReviewService.getByRestaurantId(restaurantId);
+  static async getByRestaurantId(id: number): Promise<ReviewInterface[]> {
+    try {
+      const { data } = await axios.get(`${this.API_URL}/restaurant/${id}`);
+      return data;
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  }
+
+  static async getByUserId(userId: number): Promise<ReviewInterface[]> {
+    try {
+      const { data } = await axios.get(`${this.API_URL}/user/${userId}`);
+      return data;
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  }
+
+  static async create(dto: CreateReviewDTO): Promise<ReviewInterface | undefined> {
+    try {
+      const { data } = await axios.post(this.API_URL, dto);
+      return data;
+    } catch (error) {
+      console.error(error);
+      return undefined;
+    }
+  }
+
+  static async update(review: ReviewInterface): Promise<ReviewInterface | undefined> {
+    try {
+      const { data } = await axios.patch(`${this.API_URL}/${review.id}`, review);
+      return data;
+    } catch (error) {
+      console.error(error);
+      return undefined;
+    }
+  }
+
+  static async delete(id: number): Promise<void> {
+    try {
+      await axios.delete(`${this.API_URL}/${id}`);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  static async getAverageRating(restaurantId: number): Promise<number> {
+    const reviews = await this.getByRestaurantId(restaurantId);
     if (reviews.length === 0) return 0;
 
     const total = reviews.reduce((sum, review) => sum + review.rating, 0);

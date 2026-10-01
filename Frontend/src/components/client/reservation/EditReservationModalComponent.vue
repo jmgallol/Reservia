@@ -56,7 +56,7 @@ function isFormValid(): boolean {
   );
 }
 
-function handleSave(): void {
+async function handleSave(): Promise<void> {
   if (!props.reservation) return;
 
   if (!isFormValid()) {
@@ -64,12 +64,14 @@ function handleSave(): void {
     return;
   }
 
-  ReservationService.updateReservation(props.reservation.id, {
+  const updateDto = {
     reservationDate: form.value.reservationDate,
     reservationTime: form.value.reservationTime,
     numberOfPeople: form.value.numberOfPeople,
     specialRequest: form.value.specialRequest.trim(),
-  });
+  };
+
+  await ReservationService.updateReservation(props.reservation.id, updateDto);
 
   emit('saved');
   closeModal();

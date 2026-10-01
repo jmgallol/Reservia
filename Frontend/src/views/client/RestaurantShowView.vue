@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // External imports
 import { ChevronLeft, Clock, MapPin } from 'lucide-vue-next';
-import { computed, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 // Internal imports
@@ -17,10 +17,14 @@ import CreateReviewModalComponent from '@/components/client/review/CreateReviewM
 const route = useRoute();
 const isCreateReviewModalOpen = ref(false);
 
-// Computed
-const restaurant = computed<RestaurantInterface | null>(() => {
+// Reactive variables
+const restaurant = ref<RestaurantInterface | null>(null);
+
+onMounted(async () => {
   const id = Number(route.params.id);
-  return RestaurantService.getById(id) || null;
+  if (!isNaN(id)) {
+    restaurant.value = await RestaurantService.getById(id) || null;
+  }
 });
 </script>
 
@@ -67,7 +71,7 @@ const restaurant = computed<RestaurantInterface | null>(() => {
               </h1>
               <div class="flex items-center gap-1 text-[#E8A020]">
                 <StarRatingComponent
-                  :rating="RestaurantService.calculateAverageRating(restaurant.id)"
+                  :rating="RestaurantService.calculateAverageRating(restaurant)"
                   :readonly="true"
                   :size="18"
                 />

@@ -28,7 +28,7 @@ async function handleLogin(): Promise<void> {
     return;
   }
 
-  const user = AuthService.login(form.value.email, form.value.password);
+  const user = await AuthService.login(form.value.email, form.value.password);
 
   if (!user) {
     errorMessage.value = 'Correo o contraseña incorrectos.';

@@ -23,21 +23,31 @@ const form = ref({
   reservationTime: '19:30',
   guests: 2,
 });
+const errorMessage = ref('');
 
 // Methods
-function handleConfirmReservation(): void {
+async function handleConfirmReservation(): Promise<void> {
   const user = AuthService.getCurrentUser();
+  if (!user) {
+    errorMessage.value = 'Debes iniciar sesión para reservar.';
+    return;
+  }
 
   const reservationDTO: CreateReservationDTO = {
     restaurantId: props.restaurantId,
-    userId: user?.id ?? 0,
+    userId: user.id,
     reservationDate: form.value.reservationDate,
     reservationTime: form.value.reservationTime,
     numberOfPeople: form.value.guests,
   };
 
-  ReservationService.create(reservationDTO);
-  router.push('/reservations');
+  const result = await ReservationService.create(reservationDTO);
+  
+  if (result) {
+    router.push('/reservations');
+  } else {
+    errorMessage.value = 'Ocurrió un error al confirmar la reserva.';
+  }
 }
 
 function decreaseGuests(): void {
@@ -52,6 +62,10 @@ function increaseGuests(): void {
 <template>
   <div class="bg-white rounded-[24px] border border-stone-200/80 shadow-xs p-8 sticky top-6">
     <h2 class="text-lg font-bold font-heading text-stone-900 mb-6">Hacer una reserva</h2>
+
+    <p v-if="errorMessage" class="mb-4 rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+      {{ errorMessage }}
+    </p>
 
     <div class="space-y-5">
       <!-- Date -->

@@ -7,9 +7,13 @@ import { SquarePen } from 'lucide-vue-next';
 import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
 import { RestaurantService } from '@/services/RestaurantService';
 
-// Props
+// Props & Emits
 const props = defineProps<{
   restaurant: RestaurantInterface;
+}>();
+
+const emit = defineEmits<{
+  (e: 'update', restaurant: RestaurantInterface): void;
 }>();
 
 // Reactive variables
@@ -21,6 +25,9 @@ const form = ref({
   openingTime: '',
   closingTime: '',
   description: '',
+  imageUrl: '',
+  latitude: 0,
+  longitude: 0,
 });
 
 const saveSuccess = ref(false);
@@ -34,10 +41,13 @@ function loadFormData(): void {
   form.value.openingTime = props.restaurant.openingTime ?? '';
   form.value.closingTime = props.restaurant.closingTime ?? '';
   form.value.description = props.restaurant.description ?? '';
+  form.value.imageUrl = props.restaurant.imageUrl ?? '';
+  form.value.latitude = props.restaurant.latitude ?? 0;
+  form.value.longitude = props.restaurant.longitude ?? 0;
   saveSuccess.value = false;
 }
 
-function handleSave(): void {
+async function handleSave(): Promise<void> {
   const updatedRestaurant: RestaurantInterface = {
     ...props.restaurant,
     name: form.value.name,
@@ -47,9 +57,19 @@ function handleSave(): void {
     openingTime: form.value.openingTime,
     closingTime: form.value.closingTime,
     description: form.value.description,
+    imageUrl: form.value.imageUrl,
+    latitude: Number(form.value.latitude),
+    longitude: Number(form.value.longitude),
   };
 
-  RestaurantService.update(updatedRestaurant);
+  const result = await RestaurantService.update(updatedRestaurant);
+  if (result) {
+    saveSuccess.value = true;
+    emit('update', result);
+    setTimeout(() => {
+      saveSuccess.value = false;
+    }, 3000);
+  }
 }
 
 function handleDiscard(): void {
@@ -182,6 +202,60 @@ watch(
         </div>
       </div>
 
+      <!-- URL de Imagen -->
+      <div class="space-y-1.5">
+        <label
+          for="restaurant-image"
+          class="block text-[11px] font-bold text-stone-500 uppercase tracking-wider"
+        >
+          URL de la Imagen
+        </label>
+        <input
+          id="restaurant-image"
+          v-model="form.imageUrl"
+          type="url"
+          class="w-full px-4 py-3 bg-[#FAF8F4] border border-stone-200 rounded-xl text-sm text-stone-800 outline-none focus:border-[#1A3D2B] focus:ring-1 focus:ring-[#1A3D2B]/20 transition-colors"
+          placeholder="https://ejemplo.com/imagen.jpg"
+        />
+      </div>
+
+      <!-- Latitud + Longitud (2 columns) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="space-y-1.5">
+          <label
+            for="restaurant-lat"
+            class="block text-[11px] font-bold text-stone-500 uppercase tracking-wider"
+          >
+            Latitud (Mapa)
+          </label>
+          <input
+            id="restaurant-lat"
+            v-model="form.latitude"
+            type="number"
+            step="any"
+            class="w-full px-4 py-3 bg-[#FAF8F4] border border-stone-200 rounded-xl text-sm text-stone-800 outline-none focus:border-[#1A3D2B] focus:ring-1 focus:ring-[#1A3D2B]/20 transition-colors"
+            placeholder="Ej: 6.2442"
+          />
+        </div>
+
+        <div class="space-y-1.5">
+          <label
+            for="restaurant-lng"
+            class="block text-[11px] font-bold text-stone-500 uppercase tracking-wider"
+          >
+            Longitud (Mapa)
+          </label>
+          <input
+            id="restaurant-lng"
+            v-model="form.longitude"
+            type="number"
+            step="any"
+            class="w-full px-4 py-3 bg-[#FAF8F4] border border-stone-200 rounded-xl text-sm text-stone-800 outline-none focus:border-[#1A3D2B] focus:ring-1 focus:ring-[#1A3D2B]/20 transition-colors"
+            placeholder="Ej: -75.5812"
+          />
+        </div>
+      </div>
+
       <!-- Descripción -->
       <div class="space-y-1.5">
         <label
@@ -199,7 +273,7 @@ watch(
         />
       </div>
 
-      <!-- Action Buttons -->
+      <!-- Action Buttons and Success Message -->
       <div class="flex items-center gap-3 pt-2">
         <button
           type="submit"
@@ -214,6 +288,10 @@ watch(
         >
           Descartar
         </button>
+        
+        <span v-if="saveSuccess" class="text-sm font-semibold text-green-600 ml-4 animate-pulse">
+          ¡Cambios guardados con éxito!
+        </span>
       </div>
     </form>
   </article>
