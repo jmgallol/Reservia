@@ -1,8 +1,10 @@
+// Imports
+import { CreateRestaurantDto } from "./dto/create-restaurant.dto.js";
+import { UpdateRestaurantDto } from "./dto/update-restaurant.dto.js";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
 import { Restaurant } from "../restaurants/entities/restaurant.entity.js";
-import { CreateRestaurantDto } from "./dto/create-restaurant.dto.js";
+import { Repository } from "typeorm";
 
 @Injectable()
 export class RestaurantsService {
@@ -12,7 +14,8 @@ export class RestaurantsService {
     ) {}
 
     async findAll(query?: string, city?: string, category?: string): Promise<Restaurant[]> {
-        const queryBuilder = this.restaurantRepository.createQueryBuilder("restaurant");
+        const queryBuilder = this.restaurantRepository.createQueryBuilder("restaurant")
+            .leftJoinAndSelect("restaurant.reviews", "reviews");
 
         if (city && city.toLowerCase() !== "todas") {
             queryBuilder.andWhere("LOWER(restaurant.city) = :city", { city: city.toLowerCase() });
@@ -30,15 +33,20 @@ export class RestaurantsService {
             );
         }
 
-        return queryBuilder.getMany();
+        const restaurants = await queryBuilder.getMany();
+        return restaurants.map(r => this.appendAverageRating(r));
     }
 
     async findOne(id: number): Promise<Restaurant> {
-        const restaurant = await this.restaurantRepository.findOneBy({ id });
+        const restaurant = await this.restaurantRepository.findOne({
+            where: { id },
+            relations: { reviews: true }
+        });
         if (!restaurant) {
             throw new NotFoundException(`Restaurant with ID ${id} not found`);
         }
-        return restaurant;
+        
+        return this.appendAverageRating(restaurant);
     }
 
     async getCities(): Promise<string[]> {
@@ -63,17 +71,37 @@ export class RestaurantsService {
 
     async create(createRestaurantDto: CreateRestaurantDto): Promise<Restaurant> {
         const restaurant = this.restaurantRepository.create(createRestaurantDto);
-        return this.restaurantRepository.save(restaurant);
+        const savedRestaurant = await this.restaurantRepository.save(restaurant);
+        
+        if (savedRestaurant.adminId) {
+            await this.restaurantRepository.manager.query(
+                `UPDATE user SET restaurantId = ? WHERE id = ?`,
+                [savedRestaurant.id, savedRestaurant.adminId]
+            );
+        }
+        
+        return savedRestaurant;
     }
 
-    async update(id: number, updateRestaurantDto: CreateRestaurantDto): Promise<Restaurant> {
+    async update(id: number, updateRestaurantDto: UpdateRestaurantDto): Promise<Restaurant> {
         const restaurant = await this.findOne(id);
         const updatedRestaurant = this.restaurantRepository.merge(restaurant, updateRestaurantDto);
         return this.restaurantRepository.save(updatedRestaurant);
     }
 
-    async remove(id: number): Promise<void> {
+    async delete(id: number): Promise<void> {
         const restaurant = await this.findOne(id);
         await this.restaurantRepository.remove(restaurant);
+    }
+
+    private appendAverageRating(restaurant: Restaurant): Restaurant {
+        const reviews = restaurant.reviews || [];
+        const avg = reviews.length > 0 
+            ? reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length 
+            : 4.8;
+        
+        delete (restaurant as any).reviews;
+        restaurant.averageRating = avg;
+        return restaurant;
     }
 }

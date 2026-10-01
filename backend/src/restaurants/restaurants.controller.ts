@@ -1,5 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseIntPipe, HttpCode, HttpStatus } from "@nestjs/common";
+import { 
+    Controller, 
+    Get, 
+    Post, 
+    Body, 
+    Patch, 
+    Param, 
+    Delete, 
+    Query, 
+    ParseIntPipe, 
+    HttpCode, 
+    HttpStatus 
+} from "@nestjs/common";
 import { CreateRestaurantDto } from "./dto/create-restaurant.dto.js";
+import { UpdateRestaurantDto } from "./dto/update-restaurant.dto.js";
 import { Restaurant } from "./entities/restaurant.entity.js"
 import { RestaurantsService } from "./restaurants.service.js";
 
@@ -39,7 +52,7 @@ export class RestaurantsController {
     @Patch(':id')
     update(
         @Param('id', ParseIntPipe) id: number,
-        @Body() updateRestaurantDto: CreateRestaurantDto,
+        @Body() updateRestaurantDto: UpdateRestaurantDto,
     ): Promise<Restaurant> {
         return this.restaurantsService.update(id, updateRestaurantDto);
     }
@@ -47,6 +60,6 @@ export class RestaurantsController {
     @Delete(':id')
     @HttpCode(HttpStatus.NO_CONTENT)
     remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
-        return this.restaurantsService.remove(id);
+        return this.restaurantsService.delete(id);
     }
 }

@@ -8,11 +8,9 @@ import {
   RelationId
 } from 'typeorm';
 import type { Relation } from 'typeorm';
-
-// Importaciones de relaciones (arrojarán error hasta que se creen los archivos)
-// import { User } from '../../users/entities/user.entity.js';
-// import { Reservation } from '../../reservations/entities/reservation.entity.js';
-// import { Review } from '../../reviews/entities/review.entity.js';
+import { User } from '../../users/entities/user.entity.js';
+import { Reservation } from '../../reservations/entities/reservation.entity.js';
+import { Review } from '../../reviews/entities/review.entity.js';
 
 @Entity()
 export class Restaurant {
@@ -27,6 +25,8 @@ export class Restaurant {
 
   @Column({ type: 'varchar' })
   address: string;
+
+  averageRating?: number;
 
   @Column({ type: 'varchar' })
   city: string;
@@ -52,9 +52,8 @@ export class Restaurant {
   @Column({ type: 'int', nullable: true })
   adminId: number;
 
-  /*
-  @OneToOne(() => User, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'userId' })
+  @OneToOne(() => User, (user) => user.restaurant, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'adminId' })
   user: Relation<User>;
 
   @OneToMany(() => Reservation, (reservation) => reservation.restaurant)
@@ -62,5 +61,4 @@ export class Restaurant {
 
   @OneToMany(() => Review, (review) => review.restaurant)
   reviews: Relation<Review[]>;
-  */
 }
