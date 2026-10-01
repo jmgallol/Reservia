@@ -18,15 +18,20 @@ const router = useRouter();
 
 // Reactive variables
 const mapContainerRef = ref<HTMLDivElement | null>(null);
+const medellinRestaurants = ref<RestaurantInterface[]>([]);
 
-// Computed
-const medellinRestaurants = computed<RestaurantInterface[]>(() =>
-  RestaurantService.getAll().filter((restaurant) => restaurant.city.toLowerCase() === 'medellín'),
-);
+// Methods
+async function loadRestaurants() {
+  const allRestaurants = await RestaurantService.getAll();
+  medellinRestaurants.value = allRestaurants.filter((restaurant) => {
+    const city = (restaurant.city || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    return city === 'medellin';
+  });
+}
 
 // Methods
 function getAverageRating(restaurant: RestaurantInterface): string {
-  return RestaurantService.calculateAverageRating(restaurant.id).toFixed(1);
+  return RestaurantService.calculateAverageRating(restaurant).toFixed(1);
 }
 
 function createRestaurantPopup(restaurant: RestaurantInterface): HTMLElement {
@@ -41,7 +46,7 @@ function createRestaurantPopup(restaurant: RestaurantInterface): HTMLElement {
   category.textContent = restaurant.category;
 
   const rating = document.createElement('p');
-  rating.textContent = `Calificación promedio: ${RestaurantService.calculateAverageRating(restaurant.id).toFixed(1)}`;
+  rating.textContent = `Calificación promedio: ${RestaurantService.calculateAverageRating(restaurant).toFixed(1)}`;
 
   const detailButton = document.createElement('button');
   detailButton.type = 'button';
@@ -93,7 +98,8 @@ function selectRestaurant(restaurant: RestaurantInterface): void {
 }
 
 // Lifecycle
-onMounted(() => {
+onMounted(async () => {
+  await loadRestaurants();
   initializeMap();
 });
 

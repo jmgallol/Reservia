@@ -166,12 +166,12 @@ function handleViewRestaurant(id: number): void {
 
                 <div class="flex items-center gap-2 mt-2">
                   <StarRatingComponent
-                    :rating="RestaurantService.calculateAverageRating(restaurant.id)"
+                    :rating="RestaurantService.calculateAverageRating(restaurant)"
                     :readonly="true"
                     :size="14"
                   />
                   <span class="text-xs font-bold text-stone-700">
-                    {{ RestaurantService.calculateAverageRating(restaurant.id) }}
+                    {{ RestaurantService.calculateAverageRating(restaurant) }}
                   </span>
                 </div>
               </div>
