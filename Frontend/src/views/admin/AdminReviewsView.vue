@@ -1,16 +1,17 @@
 <script setup lang="ts">
 // External imports
 import { computed, ref } from 'vue';
+import { onMounted } from 'vue';
 
 // Internal imports
-import type { ReviewInterface } from '@/interfaces/ReviewInterface';
-import { AuthService } from '@/services/AuthService';
-import { DateFormatUtil } from '@/utils/DateFormatUtil';
-import { ReviewService } from '@/services/ReviewService';
-import { StringFormatUtil } from '@/utils/StringFormatUtil';
+import StarRatingComponent from '@/components/common/StarRatingComponent.vue';
 import HeaderComponent from '@/components/layout/HeaderComponent.vue';
 import SidebarComponent from '@/components/layout/SidebarComponent.vue';
-import StarRatingComponent from '@/components/common/StarRatingComponent.vue';
+import type { ReviewInterface } from '@/interfaces/ReviewInterface';
+import { AuthService } from '@/services/AuthService';
+import { ReviewService } from '@/services/ReviewService';
+import { DateFormatUtil } from '@/utils/DateFormatUtil';
+import { StringFormatUtil } from '@/utils/StringFormatUtil';
 
 type RatingFilter = 'Todas' | '5' | '4' | '3' | '2' | '1';
 
@@ -33,7 +34,6 @@ const selectedRating = ref<RatingFilter>('Todas');
 const restaurantReviews = ref<ReviewInterface[]>([]);
 const averageRating = ref<number>(0);
 
-import { onMounted } from 'vue';
 
 onMounted(async () => {
   if (currentUser?.restaurantId) {

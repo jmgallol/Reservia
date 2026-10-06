@@ -3,14 +3,14 @@
 import { onMounted, computed, ref, watch } from 'vue';
 
 // Internal imports
+import DoughnutChartComponent from '@/components/admin/dashboard/DoughnutChartComponent.vue';
+import StatusBadgeComponent from '@/components/common/StatusBadgeComponent.vue';
+import HeaderComponent from '@/components/layout/HeaderComponent.vue';
+import SidebarComponent from '@/components/layout/SidebarComponent.vue';
 import type { ReservationInterface, ReservationStatus } from '@/interfaces/ReservationInterface';
 import { AuthService } from '@/services/AuthService';
 import { ReservationService } from '@/services/ReservationService';
 import { StringFormatUtil } from '@/utils/StringFormatUtil';
-import DoughnutChartComponent from '@/components/admin/dashboard/DoughnutChartComponent.vue';
-import HeaderComponent from '@/components/layout/HeaderComponent.vue';
-import StatusBadgeComponent from '@/components/common/StatusBadgeComponent.vue';
-import SidebarComponent from '@/components/layout/SidebarComponent.vue';
 
 // Variables
 const currentUser = AuthService.getCurrentUser();
