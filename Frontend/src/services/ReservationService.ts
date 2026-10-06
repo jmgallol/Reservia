@@ -3,10 +3,11 @@ import axios from 'axios';
 
 // Internal imports
 import type { CreateReservationDTO } from '@/dtos/CreateReservationDTO';
+import type { UpdateReservationDTO } from '@/dtos/UpdateReservationDTO';
 import type { ReservationInterface, ReservationStatus } from '@/interfaces/ReservationInterface';
 
 export class ReservationService {
-  private static readonly API_URL = 'http://localhost:3000/api/reservations';
+  private static readonly API_URL = `${import.meta.env.VITE_API_URL}/reservations`;
 
   static async getAll(): Promise<ReservationInterface[]> {
     try {
@@ -71,7 +72,7 @@ export class ReservationService {
   static async filter(restaurantId: number, status: string, peopleRange: string): Promise<ReservationInterface[]> {
     try {
       const reservations = await this.getByRestaurantId(restaurantId);
-      
+
       return reservations.filter((r) => {
         const matchesStatus = status === 'Todas' || r.status === status;
 
@@ -105,9 +106,9 @@ export class ReservationService {
     }
   }
 
-  static async updateStatus(id: number, status: ReservationStatus): Promise<ReservationInterface | undefined> {
+  static async update(id: number, dto: UpdateReservationDTO): Promise<ReservationInterface | undefined> {
     try {
-      const { data } = await axios.patch(`${this.API_URL}/${id}`, { status });
+      const { data } = await axios.patch(`${this.API_URL}/${id}`, dto);
       return data;
     } catch (error) {
       console.error(error);
@@ -115,16 +116,6 @@ export class ReservationService {
     }
   }
 
-  static async updateReservation(id: number, updates: Partial<ReservationInterface>): Promise<ReservationInterface | undefined> {
-    try {
-      const { data } = await axios.patch(`${this.API_URL}/${id}`, updates);
-      return data;
-    } catch (error) {
-      console.error(error);
-      return undefined;
-    }
-  }
-  
   static async delete(id: number): Promise<void> {
     try {
       await axios.delete(`${this.API_URL}/${id}`);

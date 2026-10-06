@@ -2,10 +2,11 @@
 import axios from 'axios';
 
 // Internal imports
+import type { CreateUserDTO } from '@/dtos/CreateUserDTO';
 import type { UserInterface } from '@/interfaces/UserInterface';
 
 export class UserService {
-  private static readonly API_URL = 'http://localhost:3000/api/users';
+  private static readonly API_URL = `${import.meta.env.VITE_API_URL}/users`;
 
   static async getAll(): Promise<UserInterface[]> {
     try {
@@ -27,14 +28,13 @@ export class UserService {
     }
   }
 
-  static async create(user: Omit<UserInterface, 'id'>): Promise<UserInterface | undefined> {
+  static async create(dto: CreateUserDTO): Promise<UserInterface | undefined> {
     try {
-      const { data } = await axios.post(this.API_URL, user);
+      const { data } = await axios.post(this.API_URL, dto);
       return data;
     } catch (error) {
       console.error(error);
       return undefined;
     }
   }
-
 }
