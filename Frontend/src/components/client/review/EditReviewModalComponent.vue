@@ -3,10 +3,10 @@
 import { ref, watch } from 'vue';
 
 // Internal imports
-import type { ReviewInterface } from '@/interfaces/ReviewInterface';
-import { ReviewService } from '@/services/ReviewService';
 import BaseModalComponent from '@/components/common/BaseModalComponent.vue';
 import StarRatingComponent from '@/components/common/StarRatingComponent.vue';
+import type { ReviewInterface } from '@/interfaces/ReviewInterface';
+import { ReviewService } from '@/services/ReviewService';
 
 // Props & Emits
 const props = defineProps<{
