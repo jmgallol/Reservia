@@ -3,15 +3,15 @@
 import { onMounted, ref } from 'vue';
 
 // Internal imports
-import type { ReviewInterface } from '@/interfaces/ReviewInterface';
-import { AuthService } from '@/services/AuthService';
-import { DateFormatUtil } from '@/utils/DateFormatUtil';
-import { RestaurantService } from '@/services/RestaurantService';
-import { ReviewService } from '@/services/ReviewService';
+import EditReviewModalComponent from '@/components/client/review/EditReviewModalComponent.vue';
 import StarRatingComponent from '@/components/common/StarRatingComponent.vue';
 import HeaderComponent from '@/components/layout/HeaderComponent.vue';
 import SidebarComponent from '@/components/layout/SidebarComponent.vue';
-import EditReviewModalComponent from '@/components/client/review/EditReviewModalComponent.vue';
+import type { ReviewInterface } from '@/interfaces/ReviewInterface';
+import { AuthService } from '@/services/AuthService';
+import { RestaurantService } from '@/services/RestaurantService';
+import { ReviewService } from '@/services/ReviewService';
+import { DateFormatUtil } from '@/utils/DateFormatUtil';
 
 // Variables
 const currentUser = AuthService.getCurrentUser();

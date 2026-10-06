@@ -3,9 +3,9 @@
 import { ref, watch } from 'vue';
 
 // Internal imports
+import BaseModalComponent from '@/components/common/BaseModalComponent.vue';
 import type { ReservationInterface } from '@/interfaces/ReservationInterface';
 import { ReservationService } from '@/services/ReservationService';
-import BaseModalComponent from '@/components/common/BaseModalComponent.vue';
 
 // Props & Emits
 const props = defineProps<{

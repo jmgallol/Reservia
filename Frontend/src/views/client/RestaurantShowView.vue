@@ -5,13 +5,13 @@ import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 // Internal imports
-import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
-import { RestaurantService } from '@/services/RestaurantService';
-import HeaderComponent from '@/components/layout/HeaderComponent.vue';
-import SidebarComponent from '@/components/layout/SidebarComponent.vue';
-import StarRatingComponent from '@/components/common/StarRatingComponent.vue';
 import ReservationFormComponent from '@/components/client/restaurant/ReservationFormComponent.vue';
 import CreateReviewModalComponent from '@/components/client/review/CreateReviewModalComponent.vue';
+import StarRatingComponent from '@/components/common/StarRatingComponent.vue';
+import HeaderComponent from '@/components/layout/HeaderComponent.vue';
+import SidebarComponent from '@/components/layout/SidebarComponent.vue';
+import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
+import { RestaurantService } from '@/services/RestaurantService';
 
 // Variables
 const route = useRoute();

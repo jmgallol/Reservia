@@ -1,14 +1,14 @@
 <script setup lang="ts">
 // External imports
-import { ref, onMounted, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 // Internal imports
-import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
-import { RestaurantService } from '@/services/RestaurantService';
+import StarRatingComponent from '@/components/common/StarRatingComponent.vue';
 import HeaderComponent from '@/components/layout/HeaderComponent.vue';
 import SidebarComponent from '@/components/layout/SidebarComponent.vue';
-import StarRatingComponent from '@/components/common/StarRatingComponent.vue';
+import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
+import { RestaurantService } from '@/services/RestaurantService';
 
 // Variables
 const router = useRouter();

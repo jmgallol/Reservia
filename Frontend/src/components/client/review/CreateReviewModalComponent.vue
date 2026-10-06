@@ -3,11 +3,11 @@
 import { ref, watch } from 'vue';
 
 // Internal imports
+import BaseModalComponent from '@/components/common/BaseModalComponent.vue';
+import StarRatingComponent from '@/components/common/StarRatingComponent.vue';
 import type { CreateReviewDTO } from '@/dtos/CreateReviewDTO';
 import { AuthService } from '@/services/AuthService';
 import { ReviewService } from '@/services/ReviewService';
-import BaseModalComponent from '@/components/common/BaseModalComponent.vue';
-import StarRatingComponent from '@/components/common/StarRatingComponent.vue';
 
 // Props & Emits
 const props = defineProps<{

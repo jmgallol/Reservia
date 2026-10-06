@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // External imports
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import Chart from 'chart.js/auto';
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
 // Props
 const props = withDefaults(

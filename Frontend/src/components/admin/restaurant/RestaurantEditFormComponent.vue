@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // External imports
-import { ref, watch } from 'vue';
 import { SquarePen } from 'lucide-vue-next';
+import { ref, watch } from 'vue';
 
 // Internal imports
 import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
