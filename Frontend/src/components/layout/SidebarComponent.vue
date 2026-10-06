@@ -9,15 +9,15 @@ import {
   Store,
   UtensilsCrossed,
 } from 'lucide-vue-next';
-import { computed, ref, onMounted } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { RouterLink, useRoute, useRouter } from 'vue-router';
 
 // Internal imports
+import logoImage from '@/assets/images/logo.png';
 import type { UserRole } from '@/interfaces/UserInterface';
 import { AuthService } from '@/services/AuthService';
 import { RestaurantService } from '@/services/RestaurantService';
 import { StringFormatUtil } from '@/utils/StringFormatUtil';
-import logoImage from '@/assets/images/logo.png';
 
 // Props
 const props = withDefaults(

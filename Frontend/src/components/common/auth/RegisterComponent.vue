@@ -1,12 +1,12 @@
 <script setup lang="ts">
 // External imports
-import { Eye, EyeOff, Lock, Mail, User, Phone, Store, MapPin } from 'lucide-vue-next';
+import { Eye, EyeOff, Lock, Mail, MapPin, Phone, Store, User } from 'lucide-vue-next';
 import { ref } from 'vue';
 
 // Internal imports
-import { UserService } from '@/services/UserService';
-import { RestaurantService } from '@/services/RestaurantService';
 import type { UserRole } from '@/interfaces/UserInterface';
+import { RestaurantService } from '@/services/RestaurantService';
+import { UserService } from '@/services/UserService';
 
 // Props / Emits
 const emit = defineEmits<{
