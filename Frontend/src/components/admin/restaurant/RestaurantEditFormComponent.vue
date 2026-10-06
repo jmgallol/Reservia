@@ -48,8 +48,7 @@ function loadFormData(): void {
 }
 
 async function handleSave(): Promise<void> {
-  const updatedRestaurant: RestaurantInterface = {
-    ...props.restaurant,
+  const updateDto = {
     name: form.value.name,
     address: form.value.address,
     city: form.value.city,
@@ -62,7 +61,7 @@ async function handleSave(): Promise<void> {
     longitude: Number(form.value.longitude),
   };
 
-  const result = await RestaurantService.update(updatedRestaurant);
+  const result = await RestaurantService.update(props.restaurant.id, updateDto);
   if (result) {
     saveSuccess.value = true;
     emit('update', result);

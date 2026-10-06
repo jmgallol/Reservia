@@ -71,7 +71,7 @@ async function handleSave(): Promise<void> {
     specialRequest: form.value.specialRequest.trim(),
   };
 
-  await ReservationService.updateReservation(props.reservation.id, updateDto);
+  await ReservationService.update(props.reservation.id, updateDto);
 
   emit('saved');
   closeModal();

@@ -81,7 +81,7 @@ async function handleCancelReservation(reservation: ReservationInterface): Promi
   const confirmed = confirm('¿Cancelar esta reserva?');
   if (!confirmed) return;
 
-  await ReservationService.updateStatus(reservation.id, 'cancelled');
+  await ReservationService.update(reservation.id, { status: 'cancelled' });
   await loadReservations();
 }
 

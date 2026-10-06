@@ -9,6 +9,7 @@ import HeaderComponent from '@/components/layout/HeaderComponent.vue';
 import SidebarComponent from '@/components/layout/SidebarComponent.vue';
 import type { ReviewInterface } from '@/interfaces/ReviewInterface';
 import { AuthService } from '@/services/AuthService';
+import { RestaurantService } from '@/services/RestaurantService';
 import { ReviewService } from '@/services/ReviewService';
 import { DateFormatUtil } from '@/utils/DateFormatUtil';
 import { StringFormatUtil } from '@/utils/StringFormatUtil';
@@ -38,7 +39,10 @@ const averageRating = ref<number>(0);
 onMounted(async () => {
   if (currentUser?.restaurantId) {
     restaurantReviews.value = await ReviewService.getByRestaurantId(currentUser.restaurantId);
-    averageRating.value = await ReviewService.getAverageRating(currentUser.restaurantId);
+    const restaurant = await RestaurantService.getById(currentUser.restaurantId);
+    if (restaurant) {
+      averageRating.value = RestaurantService.calculateAverageRating(restaurant);
+    }
   }
 });
 
@@ -189,7 +193,7 @@ function getClientInitial(review: ReviewInterface): string {
 
                   <!-- Date -->
                   <td class="px-4 py-4 text-sm text-stone-700 font-medium whitespace-nowrap">
-                    {{ DateFormatUtil.formatShortDate(review.reviewDate) }}
+                    {{ DateFormatUtil.formatShortDate(review.date) }}
                   </td>
                 </tr>
 
