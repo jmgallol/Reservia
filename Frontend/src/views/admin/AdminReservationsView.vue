@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // External imports
-import { onMounted, computed, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 
 // Internal imports
 import DoughnutChartComponent from '@/components/admin/dashboard/DoughnutChartComponent.vue';
