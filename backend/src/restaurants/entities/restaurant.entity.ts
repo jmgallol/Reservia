@@ -5,7 +5,6 @@ import {
   OneToOne,
   OneToMany,
   JoinColumn,
-  RelationId
 } from 'typeorm';
 import type { Relation } from 'typeorm';
 import { User } from '../../users/entities/user.entity.js';

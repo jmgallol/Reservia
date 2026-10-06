@@ -26,7 +26,7 @@ export class RestaurantsController {
         @Query('city') city?: string,
         @Query('category') category?: string,
     ): Promise<Restaurant[]> {
-        return this.restaurantsService.findAll(query, city, category);
+        return this.restaurantsService.getAll(query, city, category);
     }
 
     @Get('cities')
@@ -41,7 +41,7 @@ export class RestaurantsController {
 
     @Get(':id')
     findOne(@Param('id', ParseIntPipe) id: number): Promise<Restaurant> {
-        return this.restaurantsService.findOne(id);
+        return this.restaurantsService.getById(id);
     }
 
     @Post()

@@ -1,8 +1,8 @@
 export class CreateReviewDto {
-    rating!: number;
-    comment!: string;
-    reviewDate?: string;
+    rating: number;
+    comment: string;
+    date?: string;
     status?: string;
-    userId!: number;
-    restaurantId!: number;
+    userId: number;
+    restaurantId: number;
 }

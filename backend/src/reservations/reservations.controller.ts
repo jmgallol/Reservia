@@ -22,27 +22,27 @@ export class ReservationsController {
 
     @Get()
     findAll(): Promise<Reservation[]> {
-        return this.reservationsService.findAll();
+        return this.reservationsService.getAll();
     }
 
     @Get(':id')
     findOne(@Param('id', ParseIntPipe) id: number): Promise<Reservation> {
-        return this.reservationsService.findOne(id);
+        return this.reservationsService.getById(id);
     }
 
     @Get('status')
     findByStatus(@Query('status') status: string): Promise<Reservation[]> {
-        return this.reservationsService.findByStatus(status);
+        return this.reservationsService.getByStatus(status);
     }
 
     @Get('restaurant/:id')
     findByRestaurantId(@Param('id', ParseIntPipe) id:number): Promise<Reservation[]> {
-        return this.reservationsService.findByRestaurantId(id);
+        return this.reservationsService.getByRestaurantId(id);
     }
     
     @Get('user/:id')
     findByUserId(@Param('id', ParseIntPipe) id:number): Promise<Reservation[]> {
-        return this.reservationsService.findByUserId(id);
+        return this.reservationsService.getByUserId(id);
     }
 
     @Post()
