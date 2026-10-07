@@ -13,11 +13,11 @@ export class UsersService {
         private userRepository: Repository<User>,
     ){}
 
-    async findAll(): Promise<User[]> {
+    async getAll(): Promise<User[]> {
         return this.userRepository.find();
     }
 
-    async findOne(id: number): Promise<User> {
+    async getById(id: number): Promise<User> {
         const user = await this.userRepository.findOneBy({ id });
         if(!user) {
             throw new NotFoundException(

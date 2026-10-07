@@ -4,7 +4,6 @@ import { useAuthStore } from '@/stores/authStore';
 import axios from 'axios';
 
 export class AuthService {
-  // Getters
   static getCurrentUser(): UserInterface | null {
     return useAuthStore().currentUser;
   }
@@ -13,14 +12,13 @@ export class AuthService {
     return useAuthStore().isAuthenticated();
   }
 
-  // Auth Methods
   static async login(email: string, password: string): Promise<UserInterface | undefined> {
     try {
-      const { data } = await axios.post('http://localhost:3000/api/users/login', {
+      const { data } = await axios.post(`${import.meta.env.VITE_API_URL}/users/login`, {
         email,
         password,
       });
-      
+
       if (data) {
         useAuthStore().login(data);
         return data;

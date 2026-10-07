@@ -14,13 +14,13 @@ export class ReviewsService {
         private reviewRepository: Repository<Review>,
     ) {}
 
-    async findAll(): Promise<Review[]> {
+    async getAll(): Promise<Review[]> {
         return this.reviewRepository.find({
             relations: { user: true, restaurant: true }
         });
     }
 
-    async findOne(id: number): Promise<Review> {
+    async getById(id: number): Promise<Review> {
         const review = await this.reviewRepository.findOne({
             where: { id },
             relations: { user: true, restaurant: true }
@@ -31,7 +31,7 @@ export class ReviewsService {
         return review;
     }
 
-    async findByRestaurantId(restaurantId: number): Promise<Review[]> {
+    async getByRestaurantId(restaurantId: number): Promise<Review[]> {
         const reviews = await this.reviewRepository.find({
             where: { restaurantId },
             relations: { user: true, restaurant: true }
@@ -39,7 +39,7 @@ export class ReviewsService {
         return reviews;
     }
 
-    async findByUserId(userId: number): Promise<Review[]> {
+    async getByUserId(userId: number): Promise<Review[]> {
         const reviews = await this.reviewRepository.find({
             where: { userId },
             relations: { user: true, restaurant: true }
@@ -53,19 +53,19 @@ export class ReviewsService {
             userId: createReviewDto.userId ?? 0,
             rating: Math.min(5, Math.max(1, createReviewDto.rating ?? 5)),
             status: createReviewDto.status || 'approved',
-            reviewDate: createReviewDto.reviewDate || new Date().toISOString()
+            date: createReviewDto.date || new Date().toISOString()
         });
         return this.reviewRepository.save(review);
     }
 
     async update(id: number, updateReviewDto: UpdateReviewDto): Promise<Review> {
-        const review = await this.findOne(id);
+        const review = await this.getById(id);
         const updateReview = this.reviewRepository.merge(review, updateReviewDto);
         return this.reviewRepository.save(updateReview);
     }
 
     async delete(id: number): Promise<void> {
-        const review = await this.findOne(id);
+        const review = await this.getById(id);
         await this.reviewRepository.remove(review);
     }
 }

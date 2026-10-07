@@ -1,10 +1,11 @@
 // Internal imports
+import type { CreateRestaurantDTO } from '@/dtos/CreateRestaurantDTO';
+import type { UpdateRestaurantDTO } from '@/dtos/UpdateRestaurantDTO';
 import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
-import { ReviewService } from '@/services/ReviewService';
 import axios from 'axios';
 
 export class RestaurantService {
-  private static readonly API_URL = 'http://localhost:3000/api/restaurants';
+  private static readonly API_URL = `${import.meta.env.VITE_API_URL}/restaurants`;
 
   static async getAll(): Promise<RestaurantInterface[]> {
     try {
@@ -65,13 +66,9 @@ export class RestaurantService {
     }
   }
 
-  static calculateAverageRating(restaurant: RestaurantInterface): number {
-    return restaurant.averageRating ?? 4.8;
-  }
-
-  static async create(restaurant: Omit<RestaurantInterface, 'id'>): Promise<RestaurantInterface | undefined> {
+  static async create(dto: CreateRestaurantDTO): Promise<RestaurantInterface | undefined> {
     try {
-      const { data } = await axios.post(this.API_URL, restaurant);
+      const { data } = await axios.post(this.API_URL, dto);
       return data;
     } catch (error) {
       console.error(error);
@@ -79,9 +76,9 @@ export class RestaurantService {
     }
   }
 
-  static async update(restaurant: RestaurantInterface): Promise<RestaurantInterface | undefined> {
+  static async update(id: number, dto: UpdateRestaurantDTO): Promise<RestaurantInterface | undefined> {
     try {
-      const { data } = await axios.patch(`${this.API_URL}/${restaurant.id}`, restaurant);
+      const { data } = await axios.patch(`${this.API_URL}/${id}`, dto);
       return data;
     } catch (error) {
       console.error(error);
@@ -95,5 +92,9 @@ export class RestaurantService {
     } catch (error) {
       console.error(error);
     }
+  }
+
+  static calculateAverageRating(restaurant: RestaurantInterface): number {
+    return restaurant.averageRating ?? 4.8;
   }
 }

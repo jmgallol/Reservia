@@ -21,7 +21,7 @@ export class Review {
     comment: string;
 
     @Column()
-    reviewDate: string;
+    date: string;
 
     @Column()
     status: string;

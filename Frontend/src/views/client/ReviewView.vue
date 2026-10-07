@@ -114,7 +114,7 @@ async function handleDeleteReview(review: ReviewInterface): Promise<void> {
               <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
                 <div>
                   <p class="text-xs font-semibold text-stone-400">
-                    {{ DateFormatUtil.formatReviewDate(review.reviewDate) }}
+                    {{ DateFormatUtil.formatReviewDate(review.date) }}
                   </p>
                   <h3 class="mt-1 text-lg font-bold text-stone-900 font-heading">
                     {{ getRestaurantName(review.restaurantId) }}

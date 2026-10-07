@@ -57,12 +57,11 @@ async function handleSave(): Promise<void> {
   }
 
   const updateDto = {
-    ...props.review,
     rating: form.value.rating,
     comment: form.value.comment.trim(),
   };
 
-  await ReviewService.update(updateDto);
+  await ReviewService.update(props.review.id, updateDto);
 
   emit('saved');
   closeModal();

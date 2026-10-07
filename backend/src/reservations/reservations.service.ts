@@ -13,13 +13,13 @@ export class ReservationsService {
         private reservationRepository: Repository<Reservation>,
     ) {}
 
-    async findAll(): Promise<Reservation[]> {
+    async getAll(): Promise<Reservation[]> {
         return this.reservationRepository.find({
             relations: { user: true, restaurant: true }
         })
     }
 
-    async findOne(id: number): Promise<Reservation> {
+    async getById(id: number): Promise<Reservation> {
         const reservation = await this.reservationRepository.findOne({
             where: { id },
             relations: { user: true, restaurant: true }
@@ -30,7 +30,7 @@ export class ReservationsService {
         return reservation;
     }
 
-    async findByStatus(status: string): Promise<Reservation[]> {
+    async getByStatus(status: string): Promise<Reservation[]> {
         const reservations = await this.reservationRepository.find({
             where: { status: status },
             relations: { user: true, restaurant: true }
@@ -38,7 +38,7 @@ export class ReservationsService {
         return reservations;
     }
 
-    async findByRestaurantId(restaurantId: number): Promise<Reservation[]> {
+    async getByRestaurantId(restaurantId: number): Promise<Reservation[]> {
         const reservations = await this.reservationRepository.find({
             where: { restaurantId: restaurantId },
             relations: { user: true, restaurant: true }
@@ -46,7 +46,7 @@ export class ReservationsService {
         return reservations;
     }
 
-    async findByUserId(userId: number): Promise<Reservation[]> {
+    async getByUserId(userId: number): Promise<Reservation[]> {
         const reservations = await this.reservationRepository.find({
             where: { userId },
             relations: { user: true, restaurant: true }
@@ -64,15 +64,13 @@ export class ReservationsService {
     }
 
     async update(id: number, updateReservationDto: UpdateReservationDto): Promise<Reservation> {
-        const reservation = await this.findOne(id);
+        const reservation = await this.getById(id);
         const updateReservation = this.reservationRepository.merge(reservation, updateReservationDto);
         return this.reservationRepository.save(updateReservation)
     }
 
     async delete(id: number): Promise<void> {
-        const reservation = await this.findOne(id);
+        const reservation = await this.getById(id);
         await this.reservationRepository.remove(reservation);
-    }
-
-    
+    } 
 }

@@ -91,17 +91,17 @@ function formatReservationId(id: number): string {
 }
 
 async function handleConfirm(id: number): Promise<void> {
-  await ReservationService.updateStatus(id, 'confirmed');
+  await ReservationService.update(id, { status: 'confirmed' });
   await loadReservations();
 }
 
 async function handleComplete(id: number): Promise<void> {
-  await ReservationService.updateStatus(id, 'completed');
+  await ReservationService.update(id, { status: 'completed' });
   await loadReservations();
 }
 
 async function handleCancel(id: number): Promise<void> {
-  await ReservationService.updateStatus(id, 'cancelled');
+  await ReservationService.update(id, { status: 'cancelled' });
   await loadReservations();
 }
 </script>

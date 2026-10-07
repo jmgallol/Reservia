@@ -21,22 +21,22 @@ export class ReviewsController {
 
     @Get()
     findAll(): Promise<Review[]> {
-        return this.reviewsService.findAll();
+        return this.reviewsService.getAll();
     }
 
     @Get(':id')
     findOne(@Param('id', ParseIntPipe) id: number): Promise<Review> {
-        return this.reviewsService.findOne(id);
+        return this.reviewsService.getById(id);
     }
 
     @Get('restaurant/:id')
     findByRestaurantId(@Param('id', ParseIntPipe) id:number): Promise<Review[]> {
-        return this.reviewsService.findByRestaurantId(id);
+        return this.reviewsService.getByRestaurantId(id);
     }
 
     @Get('user/:id')
     findByUserId(@Param('id', ParseIntPipe) id:number): Promise<Review[]> {
-        return this.reviewsService.findByUserId(id);
+        return this.reviewsService.getByUserId(id);
     }
 
     @Post()

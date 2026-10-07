@@ -4,8 +4,6 @@ import {
   PrimaryGeneratedColumn,
   OneToOne,
   OneToMany,
-  JoinColumn,
-  RelationId
 } from 'typeorm';
 import type { Relation } from 'typeorm';
 import { Restaurant } from '../../restaurants/entities/restaurant.entity.js';

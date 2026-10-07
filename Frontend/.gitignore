@@ -40,3 +40,7 @@ __screenshots__/
 
 # agents
 .agents
+
+# Environment
+.env
+.env.local

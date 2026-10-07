@@ -1,9 +1,9 @@
 export class CreateRestaurantDto {
-  name?: string;
+  name: string;
   description?: string;
-  address?: string;
-  city?: string;
-  category?: string;
+  address: string;
+  city: string;
+  category: string;
   openingTime?: string;
   closingTime?: string;
   imageUrl?: string;

@@ -13,7 +13,7 @@ export class RestaurantsService {
         private restaurantRepository: Repository<Restaurant>,
     ) {}
 
-    async findAll(query?: string, city?: string, category?: string): Promise<Restaurant[]> {
+    async getAll(query?: string, city?: string, category?: string): Promise<Restaurant[]> {
         const queryBuilder = this.restaurantRepository.createQueryBuilder("restaurant")
             .leftJoinAndSelect("restaurant.reviews", "reviews");
 
@@ -34,10 +34,10 @@ export class RestaurantsService {
         }
 
         const restaurants = await queryBuilder.getMany();
-        return restaurants.map(r => this.appendAverageRating(r));
+        return restaurants.map(r => this.calculateAverageRating(r));
     }
 
-    async findOne(id: number): Promise<Restaurant> {
+    async getById(id: number): Promise<Restaurant> {
         const restaurant = await this.restaurantRepository.findOne({
             where: { id },
             relations: { reviews: true }
@@ -46,7 +46,7 @@ export class RestaurantsService {
             throw new NotFoundException(`Restaurant with ID ${id} not found`);
         }
         
-        return this.appendAverageRating(restaurant);
+        return this.calculateAverageRating(restaurant);
     }
 
     async getCities(): Promise<string[]> {
@@ -84,17 +84,17 @@ export class RestaurantsService {
     }
 
     async update(id: number, updateRestaurantDto: UpdateRestaurantDto): Promise<Restaurant> {
-        const restaurant = await this.findOne(id);
+        const restaurant = await this.getById(id);
         const updatedRestaurant = this.restaurantRepository.merge(restaurant, updateRestaurantDto);
         return this.restaurantRepository.save(updatedRestaurant);
     }
 
     async delete(id: number): Promise<void> {
-        const restaurant = await this.findOne(id);
+        const restaurant = await this.getById(id);
         await this.restaurantRepository.remove(restaurant);
     }
 
-    private appendAverageRating(restaurant: Restaurant): Restaurant {
+    private calculateAverageRating(restaurant: Restaurant): Restaurant {
         const reviews = restaurant.reviews || [];
         const avg = reviews.length > 0 
             ? reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length 

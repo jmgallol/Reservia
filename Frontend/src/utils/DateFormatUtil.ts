@@ -3,11 +3,11 @@ export class DateFormatUtil {
     return value;
   }
 
-  static formatReviewDate(reviewDate?: string): string {
-    if (!reviewDate) return '';
+  static formatReviewDate(dateStr?: string): string {
+    if (!dateStr) return '';
 
-    const date = new Date(reviewDate);
-    if (Number.isNaN(date.getTime())) return reviewDate;
+    const date = new Date(dateStr);
+    if (Number.isNaN(date.getTime())) return dateStr;
 
     return new Intl.DateTimeFormat('es-CO', {
       day: '2-digit',

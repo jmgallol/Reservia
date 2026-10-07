@@ -17,12 +17,12 @@ export class UsersController {
 
     @Get()
     findAll(): Promise<User[]> {
-        return this.usersService.findAll();
+        return this.usersService.getAll();
     }
 
     @Get(':id')
     findById(@Param('id', ParseIntPipe) id:number): Promise<User> {
-        return this.usersService.findOne(id);
+        return this.usersService.getById(id);
     }
 
     @Post()
