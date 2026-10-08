@@ -2,96 +2,50 @@
 import type { CreateRestaurantDTO } from '@/dtos/CreateRestaurantDTO';
 import type { UpdateRestaurantDTO } from '@/dtos/UpdateRestaurantDTO';
 import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
-import axios from 'axios';
+import { BaseService } from '@/services/BaseService';
 
-export class RestaurantService {
+export class RestaurantService extends BaseService {
   private static readonly API_URL = `${import.meta.env.VITE_API_URL}/restaurants`;
 
-  static async getAll(): Promise<RestaurantInterface[]> {
-    try {
-      const { data } = await axios.get(this.API_URL);
-      return data;
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
+  static getAll(): Promise<RestaurantInterface[]> {
+    return this.makeRequest(this.API_URL);
   }
 
-  static async getById(id: number): Promise<RestaurantInterface | undefined> {
-    try {
-      const { data } = await axios.get(`${this.API_URL}/${id}`);
-      return data;
-    } catch (error) {
-      console.error(error);
-      return undefined;
-    }
+  static getById(id: number): Promise<RestaurantInterface> {
+    return this.makeRequest(`${this.API_URL}/${id}`);
   }
 
-  static async getCities(): Promise<string[]> {
-    try {
-      const { data } = await axios.get(`${this.API_URL}/cities`);
-      return data;
-    } catch (error) {
-      console.error(error);
-      return ['Todas'];
-    }
+  static getCities(): Promise<string[]> {
+    return this.makeRequest(`${this.API_URL}/cities`);
   }
 
-  static async getCategories(): Promise<string[]> {
-    try {
-      const { data } = await axios.get(`${this.API_URL}/categories`);
-      return data;
-    } catch (error) {
-      console.error(error);
-      return ['Todas'];
-    }
+  static getCategories(): Promise<string[]> {
+    return this.makeRequest(`${this.API_URL}/categories`);
   }
 
-  static async filter(
+  static filter(
     query: string = '',
     city: string = 'Todas',
     category: string = 'Todas',
   ): Promise<RestaurantInterface[]> {
-    try {
-      const params = new URLSearchParams();
-      if (query) params.append('query', query);
-      if (city) params.append('city', city);
-      if (category) params.append('category', category);
+    const params = new URLSearchParams();
+    if (query) params.append('query', query);
+    if (city && city !== 'Todas') params.append('city', city);
+    if (category && category !== 'Todas') params.append('category', category);
 
-      const { data } = await axios.get(`${this.API_URL}?${params.toString()}`);
-      return data;
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
+    return this.makeRequest(`${this.API_URL}?${params.toString()}`);
   }
 
-  static async create(dto: CreateRestaurantDTO): Promise<RestaurantInterface | undefined> {
-    try {
-      const { data } = await axios.post(this.API_URL, dto);
-      return data;
-    } catch (error) {
-      console.error(error);
-      return undefined;
-    }
+  static create(dto: CreateRestaurantDTO): Promise<RestaurantInterface> {
+    return this.makeRequest(this.API_URL, false, 'post', dto);
   }
 
-  static async update(id: number, dto: UpdateRestaurantDTO): Promise<RestaurantInterface | undefined> {
-    try {
-      const { data } = await axios.patch(`${this.API_URL}/${id}`, dto);
-      return data;
-    } catch (error) {
-      console.error(error);
-      return undefined;
-    }
+  static update(id: number, dto: UpdateRestaurantDTO): Promise<RestaurantInterface> {
+    return this.makeRequest(`${this.API_URL}/${id}`, false, 'patch', dto);
   }
 
-  static async delete(id: number): Promise<void> {
-    try {
-      await axios.delete(`${this.API_URL}/${id}`);
-    } catch (error) {
-      console.error(error);
-    }
+  static delete(id: number): Promise<void> {
+    return this.makeRequest(`${this.API_URL}/${id}`, false, 'delete');
   }
 
   static calculateAverageRating(restaurant: RestaurantInterface): number {

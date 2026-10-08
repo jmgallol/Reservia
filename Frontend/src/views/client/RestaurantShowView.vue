@@ -5,11 +5,13 @@ import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 // Internal imports
-import ReservationFormComponent from '@/components/client/restaurant/ReservationFormComponent.vue';
 import CreateReviewModalComponent from '@/components/client/review/CreateReviewModalComponent.vue';
-import StarRatingComponent from '@/components/common/StarRatingComponent.vue';
+import ExceptionHandlerUtil from '@/utils/ExceptionHandlerUtil';
+import FeedbackModalComponent from '@/components/common/FeedbackModalComponent.vue';
 import HeaderComponent from '@/components/layout/HeaderComponent.vue';
+import ReservationFormComponent from '@/components/client/restaurant/ReservationFormComponent.vue';
 import SidebarComponent from '@/components/layout/SidebarComponent.vue';
+import StarRatingComponent from '@/components/common/StarRatingComponent.vue';
 import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
 import { RestaurantService } from '@/services/RestaurantService';
 
@@ -19,11 +21,15 @@ const isCreateReviewModalOpen = ref(false);
 
 // Reactive variables
 const restaurant = ref<RestaurantInterface | null>(null);
+const modalRef = ref<InstanceType<typeof FeedbackModalComponent> | null>(null);
 
 onMounted(async () => {
   const id = Number(route.params.id);
   if (!isNaN(id)) {
-    restaurant.value = await RestaurantService.getById(id) || null;
+    restaurant.value = await ExceptionHandlerUtil.handleWithModal(
+      () => RestaurantService.getById(id),
+      modalRef
+    ) || null;
   }
 });
 </script>
@@ -119,5 +125,7 @@ onMounted(async () => {
         />
       </main>
     </div>
+
+    <FeedbackModalComponent ref="modalRef" />
   </div>
 </template>
