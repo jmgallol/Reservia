@@ -3,12 +3,12 @@
 import { onMounted, ref } from 'vue';
 
 // Internal imports
+import { AuthService } from '@/services/AuthService';
 import HeaderComponent from '@/components/layout/HeaderComponent.vue';
 import RestaurantEditFormComponent from '@/components/admin/restaurant/RestaurantEditFormComponent.vue';
-import SidebarComponent from '@/components/layout/SidebarComponent.vue';
 import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
-import { AuthService } from '@/services/AuthService';
 import { RestaurantService } from '@/services/RestaurantService';
+import SidebarComponent from '@/components/layout/SidebarComponent.vue';
 
 // Variables
 const currentUser = AuthService.getCurrentUser();

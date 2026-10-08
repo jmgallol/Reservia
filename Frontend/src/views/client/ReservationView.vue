@@ -3,17 +3,17 @@
 import { computed, onMounted, ref } from 'vue';
 
 // Internal imports
+import { AuthService } from '@/services/AuthService';
+import { DateFormatUtil } from '@/utils/DateFormatUtil';
 import DoughnutChartComponent from '@/components/admin/dashboard/DoughnutChartComponent.vue';
 import EditReservationModalComponent from '@/components/client/reservation/EditReservationModalComponent.vue';
 import ExceptionHandlerUtil from '@/utils/ExceptionHandlerUtil';
 import FeedbackModalComponent from '@/components/common/FeedbackModalComponent.vue';
 import HeaderComponent from '@/components/layout/HeaderComponent.vue';
+import type { ReservationInterface, ReservationStatus } from '@/interfaces/ReservationInterface';
+import { ReservationService } from '@/services/ReservationService';
 import SidebarComponent from '@/components/layout/SidebarComponent.vue';
 import StatusBadgeComponent from '@/components/common/StatusBadgeComponent.vue';
-import type { ReservationInterface, ReservationStatus } from '@/interfaces/ReservationInterface';
-import { AuthService } from '@/services/AuthService';
-import { ReservationService } from '@/services/ReservationService';
-import { DateFormatUtil } from '@/utils/DateFormatUtil';
 
 // Constants
 const statusLabels = ['Pendientes', 'Confirmadas', 'Completadas', 'Canceladas'];
