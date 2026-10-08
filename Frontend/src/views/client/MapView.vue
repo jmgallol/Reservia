@@ -7,9 +7,9 @@ import { useRouter } from 'vue-router';
 
 // Internal imports
 import HeaderComponent from '@/components/layout/HeaderComponent.vue';
-import SidebarComponent from '@/components/layout/SidebarComponent.vue';
 import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
 import { RestaurantService } from '@/services/RestaurantService';
+import SidebarComponent from '@/components/layout/SidebarComponent.vue';
 
 // Variables
 let mapInstance: L.Map | null = null;

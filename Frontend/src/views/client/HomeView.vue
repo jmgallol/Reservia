@@ -7,10 +7,10 @@ import { useRouter } from 'vue-router';
 import ExceptionHandlerUtil from '@/utils/ExceptionHandlerUtil';
 import FeedbackModalComponent from '@/components/common/FeedbackModalComponent.vue';
 import HeaderComponent from '@/components/layout/HeaderComponent.vue';
-import SidebarComponent from '@/components/layout/SidebarComponent.vue';
-import StarRatingComponent from '@/components/common/StarRatingComponent.vue';
 import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
 import { RestaurantService } from '@/services/RestaurantService';
+import SidebarComponent from '@/components/layout/SidebarComponent.vue';
+import StarRatingComponent from '@/components/common/StarRatingComponent.vue';
 
 // Variables
 const router = useRouter();

@@ -4,13 +4,13 @@ import Chart from 'chart.js/auto';
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
 // Internal imports
-import KpiGridComponent from '@/components/admin/dashboard/KpiGridComponent.vue';
-import HeaderComponent from '@/components/layout/HeaderComponent.vue';
-import SidebarComponent from '@/components/layout/SidebarComponent.vue';
-import type { ReservationInterface } from '@/interfaces/ReservationInterface';
 import { AuthService } from '@/services/AuthService';
-import { ReservationService } from '@/services/ReservationService';
 import { DateFormatUtil } from '@/utils/DateFormatUtil';
+import HeaderComponent from '@/components/layout/HeaderComponent.vue';
+import KpiGridComponent from '@/components/admin/dashboard/KpiGridComponent.vue';
+import type { ReservationInterface } from '@/interfaces/ReservationInterface';
+import { ReservationService } from '@/services/ReservationService';
+import SidebarComponent from '@/components/layout/SidebarComponent.vue';
 
 // Variables
 let chartInstance: Chart | null = null;
