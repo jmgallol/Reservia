@@ -57,39 +57,37 @@ async function handleRegister(): Promise<void> {
     role: form.value.role,
   };
 
-  const newUser = await UserService.create(createDto);
+  try {
+    const newUser = await UserService.create(createDto);
 
-  if (!newUser) {
+    if (form.value.role === 'admin') {
+      const restaurantDto = {
+        name: form.value.restaurantName,
+        description: 'Bienvenidos a nuestro restaurante.',
+        address: form.value.restaurantAddress,
+        city: form.value.restaurantCity,
+        category: form.value.restaurantCategory,
+        openingTime: '08:00',
+        closingTime: '22:00',
+        imageUrl: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+        latitude: 0,
+        longitude: 0, 
+        adminId: newUser.id,
+      };
+      await RestaurantService.create(restaurantDto);
+    }
+
     isLoading.value = false;
-    errorMessage.value = 'Error al registrar el usuario. Es posible que el correo ya exista.';
-    return;
+    successMessage.value = 'Cuenta creada exitosamente. Ahora puedes iniciar sesión.';
+    
+    setTimeout(() => {
+      emit('registered', form.value.email);
+    }, 1500);
+
+  } catch (error: any) {
+    isLoading.value = false;
+    errorMessage.value = error.message || 'Error al registrar el usuario.';
   }
-
-  if (form.value.role === 'admin') {
-    const restaurantDto = {
-      name: form.value.restaurantName,
-      description: 'Bienvenidos a nuestro restaurante.',
-      address: form.value.restaurantAddress,
-      city: form.value.restaurantCity,
-      category: form.value.restaurantCategory,
-      openingTime: '08:00',
-      closingTime: '22:00',
-      imageUrl: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4',
-      latitude: 0,
-      longitude: 0, 
-      adminId: newUser.id,
-    };
-    await RestaurantService.create(restaurantDto);
-  }
-
-  isLoading.value = false;
-
-  successMessage.value = 'Cuenta creada exitosamente. Ahora puedes iniciar sesión.';
-  
-  // Limpiar el formulario y avisar al componente padre
-  setTimeout(() => {
-    emit('registered', form.value.email);
-  }, 1500);
 }
 </script>
 

@@ -15,10 +15,10 @@ export class Reservation {
     id: number;
 
     @Column({ type: 'varchar' })
-    reservationDate: string;
+    date: string;
 
     @Column({ type: 'varchar' })
-    reservationTime: string;
+    time: string;
 
     @Column({ type: 'int' })
     numberOfPeople: number;
