@@ -4,14 +4,14 @@ import { computed, ref } from 'vue';
 import { onMounted } from 'vue';
 
 // Internal imports
-import StarRatingComponent from '@/components/common/StarRatingComponent.vue';
 import HeaderComponent from '@/components/layout/HeaderComponent.vue';
 import SidebarComponent from '@/components/layout/SidebarComponent.vue';
+import StarRatingComponent from '@/components/common/StarRatingComponent.vue';
 import type { ReviewInterface } from '@/interfaces/ReviewInterface';
 import { AuthService } from '@/services/AuthService';
+import { DateFormatUtil } from '@/utils/DateFormatUtil';
 import { RestaurantService } from '@/services/RestaurantService';
 import { ReviewService } from '@/services/ReviewService';
-import { DateFormatUtil } from '@/utils/DateFormatUtil';
 import { StringFormatUtil } from '@/utils/StringFormatUtil';
 
 type RatingFilter = 'Todas' | '5' | '4' | '3' | '2' | '1';

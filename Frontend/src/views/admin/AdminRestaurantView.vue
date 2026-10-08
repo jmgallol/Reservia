@@ -3,8 +3,8 @@
 import { onMounted, ref } from 'vue';
 
 // Internal imports
-import RestaurantEditFormComponent from '@/components/admin/restaurant/RestaurantEditFormComponent.vue';
 import HeaderComponent from '@/components/layout/HeaderComponent.vue';
+import RestaurantEditFormComponent from '@/components/admin/restaurant/RestaurantEditFormComponent.vue';
 import SidebarComponent from '@/components/layout/SidebarComponent.vue';
 import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
 import { AuthService } from '@/services/AuthService';
