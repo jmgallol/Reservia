@@ -1,9 +1,9 @@
 // Internal imports
 import type { UserInterface } from '@/interfaces/UserInterface';
 import { useAuthStore } from '@/stores/authStore';
-import axios from 'axios';
+import { BaseService } from '@/services/BaseService';
 
-export class AuthService {
+export class AuthService extends BaseService {
   static getCurrentUser(): UserInterface | null {
     return useAuthStore().currentUser;
   }
@@ -12,22 +12,19 @@ export class AuthService {
     return useAuthStore().isAuthenticated();
   }
 
-  static async login(email: string, password: string): Promise<UserInterface | undefined> {
-    try {
-      const { data } = await axios.post(`${import.meta.env.VITE_API_URL}/users/login`, {
-        email,
-        password,
-      });
-
-      if (data) {
-        useAuthStore().login(data);
-        return data;
-      }
-    } catch (error) {
-      console.error('Login failed:', error);
-      return undefined;
+  static async login(email: string, password: string): Promise<UserInterface> {
+    const data = await this.makeRequest(
+      `${import.meta.env.VITE_API_URL}/users/login`,
+      false,
+      'post',
+      { email, password }
+    );
+    
+    if (data) {
+      useAuthStore().login(data);
     }
-    return undefined;
+    
+    return data;
   }
 
   static logout(): void {

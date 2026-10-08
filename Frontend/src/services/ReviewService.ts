@@ -2,76 +2,36 @@
 import type { CreateReviewDTO } from '@/dtos/CreateReviewDTO';
 import type { UpdateReviewDTO } from '@/dtos/UpdateReviewDTO';
 import type { ReviewInterface } from '@/interfaces/ReviewInterface';
-import axios from 'axios';
+import { BaseService } from '@/services/BaseService';
 
-export class ReviewService {
+export class ReviewService extends BaseService {
   private static readonly API_URL = `${import.meta.env.VITE_API_URL}/reviews`;
 
-  static async getAll(): Promise<ReviewInterface[]> {
-    try {
-      const { data } = await axios.get(this.API_URL);
-      return data;
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
+  static getAll(): Promise<ReviewInterface[]> {
+    return this.makeRequest(this.API_URL);
   }
 
-  static async getById(id: number): Promise<ReviewInterface | undefined> {
-    try {
-      const { data } = await axios.get(`${this.API_URL}/${id}`);
-      return data;
-    } catch (error) {
-      console.error(error);
-      return undefined;
-    }
+  static getById(id: number): Promise<ReviewInterface> {
+    return this.makeRequest(`${this.API_URL}/${id}`);
   }
 
-  static async getByRestaurantId(id: number): Promise<ReviewInterface[]> {
-    try {
-      const { data } = await axios.get(`${this.API_URL}/restaurant/${id}`);
-      return data;
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
+  static getByRestaurantId(id: number): Promise<ReviewInterface[]> {
+    return this.makeRequest(`${this.API_URL}/restaurant/${id}`);
   }
 
-  static async getByUserId(userId: number): Promise<ReviewInterface[]> {
-    try {
-      const { data } = await axios.get(`${this.API_URL}/user/${userId}`);
-      return data;
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
+  static getByUserId(userId: number): Promise<ReviewInterface[]> {
+    return this.makeRequest(`${this.API_URL}/user/${userId}`);
   }
 
-  static async create(dto: CreateReviewDTO): Promise<ReviewInterface | undefined> {
-    try {
-      const { data } = await axios.post(this.API_URL, dto);
-      return data;
-    } catch (error) {
-      console.error(error);
-      return undefined;
-    }
+  static create(dto: CreateReviewDTO): Promise<ReviewInterface> {
+    return this.makeRequest(this.API_URL, false, 'post', dto);
   }
 
-  static async update(id: number, dto: UpdateReviewDTO): Promise<ReviewInterface | undefined> {
-    try {
-      const { data } = await axios.patch(`${this.API_URL}/${id}`, dto);
-      return data;
-    } catch (error) {
-      console.error(error);
-      return undefined;
-    }
+  static update(id: number, dto: UpdateReviewDTO): Promise<ReviewInterface> {
+    return this.makeRequest(`${this.API_URL}/${id}`, false, 'patch', dto);
   }
 
-  static async delete(id: number): Promise<void> {
-    try {
-      await axios.delete(`${this.API_URL}/${id}`);
-    } catch (error) {
-      console.error(error);
-    }
+  static delete(id: number): Promise<void> {
+    return this.makeRequest(`${this.API_URL}/${id}`, false, 'delete');
   }
 }

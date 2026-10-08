@@ -1,6 +1,6 @@
 export class CreateReservationDto {
-    reservationDate: string;
-    reservationTime: string;
+    date: string;
+    time: string;
     numberOfPeople: number;
     status: 'pending' | 'confirmed' | 'completed' | 'cancelled';
     specialRequest?: string;

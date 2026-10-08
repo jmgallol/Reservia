@@ -1,40 +1,20 @@
-// External imports
-import axios from 'axios';
-
 // Internal imports
 import type { CreateUserDTO } from '@/dtos/CreateUserDTO';
 import type { UserInterface } from '@/interfaces/UserInterface';
+import { BaseService } from '@/services/BaseService';
 
-export class UserService {
+export class UserService extends BaseService {
   private static readonly API_URL = `${import.meta.env.VITE_API_URL}/users`;
 
-  static async getAll(): Promise<UserInterface[]> {
-    try {
-      const { data } = await axios.get(this.API_URL);
-      return data;
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
+  static getAll(): Promise<UserInterface[]> {
+    return this.makeRequest(this.API_URL);
   }
 
-  static async getById(id: number): Promise<UserInterface | undefined> {
-    try {
-      const { data } = await axios.get(`${this.API_URL}/${id}`);
-      return data;
-    } catch (error) {
-      console.error(error);
-      return undefined;
-    }
+  static getById(id: number): Promise<UserInterface> {
+    return this.makeRequest(`${this.API_URL}/${id}`);
   }
 
-  static async create(dto: CreateUserDTO): Promise<UserInterface | undefined> {
-    try {
-      const { data } = await axios.post(this.API_URL, dto);
-      return data;
-    } catch (error) {
-      console.error(error);
-      return undefined;
-    }
+  static create(dto: CreateUserDTO): Promise<UserInterface> {
+    return this.makeRequest(this.API_URL, false, 'post', dto);
   }
 }

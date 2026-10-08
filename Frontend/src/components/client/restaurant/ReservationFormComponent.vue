@@ -19,8 +19,8 @@ const router = useRouter();
 
 // Reactive variables
 const form = ref({
-  reservationDate: '2026-07-20',
-  reservationTime: '19:30',
+  date: '2026-07-20',
+  time: '19:30',
   guests: 2,
 });
 const errorMessage = ref('');
@@ -36,8 +36,8 @@ async function handleConfirmReservation(): Promise<void> {
   const reservationDTO: CreateReservationDTO = {
     restaurantId: props.restaurantId,
     userId: user.id,
-    reservationDate: form.value.reservationDate,
-    reservationTime: form.value.reservationTime,
+    date: form.value.date,
+    time: form.value.time,
     numberOfPeople: form.value.guests,
   };
 
@@ -74,7 +74,7 @@ function increaseGuests(): void {
           >Fecha</label
         >
         <input
-          v-model="form.reservationDate"
+          v-model="form.date"
           type="date"
           class="w-full px-4 py-3 bg-white border border-stone-200 rounded-xl text-[14px] font-medium text-stone-800 outline-none focus:border-stone-400 transition-colors"
         />
@@ -86,7 +86,7 @@ function increaseGuests(): void {
           >Hora</label
         >
         <select
-          v-model="form.reservationTime"
+          v-model="form.time"
           class="w-full px-4 py-3 bg-white border border-stone-200 rounded-xl text-[14px] font-medium text-stone-800 outline-none focus:border-stone-400 transition-colors appearance-none cursor-pointer"
         >
           <option value="12:00">12:00</option>
