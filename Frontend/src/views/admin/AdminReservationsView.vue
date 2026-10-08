@@ -4,9 +4,11 @@ import { computed, onMounted, ref, watch } from 'vue';
 
 // Internal imports
 import DoughnutChartComponent from '@/components/admin/dashboard/DoughnutChartComponent.vue';
-import StatusBadgeComponent from '@/components/common/StatusBadgeComponent.vue';
+import ExceptionHandlerUtil from '@/utils/ExceptionHandlerUtil';
+import FeedbackModalComponent from '@/components/common/FeedbackModalComponent.vue';
 import HeaderComponent from '@/components/layout/HeaderComponent.vue';
 import SidebarComponent from '@/components/layout/SidebarComponent.vue';
+import StatusBadgeComponent from '@/components/common/StatusBadgeComponent.vue';
 import type { ReservationInterface, ReservationStatus } from '@/interfaces/ReservationInterface';
 import { AuthService } from '@/services/AuthService';
 import { ReservationService } from '@/services/ReservationService';
@@ -37,10 +39,16 @@ const peopleOptions = [
 const rawReservations = ref<ReservationInterface[]>([]);
 const selectedStatus = ref<'Todas' | ReservationStatus>('Todas');
 const selectedPeople = ref<string>('Todos');
+const modalRef = ref<InstanceType<typeof FeedbackModalComponent> | null>(null);
 
 async function loadReservations() {
-  if (currentUser?.restaurantId) {
-    rawReservations.value = await ReservationService.getByRestaurantId(currentUser.restaurantId);
+  const restaurantId = currentUser?.restaurantId;
+  if (restaurantId) {
+    const data = await ExceptionHandlerUtil.handleWithModal(
+      () => ReservationService.getByRestaurantId(restaurantId),
+      modalRef
+    );
+    rawReservations.value = data ?? [];
   }
 }
 
@@ -91,17 +99,29 @@ function formatReservationId(id: number): string {
 }
 
 async function handleConfirm(id: number): Promise<void> {
-  await ReservationService.update(id, { status: 'confirmed' });
+  await ExceptionHandlerUtil.handleWithModal(
+    () => ReservationService.update(id, { status: 'confirmed' }),
+    modalRef,
+    'Reserva confirmada con éxito'
+  );
   await loadReservations();
 }
 
 async function handleComplete(id: number): Promise<void> {
-  await ReservationService.update(id, { status: 'completed' });
+  await ExceptionHandlerUtil.handleWithModal(
+    () => ReservationService.update(id, { status: 'completed' }),
+    modalRef,
+    'Reserva completada con éxito'
+  );
   await loadReservations();
 }
 
 async function handleCancel(id: number): Promise<void> {
-  await ReservationService.update(id, { status: 'cancelled' });
+  await ExceptionHandlerUtil.handleWithModal(
+    () => ReservationService.update(id, { status: 'cancelled' }),
+    modalRef,
+    'Reserva cancelada con éxito'
+  );
   await loadReservations();
 }
 </script>
@@ -243,12 +263,12 @@ async function handleCancel(id: number): Promise<void> {
 
                     <!-- Date -->
                     <td class="px-4 py-4 text-sm text-stone-700 font-medium">
-                      {{ reservation.reservationDate }}
+                      {{ reservation.date }}
                     </td>
 
                     <!-- Time -->
                     <td class="px-4 py-4 text-sm text-stone-700 font-medium">
-                      {{ reservation.reservationTime }}
+                      {{ reservation.time }}
                     </td>
 
                     <!-- People -->
@@ -329,5 +349,7 @@ async function handleCancel(id: number): Promise<void> {
         </div>
       </main>
     </div>
+    
+    <FeedbackModalComponent ref="modalRef" />
   </div>
 </template>

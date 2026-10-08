@@ -64,7 +64,7 @@ const chartData = computed(() => {
     }
 
     reservations.value.forEach((r) => {
-      const date = DateFormatUtil.parseDate(r.reservationDate);
+      const date = DateFormatUtil.parseDate(r.date);
       if (!date) return;
 
       const diffMonths =
@@ -89,7 +89,7 @@ const chartData = computed(() => {
     }
 
     reservations.value.forEach((r) => {
-      const date = DateFormatUtil.parseDate(r.reservationDate);
+      const date = DateFormatUtil.parseDate(r.date);
       if (!date) return;
 
       const diffMonths =
@@ -108,7 +108,7 @@ const chartData = computed(() => {
   const data = [0, 0, 0, 0];
 
   reservations.value.forEach((r) => {
-    const date = DateFormatUtil.parseDate(r.reservationDate);
+    const date = DateFormatUtil.parseDate(r.date);
     if (!date) return;
 
     if (date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth()) {

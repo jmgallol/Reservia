@@ -4,9 +4,11 @@ import { onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 // Internal imports
-import StarRatingComponent from '@/components/common/StarRatingComponent.vue';
+import ExceptionHandlerUtil from '@/utils/ExceptionHandlerUtil';
+import FeedbackModalComponent from '@/components/common/FeedbackModalComponent.vue';
 import HeaderComponent from '@/components/layout/HeaderComponent.vue';
 import SidebarComponent from '@/components/layout/SidebarComponent.vue';
+import StarRatingComponent from '@/components/common/StarRatingComponent.vue';
 import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
 import { RestaurantService } from '@/services/RestaurantService';
 
@@ -22,16 +24,21 @@ const searchQuery = ref('');
 // Selectors
 const selectedCity = ref('Todas');
 const selectedCategory = ref('Todas');
+const modalRef = ref<InstanceType<typeof FeedbackModalComponent> | null>(null);
 
 onMounted(async () => {
-  cities.value = await RestaurantService.getCities();
-  categories.value = await RestaurantService.getCategories();
+  cities.value = await ExceptionHandlerUtil.handleWithModal(() => RestaurantService.getCities(), modalRef) ?? ['Todas'];
+  categories.value = await ExceptionHandlerUtil.handleWithModal(() => RestaurantService.getCategories(), modalRef) ?? ['Todas'];
 });
 
 watch(
   [searchQuery, selectedCity, selectedCategory],
   async ([query, city, category]) => {
-    filteredRestaurants.value = await RestaurantService.filter(query, city, category);
+    const data = await ExceptionHandlerUtil.handleWithModal(
+      () => RestaurantService.filter(query, city, category),
+      modalRef
+    );
+    filteredRestaurants.value = data ?? [];
   },
   { immediate: true }
 );
@@ -191,5 +198,7 @@ function handleViewRestaurant(id: number): void {
         </div>
       </main>
     </div>
+
+    <FeedbackModalComponent ref="modalRef" />
   </div>
 </template>

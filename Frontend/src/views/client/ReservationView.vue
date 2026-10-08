@@ -5,9 +5,11 @@ import { computed, onMounted, ref } from 'vue';
 // Internal imports
 import DoughnutChartComponent from '@/components/admin/dashboard/DoughnutChartComponent.vue';
 import EditReservationModalComponent from '@/components/client/reservation/EditReservationModalComponent.vue';
-import StatusBadgeComponent from '@/components/common/StatusBadgeComponent.vue';
+import ExceptionHandlerUtil from '@/utils/ExceptionHandlerUtil';
+import FeedbackModalComponent from '@/components/common/FeedbackModalComponent.vue';
 import HeaderComponent from '@/components/layout/HeaderComponent.vue';
 import SidebarComponent from '@/components/layout/SidebarComponent.vue';
+import StatusBadgeComponent from '@/components/common/StatusBadgeComponent.vue';
 import type { ReservationInterface, ReservationStatus } from '@/interfaces/ReservationInterface';
 import { AuthService } from '@/services/AuthService';
 import { ReservationService } from '@/services/ReservationService';
@@ -32,6 +34,7 @@ const currentUser = AuthService.getCurrentUser();
 
 // Reactive variables
 const showEditModal = ref(false);
+const modalRef = ref<InstanceType<typeof FeedbackModalComponent> | null>(null);
 
 // Selectors
 const selectedStatus = ref<'Todas' | ReservationStatus>('Todas');
@@ -41,7 +44,11 @@ const currentUserReservations = ref<ReservationInterface[]>([]);
 
 async function loadReservations() {
   if (currentUser) {
-    currentUserReservations.value = await ReservationService.getByUserId(currentUser.id);
+    const data = await ExceptionHandlerUtil.handleWithModal(
+      () => ReservationService.getByUserId(currentUser.id),
+      modalRef,
+    );
+    currentUserReservations.value = data ?? [];
   }
 }
 
@@ -81,7 +88,11 @@ async function handleCancelReservation(reservation: ReservationInterface): Promi
   const confirmed = confirm('¿Cancelar esta reserva?');
   if (!confirmed) return;
 
-  await ReservationService.update(reservation.id, { status: 'cancelled' });
+  await ExceptionHandlerUtil.handleWithModal(
+    () => ReservationService.update(reservation.id, { status: 'cancelled' }),
+    modalRef,
+    'Reserva cancelada con éxito',
+  );
   await loadReservations();
 }
 
@@ -175,7 +186,7 @@ function openEditModal(reservation: ReservationInterface): void {
                       Fecha
                     </dt>
                     <dd class="mt-1 text-sm font-semibold text-stone-800">
-                      {{ DateFormatUtil.formatDate(reservation.reservationDate) }}
+                      {{ DateFormatUtil.formatDate(reservation.date) }}
                     </dd>
                   </div>
                   <div>
@@ -183,7 +194,7 @@ function openEditModal(reservation: ReservationInterface): void {
                       Hora
                     </dt>
                     <dd class="mt-1 text-sm font-semibold text-stone-800">
-                      {{ reservation.reservationTime }}
+                      {{ reservation.time }}
                     </dd>
                   </div>
                   <div>
@@ -281,5 +292,8 @@ function openEditModal(reservation: ReservationInterface): void {
       :reservation="selectedReservation" 
       @saved="loadReservations" 
     />
+
+    <!-- Feedback Modal -->
+    <FeedbackModalComponent ref="modalRef" />
   </div>
 </template>
