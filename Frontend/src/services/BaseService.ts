@@ -44,18 +44,19 @@ export abstract class BaseService {
     const isAxios = axios.isAxiosError(error) || (error && typeof error === 'object' && 'isAxiosError' in error);
 
     if (isAxios) {
-      const axiosError = error as any;
+      const axiosError = error as AxiosError<{ message?: string | string[]; error?: string }>;
       if (axiosError.code === 'ERR_NETWORK' || axiosError.message === 'Network Error') {
         return new Error('El servidor no está disponible en este momento. Por favor, intenta más tarde.');
       }
 
-      let backendMessage = axiosError.response?.data?.message || axiosError.response?.data?.error || axiosError.message;
-      
+      const responseData = axiosError.response?.data;
+      let backendMessage: string | string[] | undefined = responseData?.message || responseData?.error || axiosError.message;
+
       if (Array.isArray(backendMessage)) {
         backendMessage = backendMessage[0];
       }
-      
-      return new Error(backendMessage);
+
+      return new Error(backendMessage || 'Ocurrió un error inesperado.');
     }
 
     return error instanceof Error ? error : new Error(String(error));
