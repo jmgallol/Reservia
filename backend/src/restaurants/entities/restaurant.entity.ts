@@ -1,0 +1,63 @@
+import { 
+  Entity, 
+  Column, 
+  PrimaryGeneratedColumn,
+  OneToOne,
+  OneToMany,
+  JoinColumn,
+} from 'typeorm';
+import type { Relation } from 'typeorm';
+import { User } from '../../users/entities/user.entity.js';
+import { Reservation } from '../../reservations/entities/reservation.entity.js';
+import { Review } from '../../reviews/entities/review.entity.js';
+
+@Entity()
+export class Restaurant {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column({ type: 'varchar' })
+  name: string;
+  
+  @Column({ type: 'text' })
+  description: string;
+
+  @Column({ type: 'varchar' })
+  address: string;
+
+  averageRating?: number;
+
+  @Column({ type: 'varchar' })
+  city: string;
+
+  @Column({ type: 'varchar' })
+  category: string;
+
+  @Column({ type: 'varchar' })
+  openingTime: string;
+
+  @Column({ type: 'varchar' })
+  closingTime: string;
+
+  @Column({ type: 'varchar' })
+  imageUrl: string;
+
+  @Column({ type: 'float' })
+  latitude: number;
+
+  @Column({ type: 'float' })
+  longitude: number;
+
+  @Column({ type: 'int', nullable: true })
+  adminId: number;
+
+  @OneToOne(() => User, (user) => user.restaurant, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'adminId' })
+  user: Relation<User>;
+
+  @OneToMany(() => Reservation, (reservation) => reservation.restaurant)
+  reservations: Relation<Reservation[]>;
+
+  @OneToMany(() => Review, (review) => review.restaurant)
+  reviews: Relation<Review[]>;
+}

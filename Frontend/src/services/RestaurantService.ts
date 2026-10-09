@@ -1,93 +1,54 @@
 // Internal imports
+import type { CreateRestaurantDTO } from '@/dtos/CreateRestaurantDTO';
+import type { UpdateRestaurantDTO } from '@/dtos/UpdateRestaurantDTO';
 import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
-import { ReviewService } from '@/services/ReviewService';
-import { StringFormatUtil } from '@/utils/StringFormatUtil';
-import { useRestaurantStore } from '@/stores/restaurantsStore';
+import { BaseService } from '@/services/BaseService';
 
-export class RestaurantService {
-  static getAll(): RestaurantInterface[] {
-    return useRestaurantStore().restaurants;
+export class RestaurantService extends BaseService {
+  private static readonly API_URL = `${import.meta.env.VITE_API_URL}/restaurants`;
+
+  static getAll(): Promise<RestaurantInterface[]> {
+    return this.makeRequest(this.API_URL);
   }
 
-  static getById(id: number): RestaurantInterface | undefined {
-    return useRestaurantStore().restaurants.find((restaurant) => restaurant.id === id);
+  static getById(id: number): Promise<RestaurantInterface> {
+    return this.makeRequest(`${this.API_URL}/${id}`);
   }
 
-  static getCities(): string[] {
-    const cityNames = useRestaurantStore().restaurants.map((restaurant) => restaurant.city);
-    return ['Todas', ...Array.from(new Set(cityNames)).sort((a, b) => a.localeCompare(b))];
+  static getCities(): Promise<string[]> {
+    return this.makeRequest(`${this.API_URL}/cities`);
   }
 
-  static getCategories(): string[] {
-    const categoryNames = useRestaurantStore().restaurants.map((restaurant) => restaurant.category);
-    return ['Todas', ...Array.from(new Set(categoryNames)).sort((a, b) => a.localeCompare(b))];
+  static getCategories(): Promise<string[]> {
+    return this.makeRequest(`${this.API_URL}/categories`);
   }
 
   static filter(
     query: string = '',
     city: string = 'Todas',
     category: string = 'Todas',
-  ): RestaurantInterface[] {
-    const normalizedQuery = StringFormatUtil.normalizeSearchText(query);
+  ): Promise<RestaurantInterface[]> {
+    const params = new URLSearchParams();
+    if (query) params.append('query', query);
+    if (city && city !== 'Todas') params.append('city', city);
+    if (category && category !== 'Todas') params.append('category', category);
 
-    return useRestaurantStore().restaurants.filter((restaurant) => {
-      const normalizedName = StringFormatUtil.normalizeSearchText(restaurant.name);
-      const normalizedCity = StringFormatUtil.normalizeSearchText(restaurant.city);
-      const normalizedCategory = StringFormatUtil.normalizeSearchText(restaurant.category);
-
-      const matchesSearch =
-        normalizedQuery === '' ||
-        normalizedName.includes(normalizedQuery) ||
-        normalizedCity.includes(normalizedQuery) ||
-        normalizedCategory.includes(normalizedQuery);
-
-      const matchesCity = city === 'Todas' || restaurant.city.toLowerCase() === city.toLowerCase();
-
-      const matchesCategory =
-        category === 'Todas' || restaurant.category.toLowerCase() === category.toLowerCase();
-
-      return matchesSearch && matchesCity && matchesCategory;
-    });
+    return this.makeRequest(`${this.API_URL}?${params.toString()}`);
   }
 
-  static calculateAverageRating(restaurantId: number): number {
-    const reviews = ReviewService.getByRestaurantId(restaurantId);
-    if (reviews.length === 0) {
-      return 4.8;
-    }
-    const total = reviews.reduce((sum, review) => sum + review.rating, 0);
-    return Math.round((total / reviews.length) * 10) / 10;
+  static create(dto: CreateRestaurantDTO): Promise<RestaurantInterface> {
+    return this.makeRequest(this.API_URL, false, 'post', dto);
   }
 
-  static create(restaurant: RestaurantInterface): RestaurantInterface {
-    const restaurants = useRestaurantStore().restaurants;
-    const nextId = restaurants.length > 0 ? Math.max(...restaurants.map((r) => r.id)) + 1 : 1;
-
-    const newRestaurant: RestaurantInterface = {
-      ...restaurant,
-      id: nextId,
-    };
-
-    useRestaurantStore().restaurants.push(newRestaurant);
-
-    return newRestaurant;
+  static update(id: number, dto: UpdateRestaurantDTO): Promise<RestaurantInterface> {
+    return this.makeRequest(`${this.API_URL}/${id}`, false, 'patch', dto);
   }
 
-  static update(restaurant: RestaurantInterface): void {
-    const restaurants = useRestaurantStore().restaurants;
-    const index = restaurants.findIndex((r) => r.id === restaurant.id);
-    const existing = restaurants[index];
-
-    if (index !== -1 && existing) {
-      restaurants[index] = { ...restaurant };
-    }
+  static delete(id: number): Promise<void> {
+    return this.makeRequest(`${this.API_URL}/${id}`, false, 'delete');
   }
 
-  static delete(id: number): void {
-    const restaurants = useRestaurantStore().restaurants;
-    const index = restaurants.findIndex((r) => r.id === id);
-    if (index !== -1) {
-      restaurants.splice(index, 1);
-    }
+  static calculateAverageRating(restaurant: RestaurantInterface): number {
+    return restaurant.averageRating ?? 4.8;
   }
 }

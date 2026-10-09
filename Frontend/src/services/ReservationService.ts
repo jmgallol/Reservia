@@ -1,46 +1,41 @@
 // Internal imports
 import type { CreateReservationDTO } from '@/dtos/CreateReservationDTO';
+import type { UpdateReservationDTO } from '@/dtos/UpdateReservationDTO';
 import type { ReservationInterface, ReservationStatus } from '@/interfaces/ReservationInterface';
-import { useReservationStore } from '@/stores/reservationsStore';
+import { BaseService } from '@/services/BaseService';
 
-// Types
-type UpdateReservationDTO = Pick<
-  ReservationInterface,
-  'reservationDate' | 'reservationTime' | 'numberOfPeople' | 'specialRequest'
->;
+export class ReservationService extends BaseService {
+  private static readonly API_URL = `${import.meta.env.VITE_API_URL}/reservations`;
 
-export class ReservationService {
-  static getAll(): ReservationInterface[] {
-    return useReservationStore().reservations;
+  static getAll(): Promise<ReservationInterface[]> {
+    return this.makeRequest(this.API_URL);
   }
 
-  static getById(id: number): ReservationInterface | undefined {
-    return useReservationStore().reservations.find((r) => r.id === id);
+  static getById(id: number): Promise<ReservationInterface> {
+    return this.makeRequest(`${this.API_URL}/${id}`);
   }
 
-  static getByStatus(status: ReservationStatus): ReservationInterface[] {
-    return useReservationStore().reservations.filter((r) => r.status === status);
+  static getByStatus(status: ReservationStatus): Promise<ReservationInterface[]> {
+    return this.makeRequest(`${this.API_URL}/status?status=${status}`);
   }
 
-  static getByRestaurantId(restaurantId: number): ReservationInterface[] {
-    return useReservationStore().reservations.filter((r) => r.restaurantId === restaurantId);
+  static getByRestaurantId(restaurantId: number): Promise<ReservationInterface[]> {
+    return this.makeRequest(`${this.API_URL}/restaurant/${restaurantId}`);
   }
 
-  static getByUserId(userId: number): ReservationInterface[] {
-    return useReservationStore().reservations.filter((r) => r.userId === userId);
+  static getByUserId(userId: number): Promise<ReservationInterface[]> {
+    return this.makeRequest(`${this.API_URL}/user/${userId}`);
   }
 
-  static filterByClient(userId: number, status: string): ReservationInterface[] {
-    return useReservationStore().reservations.filter((r) => {
-      if (r.userId !== userId) return false;
-      return status === 'Todas' || r.status === status;
-    });
+  static async filterByClient(userId: number, status: string): Promise<ReservationInterface[]> {
+    const reservations = await this.getByUserId(userId);
+    return reservations.filter((r) => status === 'Todas' || r.status === status);
   }
 
-  static filter(restaurantId: number, status: string, peopleRange: string): ReservationInterface[] {
-    return useReservationStore().reservations.filter((r) => {
-      if (r.restaurantId !== restaurantId) return false;
+  static async filter(restaurantId: number, status: string, peopleRange: string): Promise<ReservationInterface[]> {
+    const reservations = await this.getByRestaurantId(restaurantId);
 
+    return reservations.filter((r) => {
       const matchesStatus = status === 'Todas' || r.status === status;
 
       let matchesPeople = true;
@@ -59,56 +54,19 @@ export class ReservationService {
     });
   }
 
-  static create(dto: CreateReservationDTO): ReservationInterface {
-    const reservations = useReservationStore().reservations;
-    const nextId = reservations.length > 0 ? Math.max(...reservations.map((r) => r.id)) + 1 : 1;
-
-    const newReservation: ReservationInterface = {
-      id: nextId,
-      restaurantId: dto.restaurantId,
-      userId: dto.userId ?? 0,
-      reservationDate: dto.reservationDate,
-      reservationTime: dto.reservationTime,
-      numberOfPeople: dto.numberOfPeople,
-      status: 'pending',
-      specialRequest: dto.specialRequest ?? '',
-    };
-
-    useReservationStore().reservations.push(newReservation);
-
-    return newReservation;
+  static create(dto: CreateReservationDTO): Promise<ReservationInterface> {
+    return this.makeRequest(this.API_URL, false, 'post', dto);
   }
 
-  static updateStatus(id: number, status: ReservationStatus): void {
-    const reservations = useReservationStore().reservations;
-    const index = reservations.findIndex((r) => r.id === id);
-    if (index !== -1 && reservations[index]) {
-      reservations[index].status = status;
-    }
+  static update(id: number, dto: UpdateReservationDTO): Promise<ReservationInterface> {
+    return this.makeRequest(`${this.API_URL}/${id}`, false, 'patch', dto);
   }
 
-  static updateReservation(id: number, updates: UpdateReservationDTO): void {
-    const reservations = useReservationStore().reservations;
-    const index = reservations.findIndex((r) => r.id === id);
-    const existing = reservations[index];
-
-    if (index !== -1 && existing) {
-      reservations[index] = {
-        ...existing,
-        ...updates,
-      };
-    }
+  static delete(id: number): Promise<void> {
+    return this.makeRequest(`${this.API_URL}/${id}`, false, 'delete');
   }
 
   static canManageReservation(status: ReservationStatus): boolean {
     return status === 'pending' || status === 'confirmed';
-  }
-
-  static delete(id: number): void {
-    const reservations = useReservationStore().reservations;
-    const index = reservations.findIndex((r) => r.id === id);
-    if (index !== -1) {
-      reservations.splice(index, 1);
-    }
   }
 }

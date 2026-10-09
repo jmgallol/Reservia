@@ -5,6 +5,8 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 // Internal imports
+import ExceptionHandlerUtil from '@/utils/ExceptionHandlerUtil';
+import FeedbackModalComponent from '@/components/common/FeedbackModalComponent.vue';
 import { AuthService } from '@/services/AuthService';
 
 // Variables
@@ -28,15 +30,16 @@ async function handleLogin(): Promise<void> {
     return;
   }
 
-  const user = AuthService.login(form.value.email, form.value.password);
-
-  if (!user) {
-    errorMessage.value = 'Correo o contraseña incorrectos.';
-    return;
+  try {
+    const user = await AuthService.login(form.value.email, form.value.password);
+    
+    if (user) {
+      const destination = user.role === 'admin' ? '/admin/dashboard' : '/restaurants';
+      await router.push(destination);
+    }
+  } catch (error: any) {
+    errorMessage.value = error.message || 'Correo o contraseña incorrectos.';
   }
-
-  const destination = user.role === 'admin' ? '/admin/dashboard' : '/restaurants';
-  await router.push(destination);
 }
 </script>
 

@@ -1,22 +1,23 @@
 <script setup lang="ts">
 // External imports
 import { computed, ref } from 'vue';
+import { onMounted } from 'vue';
 
 // Internal imports
-import type { ReviewInterface } from '@/interfaces/ReviewInterface';
 import { AuthService } from '@/services/AuthService';
 import { DateFormatUtil } from '@/utils/DateFormatUtil';
-import { ReviewService } from '@/services/ReviewService';
-import { StringFormatUtil } from '@/utils/StringFormatUtil';
-import { UserService } from '@/services/UserService';
 import HeaderComponent from '@/components/layout/HeaderComponent.vue';
+import { RestaurantService } from '@/services/RestaurantService';
+import type { ReviewInterface } from '@/interfaces/ReviewInterface';
+import { ReviewService } from '@/services/ReviewService';
 import SidebarComponent from '@/components/layout/SidebarComponent.vue';
 import StarRatingComponent from '@/components/common/StarRatingComponent.vue';
+import { StringFormatUtil } from '@/utils/StringFormatUtil';
 
 type RatingFilter = 'Todas' | '5' | '4' | '3' | '2' | '1';
 
-// Reactive variables
-const selectedRating = ref<RatingFilter>('Todas');
+// Variables
+const currentUser = AuthService.getCurrentUser();
 
 // Selectors
 const ratingOptions: { value: RatingFilter; label: string }[] = [
@@ -28,34 +29,37 @@ const ratingOptions: { value: RatingFilter; label: string }[] = [
   { value: '1', label: '1 ★' },
 ];
 
-// Computed
-const currentUser = computed(() => AuthService.getCurrentUser());
+const selectedRating = ref<RatingFilter>('Todas');
 
-const restaurantReviews = computed<ReviewInterface[]>(() => {
-  if (!currentUser.value?.restaurantId) return [];
-  return ReviewService.getByRestaurantId(currentUser.value.restaurantId);
+// Reactive variables
+const restaurantReviews = ref<ReviewInterface[]>([]);
+const averageRating = ref<number>(0);
+
+
+onMounted(async () => {
+  if (currentUser?.restaurantId) {
+    restaurantReviews.value = await ReviewService.getByRestaurantId(currentUser.restaurantId);
+    const restaurant = await RestaurantService.getById(currentUser.restaurantId);
+    if (restaurant) {
+      averageRating.value = RestaurantService.calculateAverageRating(restaurant);
+    }
+  }
 });
 
+// Computed
 const filteredReviews = computed<ReviewInterface[]>(() => {
   if (selectedRating.value === 'Todas') return restaurantReviews.value;
   const rating = Number(selectedRating.value);
   return restaurantReviews.value.filter((review) => review.rating === rating);
 });
 
-const averageRating = computed<number>(() => {
-  if (!currentUser.value?.restaurantId) return 0;
-  return ReviewService.getAverageRating(currentUser.value.restaurantId);
-});
-
-const totalReviews = computed<number>(() => restaurantReviews.value.length);
-
 // Methods
-function getClientName(userId: number): string {
-  return UserService.getNameById(userId);
+function getClientName(review: ReviewInterface): string {
+  return review.user?.name || 'Usuario Desconocido';
 }
 
-function getClientInitial(userId: number): string {
-  const name = UserService.getNameById(userId);
+function getClientInitial(review: ReviewInterface): string {
+  const name = getClientName(review);
   return StringFormatUtil.getInitials(name).charAt(0);
 }
 </script>
@@ -121,7 +125,7 @@ function getClientInitial(userId: number): string {
                 <div class="space-y-1">
                   <StarRatingComponent :rating="averageRating" :readonly="true" :size="18" />
                   <p class="text-[11px] text-stone-400 font-medium">
-                    {{ totalReviews }} reseñas totales
+                    {{ restaurantReviews.length }} reseñas totales
                   </p>
                 </div>
               </div>
@@ -167,10 +171,10 @@ function getClientInitial(userId: number): string {
                       <div
                         class="w-9 h-9 rounded-full bg-[#1E3A2B] text-white flex items-center justify-center text-xs font-bold shrink-0"
                       >
-                        {{ getClientInitial(review.userId) }}
+                        {{ getClientInitial(review) }}
                       </div>
                       <p class="text-sm font-semibold text-stone-800 leading-tight">
-                        {{ getClientName(review.userId) }}
+                        {{ getClientName(review) }}
                       </p>
                     </div>
                   </td>
@@ -189,7 +193,7 @@ function getClientInitial(userId: number): string {
 
                   <!-- Date -->
                   <td class="px-4 py-4 text-sm text-stone-700 font-medium whitespace-nowrap">
-                    {{ DateFormatUtil.formatShortDate(review.reviewDate) }}
+                    {{ DateFormatUtil.formatShortDate(review.date) }}
                   </td>
                 </tr>
 

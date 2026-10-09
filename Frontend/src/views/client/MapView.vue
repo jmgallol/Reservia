@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 // External imports
 import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -6,9 +6,9 @@ import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 // Internal imports
+import HeaderComponent from '@/components/layout/HeaderComponent.vue';
 import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
 import { RestaurantService } from '@/services/RestaurantService';
-import HeaderComponent from '@/components/layout/HeaderComponent.vue';
 import SidebarComponent from '@/components/layout/SidebarComponent.vue';
 
 // Variables
@@ -18,17 +18,20 @@ const router = useRouter();
 
 // Reactive variables
 const mapContainerRef = ref<HTMLDivElement | null>(null);
+const medellinRestaurants = ref<RestaurantInterface[]>([]);
 
-// Computed
-const allRestaurants = computed(() => RestaurantService.getAll());
-
-const medellinRestaurants = computed<RestaurantInterface[]>(() =>
-  allRestaurants.value.filter((restaurant) => restaurant.city.toLowerCase() === 'medellín'),
-);
+// Methods
+async function loadRestaurants() {
+  const allRestaurants = await RestaurantService.getAll();
+  medellinRestaurants.value = allRestaurants.filter((restaurant) => {
+    const city = (restaurant.city || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    return city === 'medellin';
+  });
+}
 
 // Methods
 function getAverageRating(restaurant: RestaurantInterface): string {
-  return RestaurantService.calculateAverageRating(restaurant.id).toFixed(1);
+  return RestaurantService.calculateAverageRating(restaurant).toFixed(1);
 }
 
 function createRestaurantPopup(restaurant: RestaurantInterface): HTMLElement {
@@ -43,7 +46,7 @@ function createRestaurantPopup(restaurant: RestaurantInterface): HTMLElement {
   category.textContent = restaurant.category;
 
   const rating = document.createElement('p');
-  rating.textContent = `Calificación promedio: ${RestaurantService.calculateAverageRating(restaurant.id).toFixed(1)}`;
+  rating.textContent = `Calificación promedio: ${RestaurantService.calculateAverageRating(restaurant).toFixed(1)}`;
 
   const detailButton = document.createElement('button');
   detailButton.type = 'button';
@@ -95,7 +98,8 @@ function selectRestaurant(restaurant: RestaurantInterface): void {
 }
 
 // Lifecycle
-onMounted(() => {
+onMounted(async () => {
+  await loadRestaurants();
   initializeMap();
 });
 

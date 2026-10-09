@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // External imports
-import { ref } from 'vue';
 import { Star } from 'lucide-vue-next';
+import { ref } from 'vue';
 
 // Props
 const props = withDefaults(

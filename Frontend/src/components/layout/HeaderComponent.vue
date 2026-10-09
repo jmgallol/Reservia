@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // External imports
-import { computed } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 // Internal imports
@@ -22,6 +22,19 @@ const props = withDefaults(
 // Variables
 const route = useRoute();
 
+// Reactive variables
+const restaurantName = ref('Mi Restaurante');
+
+onMounted(async () => {
+  const user = AuthService.getCurrentUser();
+  if (user?.restaurantId) {
+    const restaurant = await RestaurantService.getById(user.restaurantId);
+    if (restaurant) {
+      restaurantName.value = restaurant.name;
+    }
+  }
+});
+
 // Computed
 const headerText = computed(() => {
   if (props.title) {
@@ -34,17 +47,8 @@ const headerText = computed(() => {
   let title = (route.meta.title as string) || 'Reservia';
   const subtitle = (route.meta.subtitle as string) || '';
 
-  // Dynamic override for the admin dashboard
   if (route.name === 'admin-dashboard') {
-    const user = AuthService.getCurrentUser();
-    let restaurantName = 'Mi Restaurante';
-    if (user?.restaurantId) {
-      const restaurant = RestaurantService.getById(user.restaurantId);
-      if (restaurant) {
-        restaurantName = restaurant.name;
-      }
-    }
-    title = `Dashboard — ${restaurantName}`;
+    title = `Dashboard — ${restaurantName.value}`;
   }
 
   return { title, subtitle };

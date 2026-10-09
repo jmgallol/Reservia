@@ -3,10 +3,10 @@
 import { ref, watch } from 'vue';
 
 // Internal imports
-import type { ReviewInterface } from '@/interfaces/ReviewInterface';
-import { ReviewService } from '@/services/ReviewService';
 import BaseModalComponent from '@/components/common/BaseModalComponent.vue';
 import StarRatingComponent from '@/components/common/StarRatingComponent.vue';
+import type { ReviewInterface } from '@/interfaces/ReviewInterface';
+import { ReviewService } from '@/services/ReviewService';
 
 // Props & Emits
 const props = defineProps<{
@@ -48,7 +48,7 @@ function isFormValid(): boolean {
   return form.value.rating >= 1 && form.value.rating <= 5 && form.value.comment.trim() !== '';
 }
 
-function handleSave(): void {
+async function handleSave(): Promise<void> {
   if (!props.review) return;
 
   if (!isFormValid()) {
@@ -56,11 +56,12 @@ function handleSave(): void {
     return;
   }
 
-  ReviewService.update({
-    ...props.review,
+  const updateDto = {
     rating: form.value.rating,
     comment: form.value.comment.trim(),
-  });
+  };
+
+  await ReviewService.update(props.review.id, updateDto);
 
   emit('saved');
   closeModal();

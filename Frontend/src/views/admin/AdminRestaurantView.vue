@@ -1,21 +1,23 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 // External imports
-import { computed } from 'vue';
+import { onMounted, ref } from 'vue';
 
 // Internal imports
-import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
 import { AuthService } from '@/services/AuthService';
-import { RestaurantService } from '@/services/RestaurantService';
 import HeaderComponent from '@/components/layout/HeaderComponent.vue';
-import SidebarComponent from '@/components/layout/SidebarComponent.vue';
 import RestaurantEditFormComponent from '@/components/admin/restaurant/RestaurantEditFormComponent.vue';
+import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
+import { RestaurantService } from '@/services/RestaurantService';
+import SidebarComponent from '@/components/layout/SidebarComponent.vue';
 
-// Computed
-const currentUser = computed(() => AuthService.getCurrentUser());
+// Variables
+const currentUser = AuthService.getCurrentUser();
+const restaurant = ref<RestaurantInterface | undefined>(undefined);
 
-const restaurant = computed<RestaurantInterface | undefined>(() => {
-  if (!currentUser.value?.restaurantId) return undefined;
-  return RestaurantService.getById(currentUser.value.restaurantId);
+onMounted(async () => {
+  if (currentUser?.restaurantId) {
+    restaurant.value = await RestaurantService.getById(currentUser.restaurantId);
+  }
 });
 </script>
 
@@ -60,7 +62,11 @@ const restaurant = computed<RestaurantInterface | undefined>(() => {
           </section>
 
           <!-- Edit Information Form -->
-          <RestaurantEditFormComponent v-if="restaurant" :restaurant="restaurant" />
+          <RestaurantEditFormComponent 
+            v-if="restaurant" 
+            :restaurant="restaurant" 
+            @update="restaurant = $event" 
+          />
         </div>
       </main>
     </div>

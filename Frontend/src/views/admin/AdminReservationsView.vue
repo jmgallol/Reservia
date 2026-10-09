@@ -1,21 +1,23 @@
 <script setup lang="ts">
 // External imports
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 
 // Internal imports
-import type { ReservationInterface, ReservationStatus } from '@/interfaces/ReservationInterface';
 import { AuthService } from '@/services/AuthService';
-import { ReservationService } from '@/services/ReservationService';
-import { StringFormatUtil } from '@/utils/StringFormatUtil';
-import { UserService } from '@/services/UserService';
 import DoughnutChartComponent from '@/components/admin/dashboard/DoughnutChartComponent.vue';
+import ExceptionHandlerUtil from '@/utils/ExceptionHandlerUtil';
+import FeedbackModalComponent from '@/components/common/FeedbackModalComponent.vue';
 import HeaderComponent from '@/components/layout/HeaderComponent.vue';
-import StatusBadgeComponent from '@/components/common/StatusBadgeComponent.vue';
+import type { ReservationInterface, ReservationStatus } from '@/interfaces/ReservationInterface';
+import { ReservationService } from '@/services/ReservationService';
 import SidebarComponent from '@/components/layout/SidebarComponent.vue';
+import StatusBadgeComponent from '@/components/common/StatusBadgeComponent.vue';
+import { StringFormatUtil } from '@/utils/StringFormatUtil';
 
-// Reactive variables
-const selectedStatus = ref<'Todas' | ReservationStatus>('Todas');
-const selectedPeople = ref<string>('Todos');
+// Variables
+const currentUser = AuthService.getCurrentUser();
+const chartLabels = ['Pendientes', 'Confirmadas', 'Completadas', 'Canceladas'];
+const chartColors = ['#F59E0B', '#22C55E', '#9CA3AF', '#EF4444'];
 
 // Selectors
 const statusOptions: { value: 'Todas' | ReservationStatus; label: string }[] = [
@@ -34,21 +36,46 @@ const peopleOptions = [
   { value: '7+', label: '7+' },
 ];
 
-// Computed
-const currentUser = computed(() => AuthService.getCurrentUser());
+const rawReservations = ref<ReservationInterface[]>([]);
+const selectedStatus = ref<'Todas' | ReservationStatus>('Todas');
+const selectedPeople = ref<string>('Todos');
+const modalRef = ref<InstanceType<typeof FeedbackModalComponent> | null>(null);
 
-const filteredReservations = computed<ReservationInterface[]>(() => {
-  if (!currentUser.value?.restaurantId) return [];
-  return ReservationService.filter(
-    currentUser.value.restaurantId,
-    selectedStatus.value,
-    selectedPeople.value,
-  );
+async function loadReservations() {
+  const restaurantId = currentUser?.restaurantId;
+  if (restaurantId) {
+    const data = await ExceptionHandlerUtil.handleWithModal(
+      () => ReservationService.getByRestaurantId(restaurantId),
+      modalRef
+    );
+    rawReservations.value = data ?? [];
+  }
+}
+
+onMounted(() => {
+  loadReservations();
 });
 
-// Chart data computed from filtered reservations
-const chartLabels = ['Pendientes', 'Confirmadas', 'Completadas', 'Canceladas'];
-const chartColors = ['#F59E0B', '#22C55E', '#9CA3AF', '#EF4444'];
+// Computed
+const filteredReservations = computed<ReservationInterface[]>(() => {
+  return rawReservations.value.filter((r) => {
+    const matchesStatus = selectedStatus.value === 'Todas' || r.status === selectedStatus.value;
+    
+    let matchesPeople = true;
+    if (selectedPeople.value !== 'Todos') {
+      if (selectedPeople.value === '7+') {
+        matchesPeople = r.numberOfPeople >= 7;
+      } else {
+        const parts = selectedPeople.value.split('-').map(Number);
+        const min = parts[0] ?? 0;
+        const max = parts[1] ?? 0;
+        matchesPeople = r.numberOfPeople >= min && r.numberOfPeople <= max;
+      }
+    }
+
+    return matchesStatus && matchesPeople;
+  });
+});
 
 const chartData = computed<number[]>(() => {
   const statuses: ReservationStatus[] = ['pending', 'confirmed', 'completed', 'cancelled'];
@@ -58,12 +85,12 @@ const chartData = computed<number[]>(() => {
 });
 
 // Methods
-function getClientName(userId: number): string {
-  return UserService.getNameById(userId);
+function getClientName(reservation: ReservationInterface): string {
+  return reservation.user?.name || 'Usuario Desconocido';
 }
 
-function getClientInitial(userId: number): string {
-  const name = UserService.getNameById(userId);
+function getClientInitial(reservation: ReservationInterface): string {
+  const name = getClientName(reservation);
   return StringFormatUtil.getInitials(name).charAt(0);
 }
 
@@ -71,16 +98,31 @@ function formatReservationId(id: number): string {
   return `RES-${String(id).padStart(3, '0')}`;
 }
 
-function handleConfirm(id: number): void {
-  ReservationService.updateStatus(id, 'confirmed');
+async function handleConfirm(id: number): Promise<void> {
+  await ExceptionHandlerUtil.handleWithModal(
+    () => ReservationService.update(id, { status: 'confirmed' }),
+    modalRef,
+    'Reserva confirmada con éxito'
+  );
+  await loadReservations();
 }
 
-function handleComplete(id: number): void {
-  ReservationService.updateStatus(id, 'completed');
+async function handleComplete(id: number): Promise<void> {
+  await ExceptionHandlerUtil.handleWithModal(
+    () => ReservationService.update(id, { status: 'completed' }),
+    modalRef,
+    'Reserva completada con éxito'
+  );
+  await loadReservations();
 }
 
-function handleCancel(id: number): void {
-  ReservationService.updateStatus(id, 'cancelled');
+async function handleCancel(id: number): Promise<void> {
+  await ExceptionHandlerUtil.handleWithModal(
+    () => ReservationService.update(id, { status: 'cancelled' }),
+    modalRef,
+    'Reserva cancelada con éxito'
+  );
+  await loadReservations();
 }
 </script>
 
@@ -206,11 +248,11 @@ function handleCancel(id: number): void {
                         <div
                           class="w-9 h-9 rounded-full bg-[#1E3A2B] text-white flex items-center justify-center text-xs font-bold shrink-0"
                         >
-                          {{ getClientInitial(reservation.userId) }}
+                          {{ getClientInitial(reservation) }}
                         </div>
                         <div>
                           <p class="text-sm font-semibold text-stone-800 leading-tight">
-                            {{ getClientName(reservation.userId) }}
+                            {{ getClientName(reservation) }}
                           </p>
                           <p class="text-[11px] text-stone-400 font-medium mt-0.5">
                             {{ formatReservationId(reservation.id) }}
@@ -221,12 +263,12 @@ function handleCancel(id: number): void {
 
                     <!-- Date -->
                     <td class="px-4 py-4 text-sm text-stone-700 font-medium">
-                      {{ reservation.reservationDate }}
+                      {{ reservation.date }}
                     </td>
 
                     <!-- Time -->
                     <td class="px-4 py-4 text-sm text-stone-700 font-medium">
-                      {{ reservation.reservationTime }}
+                      {{ reservation.time }}
                     </td>
 
                     <!-- People -->
@@ -307,5 +349,7 @@ function handleCancel(id: number): void {
         </div>
       </main>
     </div>
+    
+    <FeedbackModalComponent ref="modalRef" />
   </div>
 </template>

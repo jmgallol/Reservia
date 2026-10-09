@@ -1,4 +1,4 @@
 // Internal imports
 import type { ReviewInterface } from '@/interfaces/ReviewInterface';
 
-export type CreateReviewDTO = Omit<ReviewInterface, 'id' | 'status' | 'reviewDate'>;
+export type CreateReviewDTO = Omit<ReviewInterface, 'id' | 'status' | 'date'>;

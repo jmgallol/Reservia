@@ -1,31 +1,47 @@
 <script setup lang="ts">
 // External imports
-import { computed, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 // Internal imports
+import ExceptionHandlerUtil from '@/utils/ExceptionHandlerUtil';
+import FeedbackModalComponent from '@/components/common/FeedbackModalComponent.vue';
+import HeaderComponent from '@/components/layout/HeaderComponent.vue';
 import type { RestaurantInterface } from '@/interfaces/RestaurantInterface';
 import { RestaurantService } from '@/services/RestaurantService';
-import HeaderComponent from '@/components/layout/HeaderComponent.vue';
 import SidebarComponent from '@/components/layout/SidebarComponent.vue';
 import StarRatingComponent from '@/components/common/StarRatingComponent.vue';
 
 // Variables
 const router = useRouter();
+const cities = ref<string[]>(['Todas']);
+const categories = ref<string[]>(['Todas']);
+const filteredRestaurants = ref<RestaurantInterface[]>([]);
 
 // Reactive variables
 const searchQuery = ref('');
+
+// Selectors
 const selectedCity = ref('Todas');
 const selectedCategory = ref('Todas');
+const modalRef = ref<InstanceType<typeof FeedbackModalComponent> | null>(null);
 
-// Computed
-const cities = computed<string[]>(() => RestaurantService.getCities());
-
-const categories = computed<string[]>(() => RestaurantService.getCategories());
-
-const filteredRestaurants = computed<RestaurantInterface[]>(() => {
-  return RestaurantService.filter(searchQuery.value, selectedCity.value, selectedCategory.value);
+onMounted(async () => {
+  cities.value = await ExceptionHandlerUtil.handleWithModal(() => RestaurantService.getCities(), modalRef) ?? ['Todas'];
+  categories.value = await ExceptionHandlerUtil.handleWithModal(() => RestaurantService.getCategories(), modalRef) ?? ['Todas'];
 });
+
+watch(
+  [searchQuery, selectedCity, selectedCategory],
+  async ([query, city, category]) => {
+    const data = await ExceptionHandlerUtil.handleWithModal(
+      () => RestaurantService.filter(query, city, category),
+      modalRef
+    );
+    filteredRestaurants.value = data ?? [];
+  },
+  { immediate: true }
+);
 
 // Methods
 function clearFilters(): void {
@@ -34,7 +50,7 @@ function clearFilters(): void {
   selectedCategory.value = 'Todas';
 }
 
-function handleReserve(id: number): void {
+function handleViewRestaurant(id: number): void {
   router.push(`/restaurants/${id}`);
 }
 </script>
@@ -157,12 +173,12 @@ function handleReserve(id: number): void {
 
                 <div class="flex items-center gap-2 mt-2">
                   <StarRatingComponent
-                    :rating="RestaurantService.calculateAverageRating(restaurant.id)"
+                    :rating="RestaurantService.calculateAverageRating(restaurant)"
                     :readonly="true"
                     :size="14"
                   />
                   <span class="text-xs font-bold text-stone-700">
-                    {{ RestaurantService.calculateAverageRating(restaurant.id) }}
+                    {{ RestaurantService.calculateAverageRating(restaurant) }}
                   </span>
                 </div>
               </div>
@@ -172,9 +188,9 @@ function handleReserve(id: number): void {
                 <button
                   type="button"
                   class="py-2.5 px-8 rounded-full bg-[#C8552A] hover:bg-[#b54a22] text-white text-xs font-semibold shadow-xs transition-colors cursor-pointer text-center"
-                  @click="handleReserve(restaurant.id)"
+                  @click="handleViewRestaurant(restaurant.id)"
                 >
-                  Reservar
+                  Ver detalles
                 </button>
               </div>
             </div>
@@ -182,5 +198,7 @@ function handleReserve(id: number): void {
         </div>
       </main>
     </div>
+
+    <FeedbackModalComponent ref="modalRef" />
   </div>
 </template>

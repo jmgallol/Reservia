@@ -19,25 +19,35 @@ const router = useRouter();
 
 // Reactive variables
 const form = ref({
-  reservationDate: '2026-07-20',
-  reservationTime: '19:30',
+  date: '2026-07-20',
+  time: '19:30',
   guests: 2,
 });
+const errorMessage = ref('');
 
 // Methods
-function handleConfirmReservation(): void {
+async function handleConfirmReservation(): Promise<void> {
   const user = AuthService.getCurrentUser();
+  if (!user) {
+    errorMessage.value = 'Debes iniciar sesión para reservar.';
+    return;
+  }
 
   const reservationDTO: CreateReservationDTO = {
     restaurantId: props.restaurantId,
-    userId: user?.id ?? 0,
-    reservationDate: form.value.reservationDate,
-    reservationTime: form.value.reservationTime,
+    userId: user.id,
+    date: form.value.date,
+    time: form.value.time,
     numberOfPeople: form.value.guests,
   };
 
-  ReservationService.create(reservationDTO);
-  router.push('/reservations');
+  const result = await ReservationService.create(reservationDTO);
+  
+  if (result) {
+    router.push('/reservations');
+  } else {
+    errorMessage.value = 'Ocurrió un error al confirmar la reserva.';
+  }
 }
 
 function decreaseGuests(): void {
@@ -53,6 +63,10 @@ function increaseGuests(): void {
   <div class="bg-white rounded-[24px] border border-stone-200/80 shadow-xs p-8 sticky top-6">
     <h2 class="text-lg font-bold font-heading text-stone-900 mb-6">Hacer una reserva</h2>
 
+    <p v-if="errorMessage" class="mb-4 rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+      {{ errorMessage }}
+    </p>
+
     <div class="space-y-5">
       <!-- Date -->
       <div>
@@ -60,7 +74,7 @@ function increaseGuests(): void {
           >Fecha</label
         >
         <input
-          v-model="form.reservationDate"
+          v-model="form.date"
           type="date"
           class="w-full px-4 py-3 bg-white border border-stone-200 rounded-xl text-[14px] font-medium text-stone-800 outline-none focus:border-stone-400 transition-colors"
         />
@@ -72,7 +86,7 @@ function increaseGuests(): void {
           >Hora</label
         >
         <select
-          v-model="form.reservationTime"
+          v-model="form.time"
           class="w-full px-4 py-3 bg-white border border-stone-200 rounded-xl text-[14px] font-medium text-stone-800 outline-none focus:border-stone-400 transition-colors appearance-none cursor-pointer"
         >
           <option value="12:00">12:00</option>

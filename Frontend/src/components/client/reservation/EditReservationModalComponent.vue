@@ -3,9 +3,9 @@
 import { ref, watch } from 'vue';
 
 // Internal imports
+import BaseModalComponent from '@/components/common/BaseModalComponent.vue';
 import type { ReservationInterface } from '@/interfaces/ReservationInterface';
 import { ReservationService } from '@/services/ReservationService';
-import BaseModalComponent from '@/components/common/BaseModalComponent.vue';
 
 // Props & Emits
 const props = defineProps<{
@@ -20,8 +20,8 @@ const emit = defineEmits<{
 
 // Reactive variables
 const form = ref({
-  reservationDate: '',
-  reservationTime: '',
+  date: '',
+  time: '',
   numberOfPeople: 1,
   specialRequest: '',
 });
@@ -33,8 +33,8 @@ watch(
   (reservation) => {
     if (!reservation) return;
 
-    form.value.reservationDate = reservation.reservationDate;
-    form.value.reservationTime = reservation.reservationTime;
+    form.value.date = reservation.date;
+    form.value.time = reservation.time;
     form.value.numberOfPeople = reservation.numberOfPeople;
     form.value.specialRequest = reservation.specialRequest ?? '';
     editErrorMessage.value = '';
@@ -49,14 +49,14 @@ function closeModal(): void {
 
 function isFormValid(): boolean {
   return (
-    form.value.reservationDate.trim() !== '' &&
-    form.value.reservationTime.trim() !== '' &&
+    form.value.date.trim() !== '' &&
+    form.value.time.trim() !== '' &&
     Number.isInteger(form.value.numberOfPeople) &&
     form.value.numberOfPeople >= 1
   );
 }
 
-function handleSave(): void {
+async function handleSave(): Promise<void> {
   if (!props.reservation) return;
 
   if (!isFormValid()) {
@@ -64,12 +64,14 @@ function handleSave(): void {
     return;
   }
 
-  ReservationService.updateReservation(props.reservation.id, {
-    reservationDate: form.value.reservationDate,
-    reservationTime: form.value.reservationTime,
+  const updateDto = {
+    date: form.value.date,
+    time: form.value.time,
     numberOfPeople: form.value.numberOfPeople,
     specialRequest: form.value.specialRequest.trim(),
-  });
+  };
+
+  await ReservationService.update(props.reservation.id, updateDto);
 
   emit('saved');
   closeModal();
@@ -103,7 +105,7 @@ function handleSave(): void {
         </label>
         <input
           id="edit-reservation-date"
-          v-model="form.reservationDate"
+          v-model="form.date"
           type="date"
           class="w-full px-4 py-3 bg-[#FAF8F4] border border-stone-200 rounded-xl text-sm text-stone-800 outline-none focus:border-stone-400 transition-colors"
         />
@@ -118,7 +120,7 @@ function handleSave(): void {
         </label>
         <input
           id="edit-reservation-time"
-          v-model="form.reservationTime"
+          v-model="form.time"
           type="time"
           class="w-full px-4 py-3 bg-[#FAF8F4] border border-stone-200 rounded-xl text-sm text-stone-800 outline-none focus:border-stone-400 transition-colors"
         />

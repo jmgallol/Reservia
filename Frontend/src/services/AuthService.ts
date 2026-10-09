@@ -1,13 +1,9 @@
 // Internal imports
 import type { UserInterface } from '@/interfaces/UserInterface';
 import { useAuthStore } from '@/stores/authStore';
+import { BaseService } from '@/services/BaseService';
 
-export class AuthService {
-  // Getters
-  static getUsers(): UserInterface[] {
-    return useAuthStore().users;
-  }
-
+export class AuthService extends BaseService {
   static getCurrentUser(): UserInterface | null {
     return useAuthStore().currentUser;
   }
@@ -16,16 +12,19 @@ export class AuthService {
     return useAuthStore().isAuthenticated();
   }
 
-  // Auth Methods
-  static login(email: string, password: string): UserInterface | undefined {
-    const user = AuthService.getUsers().find(
-      (user) => user.email === email && user.password === password,
+  static async login(email: string, password: string): Promise<UserInterface> {
+    const data = await this.makeRequest(
+      `${import.meta.env.VITE_API_URL}/users/login`,
+      false,
+      'post',
+      { email, password }
     );
-    if (user) {
-      useAuthStore().login(user);
+    
+    if (data) {
+      useAuthStore().login(data);
     }
-
-    return user;
+    
+    return data;
   }
 
   static logout(): void {

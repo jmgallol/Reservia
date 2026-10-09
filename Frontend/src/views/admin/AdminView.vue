@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 // External imports
 import Chart from 'chart.js/auto';
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
@@ -6,9 +6,10 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 // Internal imports
 import { AuthService } from '@/services/AuthService';
 import { DateFormatUtil } from '@/utils/DateFormatUtil';
-import { ReservationService } from '@/services/ReservationService';
 import HeaderComponent from '@/components/layout/HeaderComponent.vue';
 import KpiGridComponent from '@/components/admin/dashboard/KpiGridComponent.vue';
+import type { ReservationInterface } from '@/interfaces/ReservationInterface';
+import { ReservationService } from '@/services/ReservationService';
 import SidebarComponent from '@/components/layout/SidebarComponent.vue';
 
 // Variables
@@ -17,6 +18,7 @@ let chartInstance: Chart | null = null;
 // Reactive variables
 const chartCanvasRef = ref<HTMLCanvasElement | null>(null);
 const selectedPeriod = ref<'6_months' | '1_year' | 'this_month'>('6_months');
+const reservations = ref<ReservationInterface[]>([]);
 
 // Selectors
 const periodOptions = [
@@ -25,11 +27,15 @@ const periodOptions = [
   { value: 'this_month', label: 'Este mes' },
 ];
 
-const chartData = computed(() => {
+async function loadReservations() {
   const currentUser = AuthService.getCurrentUser();
-  const reservations = currentUser?.restaurantId
-    ? ReservationService.getByRestaurantId(currentUser.restaurantId)
-    : [];
+  if (currentUser?.restaurantId) {
+    reservations.value = await ReservationService.getByRestaurantId(currentUser.restaurantId);
+  }
+}
+
+// Computed
+const chartData = computed(() => {
 
   const now = new Date();
   const monthNames = [
@@ -57,8 +63,8 @@ const chartData = computed(() => {
       if (monthName) labels.push(monthName);
     }
 
-    reservations.forEach((r) => {
-      const date = DateFormatUtil.parseDate(r.reservationDate);
+    reservations.value.forEach((r) => {
+      const date = DateFormatUtil.parseDate(r.date);
       if (!date) return;
 
       const diffMonths =
@@ -82,8 +88,8 @@ const chartData = computed(() => {
       if (monthName) labels.push(monthName);
     }
 
-    reservations.forEach((r) => {
-      const date = DateFormatUtil.parseDate(r.reservationDate);
+    reservations.value.forEach((r) => {
+      const date = DateFormatUtil.parseDate(r.date);
       if (!date) return;
 
       const diffMonths =
@@ -101,8 +107,8 @@ const chartData = computed(() => {
   const labels = ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'];
   const data = [0, 0, 0, 0];
 
-  reservations.forEach((r) => {
-    const date = DateFormatUtil.parseDate(r.reservationDate);
+  reservations.value.forEach((r) => {
+    const date = DateFormatUtil.parseDate(r.date);
     if (!date) return;
 
     if (date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth()) {
@@ -162,7 +168,8 @@ watch(
 );
 
 // Lifecycle
-onMounted(() => {
+onMounted(async () => {
+  await loadReservations();
   renderChart();
 });
 

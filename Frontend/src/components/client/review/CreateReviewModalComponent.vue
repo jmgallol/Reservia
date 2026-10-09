@@ -3,11 +3,11 @@
 import { ref, watch } from 'vue';
 
 // Internal imports
+import BaseModalComponent from '@/components/common/BaseModalComponent.vue';
+import StarRatingComponent from '@/components/common/StarRatingComponent.vue';
 import type { CreateReviewDTO } from '@/dtos/CreateReviewDTO';
 import { AuthService } from '@/services/AuthService';
 import { ReviewService } from '@/services/ReviewService';
-import BaseModalComponent from '@/components/common/BaseModalComponent.vue';
-import StarRatingComponent from '@/components/common/StarRatingComponent.vue';
 
 // Props & Emits
 const props = defineProps<{
@@ -26,6 +26,7 @@ const form = ref({
   comment: '',
 });
 const createErrorMessage = ref('');
+const isSuccess = ref(false);
 
 // Watchers
 watch(
@@ -35,6 +36,7 @@ watch(
       form.value.rating = 1;
       form.value.comment = '';
       createErrorMessage.value = '';
+      isSuccess.value = false;
     }
   },
 );
@@ -43,13 +45,14 @@ watch(
 function closeModal(): void {
   emit('update:modelValue', false);
   createErrorMessage.value = '';
+  isSuccess.value = false;
 }
 
 function isFormValid(): boolean {
   return form.value.rating >= 1 && form.value.rating <= 5 && form.value.comment.trim() !== '';
 }
 
-function handleSave(): void {
+async function handleSave(): Promise<void> {
   if (!isFormValid()) {
     createErrorMessage.value = 'Selecciona una calificación entre 1 y 5 y escribe un comentario.';
     return;
@@ -68,10 +71,18 @@ function handleSave(): void {
     userId: currentUser.id,
   };
 
-  ReviewService.create(dto);
+  const result = await ReviewService.create(dto);
 
-  emit('created');
-  closeModal();
+  if (result) {
+    isSuccess.value = true;
+    createErrorMessage.value = '';
+    emit('created');
+    setTimeout(() => {
+      closeModal();
+    }, 2000);
+  } else {
+    createErrorMessage.value = 'Hubo un error al guardar la reseña.';
+  }
 }
 </script>
 
@@ -91,6 +102,13 @@ function handleSave(): void {
         class="rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-600"
       >
         {{ createErrorMessage }}
+      </p>
+
+      <p
+        v-if="isSuccess"
+        class="rounded-xl bg-green-50 px-4 py-3 text-sm font-medium text-green-600 animate-pulse"
+      >
+        ¡Reseña enviada con éxito!
       </p>
 
       <div class="space-y-2">

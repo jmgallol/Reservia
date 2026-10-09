@@ -1,33 +1,48 @@
 <script setup lang="ts">
 // External imports
-import { computed, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 // Internal imports
-import type { ReviewInterface } from '@/interfaces/ReviewInterface';
 import { AuthService } from '@/services/AuthService';
 import { DateFormatUtil } from '@/utils/DateFormatUtil';
-import { RestaurantService } from '@/services/RestaurantService';
-import { ReviewService } from '@/services/ReviewService';
-import StarRatingComponent from '@/components/common/StarRatingComponent.vue';
-import HeaderComponent from '@/components/layout/HeaderComponent.vue';
-import SidebarComponent from '@/components/layout/SidebarComponent.vue';
 import EditReviewModalComponent from '@/components/client/review/EditReviewModalComponent.vue';
+import HeaderComponent from '@/components/layout/HeaderComponent.vue';
+import { RestaurantService } from '@/services/RestaurantService';
+import type { ReviewInterface } from '@/interfaces/ReviewInterface';
+import { ReviewService } from '@/services/ReviewService';
+import SidebarComponent from '@/components/layout/SidebarComponent.vue';
+import StarRatingComponent from '@/components/common/StarRatingComponent.vue';
+
+// Variables
+const currentUser = AuthService.getCurrentUser();
 
 // Reactive variables
 const showEditModal = ref(false);
 const selectedReview = ref<ReviewInterface | null>(null);
+const currentUserReviews = ref<ReviewInterface[]>([]);
+const restaurantNames = ref<Record<number, string>>({});
 
-// Computed
-const currentUserReviews = computed<ReviewInterface[]>(() => {
-  const currentUser = AuthService.getCurrentUser();
-  if (!currentUser) return [];
+async function loadReviews() {
+  if (currentUser) {
+    const reviews = await ReviewService.getByUserId(currentUser.id);
+    currentUserReviews.value = reviews;
 
-  return ReviewService.getByUserId(currentUser.id);
+    for (const review of reviews) {
+      if (!restaurantNames.value[review.restaurantId]) {
+        const restaurant = await RestaurantService.getById(review.restaurantId);
+        restaurantNames.value[review.restaurantId] = restaurant?.name ?? 'Restaurante no encontrado';
+      }
+    }
+  }
+}
+
+onMounted(() => {
+  loadReviews();
 });
 
 // Methods
 function getRestaurantName(restaurantId: number): string {
-  return RestaurantService.getById(restaurantId)?.name ?? 'Restaurante no encontrado';
+  return restaurantNames.value[restaurantId] || 'Cargando...';
 }
 
 function openEditModal(review: ReviewInterface): void {
@@ -35,11 +50,12 @@ function openEditModal(review: ReviewInterface): void {
   showEditModal.value = true;
 }
 
-function handleDeleteReview(review: ReviewInterface): void {
+async function handleDeleteReview(review: ReviewInterface): Promise<void> {
   const confirmed = confirm(`¿Eliminar tu reseña de ${getRestaurantName(review.restaurantId)}?`);
   if (!confirmed) return;
 
-  ReviewService.delete(review.id);
+  await ReviewService.delete(review.id);
+  currentUserReviews.value = currentUserReviews.value.filter(r => r.id !== review.id);
 }
 </script>
 
@@ -98,7 +114,7 @@ function handleDeleteReview(review: ReviewInterface): void {
               <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
                 <div>
                   <p class="text-xs font-semibold text-stone-400">
-                    {{ DateFormatUtil.formatReviewDate(review.reviewDate) }}
+                    {{ DateFormatUtil.formatReviewDate(review.date) }}
                   </p>
                   <h3 class="mt-1 text-lg font-bold text-stone-900 font-heading">
                     {{ getRestaurantName(review.restaurantId) }}
@@ -139,6 +155,10 @@ function handleDeleteReview(review: ReviewInterface): void {
     </div>
 
     <!-- Edit Review Modal -->
-    <EditReviewModalComponent v-model="showEditModal" :review="selectedReview" />
+    <EditReviewModalComponent 
+      v-model="showEditModal" 
+      :review="selectedReview" 
+      @saved="loadReviews" 
+    />
   </div>
 </template>
