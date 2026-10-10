@@ -1,7 +1,7 @@
-import { CreateReservationDto } from "./dto/create-reservation.dto.js";
-import { UpdateReservationDto } from "./dto/update-reservation.dto.js";
-import { Reservation } from "./entities/reservation.entity.js";
-import { ReservationsService } from "./reservations.service.js";
+import { CreateReservationDto } from './dto/create-reservation.dto.js';
+import { UpdateReservationDto } from './dto/update-reservation.dto.js';
+import { Reservation } from './entities/reservation.entity.js';
+import { ReservationsService } from './reservations.service.js';
 export declare class ReservationsController {
     private readonly reservationsService;
     constructor(reservationsService: ReservationsService);

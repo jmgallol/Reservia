@@ -36,7 +36,6 @@ async function loadReservations() {
 
 // Computed
 const chartData = computed(() => {
-
   const now = new Date();
   const monthNames = [
     'Ene',

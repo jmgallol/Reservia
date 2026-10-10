@@ -1,7 +1,7 @@
-import { UsersService } from "./users.service.js";
-import { User } from "./entities/user.entity.js";
-import { CreateUserDto } from "./dto/create-user.dto.js";
-import { LoginDto } from "./dto/login.dto.js";
+import { UsersService } from './users.service.js';
+import { User } from './entities/user.entity.js';
+import { CreateUserDto } from './dto/create-user.dto.js';
+import { LoginDto } from './dto/login.dto.js';
 export declare class UsersController {
     private readonly usersService;
     constructor(usersService: UsersService);

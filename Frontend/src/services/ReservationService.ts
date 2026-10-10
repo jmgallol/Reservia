@@ -32,7 +32,11 @@ export class ReservationService extends BaseService {
     return reservations.filter((r) => status === 'Todas' || r.status === status);
   }
 
-  static async filter(restaurantId: number, status: string, peopleRange: string): Promise<ReservationInterface[]> {
+  static async filter(
+    restaurantId: number,
+    status: string,
+    peopleRange: string,
+  ): Promise<ReservationInterface[]> {
     const reservations = await this.getByRestaurantId(restaurantId);
 
     return reservations.filter((r) => {

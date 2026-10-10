@@ -7,9 +7,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from "typeorm";
-import { User } from "../../users/entities/user.entity.js";
-import { Restaurant } from "../../restaurants/entities/restaurant.entity.js";
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, } from 'typeorm';
+import { User } from '../../users/entities/user.entity.js';
+import { Restaurant } from '../../restaurants/entities/restaurant.entity.js';
 let Review = class Review {
     id;
     rating;

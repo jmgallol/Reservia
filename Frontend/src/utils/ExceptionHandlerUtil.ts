@@ -1,7 +1,13 @@
+import type { Ref } from 'vue';
+
+interface ModalInstance {
+  modifyMessage: (message: string, type: 'success' | 'error') => void;
+}
+
 export default class ExceptionHandlerUtil {
   static async handleWithModal<T>(
     operation: () => Promise<T>,
-    modalRef: any,
+    modalRef: Ref<ModalInstance | null>,
     successMessage: string = '',
     errorMessage: string = '',
   ): Promise<T | undefined> {
@@ -11,7 +17,7 @@ export default class ExceptionHandlerUtil {
         modalRef.value?.modifyMessage(successMessage, 'success');
       }
       return response;
-    } catch (error: any) {
+    } catch (error: unknown) {
       if (errorMessage) {
         modalRef.value?.modifyMessage(errorMessage, 'error');
       } else {

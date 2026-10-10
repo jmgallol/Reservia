@@ -10,10 +10,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { Injectable, NotFoundException } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { Review } from "./entities/review.entity.js";
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Review } from './entities/review.entity.js';
 let ReviewsService = class ReviewsService {
     reviewRepository;
     constructor(reviewRepository) {
@@ -21,13 +21,13 @@ let ReviewsService = class ReviewsService {
     }
     async getAll() {
         return this.reviewRepository.find({
-            relations: { user: true, restaurant: true }
+            relations: { user: true, restaurant: true },
         });
     }
     async getById(id) {
         const review = await this.reviewRepository.findOne({
             where: { id },
-            relations: { user: true, restaurant: true }
+            relations: { user: true, restaurant: true },
         });
         if (!review) {
             throw new NotFoundException(`Review with ID ${id} not found`);
@@ -37,24 +37,25 @@ let ReviewsService = class ReviewsService {
     async getByRestaurantId(restaurantId) {
         const reviews = await this.reviewRepository.find({
             where: { restaurantId },
-            relations: { user: true, restaurant: true }
+            relations: { user: true, restaurant: true },
         });
         return reviews;
     }
     async getByUserId(userId) {
         const reviews = await this.reviewRepository.find({
             where: { userId },
-            relations: { user: true, restaurant: true }
+            relations: { user: true, restaurant: true },
         });
         return reviews;
     }
     async create(createReviewDto) {
         const review = this.reviewRepository.create({
-            ...createReviewDto,
+            comment: createReviewDto.comment,
+            restaurantId: createReviewDto.restaurantId,
             userId: createReviewDto.userId ?? 0,
             rating: Math.min(5, Math.max(1, createReviewDto.rating ?? 5)),
             status: createReviewDto.status || 'approved',
-            date: createReviewDto.date || new Date().toISOString()
+            date: createReviewDto.date || new Date().toISOString(),
         });
         return this.reviewRepository.save(review);
     }

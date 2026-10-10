@@ -1,7 +1,7 @@
-import { CreateReviewDto } from "./dto/create-review.dto.js";
-import { UpdateReviewDto } from "./dto/update-review.dto.js";
-import { Repository } from "typeorm";
-import { Review } from "./entities/review.entity.js";
+import { CreateReviewDto } from './dto/create-review.dto.js';
+import { UpdateReviewDto } from './dto/update-review.dto.js';
+import { Repository } from 'typeorm';
+import { Review } from './entities/review.entity.js';
 export declare class ReviewsService {
     private reviewRepository;
     constructor(reviewRepository: Repository<Review>);

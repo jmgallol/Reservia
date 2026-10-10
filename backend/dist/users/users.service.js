@@ -10,10 +10,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { Injectable, NotFoundException } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { User } from "./entities/user.entity.js";
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from './entities/user.entity.js';
 let UsersService = class UsersService {
     userRepository;
     constructor(userRepository) {
@@ -36,7 +36,7 @@ let UsersService = class UsersService {
     async login(loginDto) {
         const user = await this.userRepository.findOneBy({
             email: loginDto.email,
-            password: loginDto.password
+            password: loginDto.password,
         });
         if (!user) {
             throw new NotFoundException('Correo o contraseña incorrectos');

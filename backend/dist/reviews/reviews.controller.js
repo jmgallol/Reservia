@@ -10,7 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { Controller, Get, Param, ParseIntPipe, Post, Body, Patch, Delete, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, Post, Body, Patch, Delete, HttpCode, HttpStatus, } from '@nestjs/common';
 import { CreateReviewDto } from './dto/create-review.dto.js';
 import { UpdateReviewDto } from './dto/update-review.dto.js';
 import { ReviewsService } from './reviews.service.js';
