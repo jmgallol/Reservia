@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // External imports
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 // Internal imports

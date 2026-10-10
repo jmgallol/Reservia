@@ -27,8 +27,14 @@ const selectedCategory = ref('Todas');
 const modalRef = ref<InstanceType<typeof FeedbackModalComponent> | null>(null);
 
 onMounted(async () => {
-  cities.value = await ExceptionHandlerUtil.handleWithModal(() => RestaurantService.getCities(), modalRef) ?? ['Todas'];
-  categories.value = await ExceptionHandlerUtil.handleWithModal(() => RestaurantService.getCategories(), modalRef) ?? ['Todas'];
+  cities.value = (await ExceptionHandlerUtil.handleWithModal(
+    () => RestaurantService.getCities(),
+    modalRef,
+  )) ?? ['Todas'];
+  categories.value = (await ExceptionHandlerUtil.handleWithModal(
+    () => RestaurantService.getCategories(),
+    modalRef,
+  )) ?? ['Todas'];
 });
 
 watch(
@@ -36,11 +42,11 @@ watch(
   async ([query, city, category]) => {
     const data = await ExceptionHandlerUtil.handleWithModal(
       () => RestaurantService.filter(query, city, category),
-      modalRef
+      modalRef,
     );
     filteredRestaurants.value = data ?? [];
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 // Methods

@@ -26,10 +26,9 @@ const modalRef = ref<InstanceType<typeof FeedbackModalComponent> | null>(null);
 onMounted(async () => {
   const id = Number(route.params.id);
   if (!isNaN(id)) {
-    restaurant.value = await ExceptionHandlerUtil.handleWithModal(
-      () => RestaurantService.getById(id),
-      modalRef
-    ) || null;
+    restaurant.value =
+      (await ExceptionHandlerUtil.handleWithModal(() => RestaurantService.getById(id), modalRef)) ||
+      null;
   }
 });
 </script>

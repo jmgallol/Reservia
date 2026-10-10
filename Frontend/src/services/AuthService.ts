@@ -17,13 +17,13 @@ export class AuthService extends BaseService {
       `${import.meta.env.VITE_API_URL}/users/login`,
       false,
       'post',
-      { email, password }
+      { email, password },
     );
-    
+
     if (data) {
       useAuthStore().login(data);
     }
-    
+
     return data;
   }
 

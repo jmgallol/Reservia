@@ -35,7 +35,6 @@ const selectedRating = ref<RatingFilter>('Todas');
 const restaurantReviews = ref<ReviewInterface[]>([]);
 const averageRating = ref<number>(0);
 
-
 onMounted(async () => {
   if (currentUser?.restaurantId) {
     restaurantReviews.value = await ReviewService.getByRestaurantId(currentUser.restaurantId);

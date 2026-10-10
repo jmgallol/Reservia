@@ -12,7 +12,7 @@ export abstract class BaseService {
     method: Method = 'get',
     body?: unknown,
     headers?: Record<string, string>,
-  ): Promise<any> {
+  ): Promise<unknown> {
     try {
       const response = await axios({ url, method, data: body, headers });
 
@@ -31,7 +31,7 @@ export abstract class BaseService {
     method: Method = 'get',
     body?: unknown,
     headers?: Record<string, string>,
-  ): Promise<any> {
+  ): Promise<unknown> {
     try {
       const response = await axios({ url, method, data: body, headers, responseType: 'blob' });
       return response.data;
@@ -41,16 +41,20 @@ export abstract class BaseService {
   }
 
   private static toError(error: unknown): Error {
-    const isAxios = axios.isAxiosError(error) || (error && typeof error === 'object' && 'isAxiosError' in error);
+    const isAxios =
+      axios.isAxiosError(error) || (error && typeof error === 'object' && 'isAxiosError' in error);
 
     if (isAxios) {
       const axiosError = error as AxiosError<{ message?: string | string[]; error?: string }>;
       if (axiosError.code === 'ERR_NETWORK' || axiosError.message === 'Network Error') {
-        return new Error('El servidor no está disponible en este momento. Por favor, intenta más tarde.');
+        return new Error(
+          'El servidor no está disponible en este momento. Por favor, intenta más tarde.',
+        );
       }
 
       const responseData = axiosError.response?.data;
-      let backendMessage: string | string[] | undefined = responseData?.message || responseData?.error || axiosError.message;
+      let backendMessage: string | string[] | undefined =
+        responseData?.message || responseData?.error || axiosError.message;
 
       if (Array.isArray(backendMessage)) {
         backendMessage = backendMessage[0];

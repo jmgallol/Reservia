@@ -30,7 +30,8 @@ async function loadReviews() {
     for (const review of reviews) {
       if (!restaurantNames.value[review.restaurantId]) {
         const restaurant = await RestaurantService.getById(review.restaurantId);
-        restaurantNames.value[review.restaurantId] = restaurant?.name ?? 'Restaurante no encontrado';
+        restaurantNames.value[review.restaurantId] =
+          restaurant?.name ?? 'Restaurante no encontrado';
       }
     }
   }
@@ -55,7 +56,7 @@ async function handleDeleteReview(review: ReviewInterface): Promise<void> {
   if (!confirmed) return;
 
   await ReviewService.delete(review.id);
-  currentUserReviews.value = currentUserReviews.value.filter(r => r.id !== review.id);
+  currentUserReviews.value = currentUserReviews.value.filter((r) => r.id !== review.id);
 }
 </script>
 
@@ -120,7 +121,6 @@ async function handleDeleteReview(review: ReviewInterface): Promise<void> {
                     {{ getRestaurantName(review.restaurantId) }}
                   </h3>
                 </div>
-
               </div>
 
               <div class="flex flex-wrap items-center gap-2">
@@ -155,10 +155,10 @@ async function handleDeleteReview(review: ReviewInterface): Promise<void> {
     </div>
 
     <!-- Edit Review Modal -->
-    <EditReviewModalComponent 
-      v-model="showEditModal" 
-      :review="selectedReview" 
-      @saved="loadReviews" 
+    <EditReviewModalComponent
+      v-model="showEditModal"
+      :review="selectedReview"
+      @saved="loadReviews"
     />
   </div>
 </template>

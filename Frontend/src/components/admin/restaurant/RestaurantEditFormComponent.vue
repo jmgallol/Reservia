@@ -287,7 +287,7 @@ watch(
         >
           Descartar
         </button>
-        
+
         <span v-if="saveSuccess" class="text-sm font-semibold text-green-600 ml-4 animate-pulse">
           ¡Cambios guardados con éxito!
         </span>

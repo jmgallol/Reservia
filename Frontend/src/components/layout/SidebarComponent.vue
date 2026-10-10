@@ -1,14 +1,5 @@
 <script setup lang="ts">
 // External imports
-import {
-  Calendar,
-  LayoutDashboard,
-  LogOut,
-  MapPin,
-  MessageSquare,
-  Store,
-  UtensilsCrossed,
-} from 'lucide-vue-next';
 import { computed, onMounted, ref } from 'vue';
 import { RouterLink, useRoute, useRouter } from 'vue-router';
 
@@ -56,8 +47,7 @@ onMounted(async () => {
 });
 
 const userName = computed(() => {
-  if (currentUser.value) return currentUser.value.name;
-  return isAdmin.value ? 'Admin Toscana' : 'María García';
+  return currentUser.value?.name ?? '';
 });
 
 const userRoleLabel = computed(() => (isAdmin.value ? 'Administrador' : 'Cliente'));
@@ -66,17 +56,17 @@ const userInitials = computed(() => StringFormatUtil.getInitials(userName.value)
 
 // Selectors
 const clientNavItems = [
-  { label: 'Restaurantes', to: '/restaurants', icon: UtensilsCrossed },
-  { label: 'Mapa', to: '/map', icon: MapPin },
-  { label: 'Mis Reservas', to: '/reservations', icon: Calendar },
-  { label: 'Mis Reseñas', to: '/reviews', icon: MessageSquare },
+  { label: 'Restaurantes', to: '/restaurants', icon: 'fa-solid fa-utensils' },
+  { label: 'Mapa', to: '/map', icon: 'fa-solid fa-location-dot' },
+  { label: 'Mis Reservas', to: '/reservations', icon: 'fa-solid fa-calendar' },
+  { label: 'Mis Reseñas', to: '/reviews', icon: 'fa-solid fa-comment' },
 ];
 
 const adminNavItems = [
-  { label: 'Dashboard', to: '/admin/dashboard', icon: LayoutDashboard },
-  { label: 'Mi Restaurante', to: '/admin/restaurant', icon: Store },
-  { label: 'Reservas', to: '/admin/reservations', icon: Calendar },
-  { label: 'Reseñas', to: '/admin/reviews', icon: MessageSquare },
+  { label: 'Dashboard', to: '/admin/dashboard', icon: 'fa-solid fa-chart-pie' },
+  { label: 'Mi Restaurante', to: '/admin/restaurant', icon: 'fa-solid fa-store' },
+  { label: 'Reservas', to: '/admin/reservations', icon: 'fa-solid fa-calendar' },
+  { label: 'Reseñas', to: '/admin/reviews', icon: 'fa-solid fa-comment' },
 ];
 
 const currentNavItems = computed(() => (isAdmin.value ? adminNavItems : clientNavItems));
@@ -124,48 +114,61 @@ async function handleLogout(): Promise<void> {
             : 'text-stone-400 hover:bg-[#162D20] hover:text-white'
         "
       >
-        <component
-          :is="item.icon"
-          :size="18"
-          :class="route.path === item.to ? 'text-white' : 'text-stone-400'"
-        />
+        <i
+          :class="[item.icon, route.path === item.to ? 'text-white' : 'text-stone-400']"
+          style="font-size: 18px"
+        ></i>
         <span>{{ item.label }}</span>
       </RouterLink>
     </nav>
 
-    <!-- Bottom User Profile + Logout -->
+    <!-- Bottom User Profile / Login -->
     <div class="p-5 border-t border-[#1B3625] shrink-0 space-y-3">
-      <div class="flex items-center gap-3">
-        <!-- Avatar Initial -->
-        <div
-          class="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0 shadow-xs"
-          :class="
-            isAdmin ? 'bg-[#C8552A]' : 'bg-[#1E3A2B] text-emerald-300 border border-emerald-700/50'
-          "
+      <template v-if="currentUser">
+        <div class="flex items-center gap-3">
+          <!-- Avatar Initial -->
+          <div
+            class="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0 shadow-xs"
+            :class="
+              isAdmin
+                ? 'bg-[#C8552A]'
+                : 'bg-[#1E3A2B] text-emerald-300 border border-emerald-700/50'
+            "
+          >
+            {{ userInitials }}
+          </div>
+
+          <!-- Name & Subtitle Role -->
+          <div class="min-w-0 flex-1">
+            <p class="text-sm font-bold text-white truncate leading-tight">
+              {{ userName }}
+            </p>
+            <p class="text-xs text-stone-400 truncate mt-0.5">
+              {{ userRoleLabel }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Logout Button -->
+        <button
+          type="button"
+          class="flex items-center gap-2 text-xs font-medium text-stone-400 hover:text-red-300 transition-colors pt-1 cursor-pointer"
+          @click="handleLogout"
         >
-          {{ userInitials }}
-        </div>
-
-        <!-- Name & Subtitle Role -->
-        <div class="min-w-0 flex-1">
-          <p class="text-sm font-bold text-white truncate leading-tight">
-            {{ userName }}
-          </p>
-          <p class="text-xs text-stone-400 truncate mt-0.5">
-            {{ userRoleLabel }}
-          </p>
-        </div>
-      </div>
-
-      <!-- Logout Button -->
-      <button
-        type="button"
-        class="flex items-center gap-2 text-xs font-medium text-stone-400 hover:text-red-300 transition-colors pt-1 cursor-pointer"
-        @click="handleLogout"
-      >
-        <LogOut :size="14" />
-        <span>Cerrar sesión</span>
-      </button>
+          <i class="fa-solid fa-arrow-right-from-bracket text-[14px]"></i>
+          <span>Cerrar sesión</span>
+        </button>
+      </template>
+      <template v-else>
+        <!-- Login Button -->
+        <button
+          type="button"
+          class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#C8552A] hover:bg-[#b54a22] text-white text-sm font-semibold transition-colors shadow-xs cursor-pointer"
+          @click="router.push('/auth')"
+        >
+          Iniciar sesión
+        </button>
+      </template>
     </div>
   </aside>
 </template>
