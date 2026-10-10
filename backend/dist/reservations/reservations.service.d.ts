@@ -1,7 +1,7 @@
-import { CreateReservationDto } from "./dto/create-reservation.dto.js";
-import { Reservation } from "./entities/reservation.entity.js";
-import { Repository } from "typeorm";
-import { UpdateReservationDto } from "./dto/update-reservation.dto.js";
+import { CreateReservationDto } from './dto/create-reservation.dto.js';
+import { Reservation } from './entities/reservation.entity.js';
+import { Repository } from 'typeorm';
+import { UpdateReservationDto } from './dto/update-reservation.dto.js';
 export declare class ReservationsService {
     private reservationRepository;
     constructor(reservationRepository: Repository<Reservation>);

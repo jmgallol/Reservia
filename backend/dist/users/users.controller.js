@@ -10,10 +10,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { Controller, Get, Post, Body, Param, ParseIntPipe } from "@nestjs/common";
-import { UsersService } from "./users.service.js";
-import { CreateUserDto } from "./dto/create-user.dto.js";
-import { LoginDto } from "./dto/login.dto.js";
+import { Controller, Get, Post, Body, Param, ParseIntPipe, } from '@nestjs/common';
+import { UsersService } from './users.service.js';
+import { CreateUserDto } from './dto/create-user.dto.js';
+import { LoginDto } from './dto/login.dto.js';
 let UsersController = class UsersController {
     usersService;
     constructor(usersService) {

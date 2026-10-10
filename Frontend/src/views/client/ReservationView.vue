@@ -76,9 +76,8 @@ function getActiveCount(): number {
 }
 
 function getCompletedCount(): number {
-  return visibleReservations.value.filter(
-    (reservation) => reservation.status === 'completed',
-  ).length;
+  return visibleReservations.value.filter((reservation) => reservation.status === 'completed')
+    .length;
 }
 function getRestaurantName(reservation: ReservationInterface): string {
   return reservation.restaurant?.name || 'Restaurante no encontrado';
@@ -287,10 +286,10 @@ function openEditModal(reservation: ReservationInterface): void {
     </div>
 
     <!-- Edit Reservation Modal -->
-    <EditReservationModalComponent 
-      v-model="showEditModal" 
-      :reservation="selectedReservation" 
-      @saved="loadReservations" 
+    <EditReservationModalComponent
+      v-model="showEditModal"
+      :reservation="selectedReservation"
+      @saved="loadReservations"
     />
 
     <!-- Feedback Modal -->

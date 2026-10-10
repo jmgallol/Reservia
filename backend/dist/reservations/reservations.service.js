@@ -10,10 +10,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { Injectable, NotFoundException } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Reservation } from "./entities/reservation.entity.js";
-import { Repository } from "typeorm";
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Reservation } from './entities/reservation.entity.js';
+import { Repository } from 'typeorm';
 let ReservationsService = class ReservationsService {
     reservationRepository;
     constructor(reservationRepository) {
@@ -21,13 +21,13 @@ let ReservationsService = class ReservationsService {
     }
     async getAll() {
         return this.reservationRepository.find({
-            relations: { user: true, restaurant: true }
+            relations: { user: true, restaurant: true },
         });
     }
     async getById(id) {
         const reservation = await this.reservationRepository.findOne({
             where: { id },
-            relations: { user: true, restaurant: true }
+            relations: { user: true, restaurant: true },
         });
         if (!reservation) {
             throw new NotFoundException(`Reservation with ID ${id} not found`);
@@ -37,27 +37,31 @@ let ReservationsService = class ReservationsService {
     async getByStatus(status) {
         const reservations = await this.reservationRepository.find({
             where: { status: status },
-            relations: { user: true, restaurant: true }
+            relations: { user: true, restaurant: true },
         });
         return reservations;
     }
     async getByRestaurantId(restaurantId) {
         const reservations = await this.reservationRepository.find({
             where: { restaurantId: restaurantId },
-            relations: { user: true, restaurant: true }
+            relations: { user: true, restaurant: true },
         });
         return reservations;
     }
     async getByUserId(userId) {
         const reservations = await this.reservationRepository.find({
             where: { userId },
-            relations: { user: true, restaurant: true }
+            relations: { user: true, restaurant: true },
         });
         return reservations;
     }
     async create(createReservationDto) {
         const reservation = this.reservationRepository.create({
-            ...createReservationDto,
+            date: createReservationDto.date,
+            time: createReservationDto.time,
+            numberOfPeople: createReservationDto.numberOfPeople,
+            userId: createReservationDto.userId,
+            restaurantId: createReservationDto.restaurantId,
             status: createReservationDto.status || 'pending',
             specialRequest: createReservationDto.specialRequest ?? '',
         });

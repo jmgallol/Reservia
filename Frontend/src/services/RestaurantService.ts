@@ -49,6 +49,6 @@ export class RestaurantService extends BaseService {
   }
 
   static calculateAverageRating(restaurant: RestaurantInterface): number {
-    return restaurant.averageRating ?? 4.8;
+    return restaurant.averageRating ?? 5.0;
   }
 }

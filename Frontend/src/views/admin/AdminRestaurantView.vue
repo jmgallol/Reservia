@@ -62,10 +62,10 @@ onMounted(async () => {
           </section>
 
           <!-- Edit Information Form -->
-          <RestaurantEditFormComponent 
-            v-if="restaurant" 
-            :restaurant="restaurant" 
-            @update="restaurant = $event" 
+          <RestaurantEditFormComponent
+            v-if="restaurant"
+            :restaurant="restaurant"
+            @update="restaurant = $event"
           />
         </div>
       </main>

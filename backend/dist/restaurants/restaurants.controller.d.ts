@@ -1,7 +1,7 @@
-import { CreateRestaurantDto } from "./dto/create-restaurant.dto.js";
-import { UpdateRestaurantDto } from "./dto/update-restaurant.dto.js";
-import { Restaurant } from "./entities/restaurant.entity.js";
-import { RestaurantsService } from "./restaurants.service.js";
+import { CreateRestaurantDto } from './dto/create-restaurant.dto.js';
+import { UpdateRestaurantDto } from './dto/update-restaurant.dto.js';
+import { Restaurant } from './entities/restaurant.entity.js';
+import { RestaurantsService } from './restaurants.service.js';
 export declare class RestaurantsController {
     private readonly restaurantsService;
     constructor(restaurantsService: RestaurantsService);

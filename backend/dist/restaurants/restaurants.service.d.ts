@@ -1,7 +1,7 @@
-import { CreateRestaurantDto } from "./dto/create-restaurant.dto.js";
-import { UpdateRestaurantDto } from "./dto/update-restaurant.dto.js";
-import { Restaurant } from "../restaurants/entities/restaurant.entity.js";
-import { Repository } from "typeorm";
+import { CreateRestaurantDto } from './dto/create-restaurant.dto.js';
+import { UpdateRestaurantDto } from './dto/update-restaurant.dto.js';
+import { Restaurant } from '../restaurants/entities/restaurant.entity.js';
+import { Repository } from 'typeorm';
 export declare class RestaurantsService {
     private restaurantRepository;
     constructor(restaurantRepository: Repository<Restaurant>);

@@ -41,14 +41,19 @@ async function handleRegister(): Promise<void> {
   }
 
   if (form.value.role === 'admin') {
-    if (!form.value.restaurantName || !form.value.restaurantAddress || !form.value.restaurantCity || !form.value.restaurantCategory) {
+    if (
+      !form.value.restaurantName ||
+      !form.value.restaurantAddress ||
+      !form.value.restaurantCity ||
+      !form.value.restaurantCategory
+    ) {
       errorMessage.value = 'Por favor completa todos los datos de tu restaurante.';
       return;
     }
   }
 
   isLoading.value = true;
-  
+
   const createDto = {
     name: form.value.name,
     email: form.value.email,
@@ -69,9 +74,10 @@ async function handleRegister(): Promise<void> {
         category: form.value.restaurantCategory,
         openingTime: '08:00',
         closingTime: '22:00',
-        imageUrl: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+        imageUrl:
+          'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
         latitude: 0,
-        longitude: 0, 
+        longitude: 0,
         adminId: newUser.id,
       };
       await RestaurantService.create(restaurantDto);
@@ -79,14 +85,13 @@ async function handleRegister(): Promise<void> {
 
     isLoading.value = false;
     successMessage.value = 'Cuenta creada exitosamente. Ahora puedes iniciar sesión.';
-    
+
     setTimeout(() => {
       emit('registered', form.value.email);
     }, 1500);
-
-  } catch (error: any) {
+  } catch (error: unknown) {
     isLoading.value = false;
-    errorMessage.value = error.message || 'Error al registrar el usuario.';
+    errorMessage.value = error instanceof Error ? error.message : 'Error al registrar el usuario.';
   }
 }
 </script>
@@ -104,7 +109,7 @@ async function handleRegister(): Promise<void> {
     >
       {{ errorMessage }}
     </div>
-    
+
     <div
       v-if="successMessage"
       class="bg-[#F0FDF4] border border-[#BBF7D0] text-[#166534] px-3.5 py-2.5 rounded-[6px] text-[13px] mb-4"
@@ -118,11 +123,21 @@ async function handleRegister(): Promise<void> {
       </label>
       <div class="flex gap-4">
         <label class="flex items-center gap-2 text-sm text-text-primary cursor-pointer">
-          <input type="radio" v-model="form.role" value="client" class="accent-green-dark cursor-pointer w-4 h-4" />
+          <input
+            type="radio"
+            v-model="form.role"
+            value="client"
+            class="accent-green-dark cursor-pointer w-4 h-4"
+          />
           Cliente
         </label>
         <label class="flex items-center gap-2 text-sm text-text-primary cursor-pointer">
-          <input type="radio" v-model="form.role" value="admin" class="accent-green-dark cursor-pointer w-4 h-4" />
+          <input
+            type="radio"
+            v-model="form.role"
+            value="admin"
+            class="accent-green-dark cursor-pointer w-4 h-4"
+          />
           Dueño de restaurante (Admin)
         </label>
       </div>
@@ -133,7 +148,10 @@ async function handleRegister(): Promise<void> {
         NOMBRE COMPLETO
       </label>
       <div class="relative flex items-center">
-        <User class="absolute left-3.5 text-text-secondary opacity-60 pointer-events-none" :size="18" />
+        <User
+          class="absolute left-3.5 text-text-secondary opacity-60 pointer-events-none"
+          :size="18"
+        />
         <input
           v-model="form.name"
           type="text"
@@ -148,7 +166,10 @@ async function handleRegister(): Promise<void> {
         CORREO ELECTRÓNICO
       </label>
       <div class="relative flex items-center">
-        <Mail class="absolute left-3.5 text-text-secondary opacity-60 pointer-events-none" :size="18" />
+        <Mail
+          class="absolute left-3.5 text-text-secondary opacity-60 pointer-events-none"
+          :size="18"
+        />
         <input
           v-model="form.email"
           type="email"
@@ -163,7 +184,10 @@ async function handleRegister(): Promise<void> {
         TELÉFONO
       </label>
       <div class="relative flex items-center">
-        <Phone class="absolute left-3.5 text-text-secondary opacity-60 pointer-events-none" :size="18" />
+        <Phone
+          class="absolute left-3.5 text-text-secondary opacity-60 pointer-events-none"
+          :size="18"
+        />
         <input
           v-model="form.phone"
           type="tel"
@@ -178,7 +202,10 @@ async function handleRegister(): Promise<void> {
         CONTRASEÑA
       </label>
       <div class="relative flex items-center">
-        <Lock class="absolute left-3.5 text-text-secondary opacity-60 pointer-events-none" :size="18" />
+        <Lock
+          class="absolute left-3.5 text-text-secondary opacity-60 pointer-events-none"
+          :size="18"
+        />
         <input
           v-model="form.password"
           :type="showPassword ? 'text' : 'password'"
@@ -198,16 +225,21 @@ async function handleRegister(): Promise<void> {
 
     <!-- Campos Dinámicos del Restaurante (Sólo si es Admin) -->
     <template v-if="form.role === 'admin'">
-      <h2 class="font-heading text-[18px] font-bold text-text-primary mt-4 mb-4 border-b border-border pb-2">
+      <h2
+        class="font-heading text-[18px] font-bold text-text-primary mt-4 mb-4 border-b border-border pb-2"
+      >
         Datos de tu Restaurante
       </h2>
-      
+
       <div class="mb-4">
         <label class="block text-[11px] font-semibold tracking-[0.5px] text-text-label mb-1.5">
           NOMBRE DEL RESTAURANTE
         </label>
         <div class="relative flex items-center">
-          <Store class="absolute left-3.5 text-text-secondary opacity-60 pointer-events-none" :size="18" />
+          <Store
+            class="absolute left-3.5 text-text-secondary opacity-60 pointer-events-none"
+            :size="18"
+          />
           <input
             v-model="form.restaurantName"
             type="text"
@@ -222,7 +254,10 @@ async function handleRegister(): Promise<void> {
           DIRECCIÓN
         </label>
         <div class="relative flex items-center">
-          <MapPin class="absolute left-3.5 text-text-secondary opacity-60 pointer-events-none" :size="18" />
+          <MapPin
+            class="absolute left-3.5 text-text-secondary opacity-60 pointer-events-none"
+            :size="18"
+          />
           <input
             v-model="form.restaurantAddress"
             type="text"
@@ -231,7 +266,7 @@ async function handleRegister(): Promise<void> {
           />
         </div>
       </div>
-      
+
       <div class="grid grid-cols-2 gap-4 mb-4">
         <div>
           <label class="block text-[11px] font-semibold tracking-[0.5px] text-text-label mb-1.5">
@@ -258,8 +293,7 @@ async function handleRegister(): Promise<void> {
       </div>
     </template>
 
-    <div class="mt-4 mb-4">
-    </div>
+    <div class="mt-4 mb-4"></div>
 
     <button
       :disabled="isLoading"

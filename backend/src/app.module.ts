@@ -11,7 +11,7 @@ import { ReviewsModule } from './reviews/reviews.module.js';
       type: 'better-sqlite3',
       database: process.env.SQLITE_PATH ?? 'database.sqlite',
       autoLoadEntities: true,
-      synchronize: true,
+      synchronize: false,
     }),
     RestaurantsModule,
     UsersModule,

@@ -10,10 +10,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseIntPipe, HttpCode, HttpStatus } from "@nestjs/common";
-import { CreateReservationDto } from "./dto/create-reservation.dto.js";
-import { UpdateReservationDto } from "./dto/update-reservation.dto.js";
-import { ReservationsService } from "./reservations.service.js";
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseIntPipe, HttpCode, HttpStatus, } from '@nestjs/common';
+import { CreateReservationDto } from './dto/create-reservation.dto.js';
+import { UpdateReservationDto } from './dto/update-reservation.dto.js';
+import { ReservationsService } from './reservations.service.js';
 let ReservationsController = class ReservationsController {
     reservationsService;
     constructor(reservationsService) {

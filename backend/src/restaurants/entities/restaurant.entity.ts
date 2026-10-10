@@ -1,6 +1,6 @@
-import { 
-  Entity, 
-  Column, 
+import {
+  Entity,
+  Column,
   PrimaryGeneratedColumn,
   OneToOne,
   OneToMany,
@@ -18,7 +18,7 @@ export class Restaurant {
 
   @Column({ type: 'varchar' })
   name: string;
-  
+
   @Column({ type: 'text' })
   description: string;
 

@@ -10,7 +10,7 @@ import RegisterComponent from '@/components/common/auth/RegisterComponent.vue';
 const currentTab = ref<'login' | 'register'>('login');
 
 // Methods
-function handleRegistered(email: string) {
+function handleRegistered() {
   // Cuando se registra exitosamente, volver al login
   currentTab.value = 'login';
 }
@@ -33,17 +33,25 @@ function handleRegistered(email: string) {
 
         <!-- Toggles -->
         <div class="flex bg-stone-100 rounded-xl p-1 mb-6">
-          <button 
+          <button
             @click="currentTab = 'login'"
             class="flex-1 py-2 text-sm font-semibold rounded-lg transition-colors"
-            :class="currentTab === 'login' ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-500 hover:text-stone-700'"
+            :class="
+              currentTab === 'login'
+                ? 'bg-white text-stone-900 shadow-sm'
+                : 'text-stone-500 hover:text-stone-700'
+            "
           >
             Iniciar Sesión
           </button>
-          <button 
+          <button
             @click="currentTab = 'register'"
             class="flex-1 py-2 text-sm font-semibold rounded-lg transition-colors"
-            :class="currentTab === 'register' ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-500 hover:text-stone-700'"
+            :class="
+              currentTab === 'register'
+                ? 'bg-white text-stone-900 shadow-sm'
+                : 'text-stone-500 hover:text-stone-700'
+            "
           >
             Registrarse
           </button>

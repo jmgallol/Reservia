@@ -60,7 +60,9 @@ __decorate([
     __metadata("design:type", Object)
 ], Reservation.prototype, "user", void 0);
 __decorate([
-    ManyToOne(() => Restaurant, (restaurant) => restaurant.reservations, { onDelete: 'CASCADE' }),
+    ManyToOne(() => Restaurant, (restaurant) => restaurant.reservations, {
+        onDelete: 'CASCADE',
+    }),
     JoinColumn({ name: 'restaurantId' }),
     __metadata("design:type", Object)
 ], Reservation.prototype, "restaurant", void 0);

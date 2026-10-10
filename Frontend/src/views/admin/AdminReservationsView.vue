@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // External imports
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 
 // Internal imports
 import { AuthService } from '@/services/AuthService';
@@ -46,7 +46,7 @@ async function loadReservations() {
   if (restaurantId) {
     const data = await ExceptionHandlerUtil.handleWithModal(
       () => ReservationService.getByRestaurantId(restaurantId),
-      modalRef
+      modalRef,
     );
     rawReservations.value = data ?? [];
   }
@@ -60,7 +60,7 @@ onMounted(() => {
 const filteredReservations = computed<ReservationInterface[]>(() => {
   return rawReservations.value.filter((r) => {
     const matchesStatus = selectedStatus.value === 'Todas' || r.status === selectedStatus.value;
-    
+
     let matchesPeople = true;
     if (selectedPeople.value !== 'Todos') {
       if (selectedPeople.value === '7+') {
@@ -102,7 +102,7 @@ async function handleConfirm(id: number): Promise<void> {
   await ExceptionHandlerUtil.handleWithModal(
     () => ReservationService.update(id, { status: 'confirmed' }),
     modalRef,
-    'Reserva confirmada con éxito'
+    'Reserva confirmada con éxito',
   );
   await loadReservations();
 }
@@ -111,7 +111,7 @@ async function handleComplete(id: number): Promise<void> {
   await ExceptionHandlerUtil.handleWithModal(
     () => ReservationService.update(id, { status: 'completed' }),
     modalRef,
-    'Reserva completada con éxito'
+    'Reserva completada con éxito',
   );
   await loadReservations();
 }
@@ -120,7 +120,7 @@ async function handleCancel(id: number): Promise<void> {
   await ExceptionHandlerUtil.handleWithModal(
     () => ReservationService.update(id, { status: 'cancelled' }),
     modalRef,
-    'Reserva cancelada con éxito'
+    'Reserva cancelada con éxito',
   );
   await loadReservations();
 }
@@ -349,7 +349,7 @@ async function handleCancel(id: number): Promise<void> {
         </div>
       </main>
     </div>
-    
+
     <FeedbackModalComponent ref="modalRef" />
   </div>
 </template>
