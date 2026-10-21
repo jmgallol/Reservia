@@ -25,7 +25,28 @@ cd Frontend
 npm install
 ```
 
-3. **Inicia el servidor de desarrollo**:
+3. **Configura la URL del backend** copiando `Frontend/.env.example` a `Frontend/.env`.
+Desde la carpeta `Frontend`, en PowerShell:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+El archivo debe contener:
+
+```dotenv
+VITE_API_URL=http://localhost:3000/api
+```
+
+El backend NestJS usa el puerto `3000` por defecto y el prefijo global `/api`.
+El registro llama a `POST /api/users` y el login a `POST /api/users/login`.
+Si cambias el puerto del backend mediante `PORT`, ajusta también esta URL.
+Vite no carga `.env.example`: sin `.env`, las peticiones se dirigen a
+`/undefined/users` en el frontend y devuelven 404. Reinicia Vite después de
+crear o modificar `.env`. Esta variable también debe estar definida al compilar
+para producción, apuntando al backend correspondiente.
+
+4. **Inicia el servidor de desarrollo**:
 
 ```bash
 npm run dev
