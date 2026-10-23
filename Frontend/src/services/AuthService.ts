@@ -13,7 +13,7 @@ export class AuthService extends BaseService {
   }
 
   static async login(email: string, password: string): Promise<UserInterface> {
-    const data = await this.makeRequest(
+    const data = await this.makeRequest<UserInterface>(
       `${import.meta.env.VITE_API_URL}/users/login`,
       false,
       'post',

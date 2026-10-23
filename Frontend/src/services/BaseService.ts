@@ -6,21 +6,21 @@ import type { Method } from 'axios';
 import JsonParserUtil from '@/utils/JsonParserUtil';
 
 export abstract class BaseService {
-  protected static async makeRequest(
+  protected static async makeRequest<T = unknown>(
     url: string,
     useJsonParser: boolean = false,
     method: Method = 'get',
     body?: unknown,
     headers?: Record<string, string>,
-  ): Promise<unknown> {
+  ): Promise<T> {
     try {
       const response = await axios({ url, method, data: body, headers });
 
       if (useJsonParser) {
-        return JsonParserUtil.parse(response.data);
+        return JsonParserUtil.parse(response.data) as T;
       }
 
-      return response.data;
+      return response.data as T;
     } catch (error) {
       throw BaseService.toError(error);
     }
