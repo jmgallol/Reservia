@@ -24,12 +24,12 @@ useSeoMeta({
 </script>
 
 <template>
-  <article v-if="article">
+  <article v-if="article" class="mx-auto" style="max-width: 720px">
     <p class="mb-1">
       <NuxtLink class="text-decoration-none small" to="/blog">← Todos los artículos</NuxtLink>
     </p>
 
-    <h1 class="h2">{{ article.title }}</h1>
+    <h1 class="h2 fw-bold text-primary">{{ article.title }}</h1>
     <p class="text-body-secondary small">
       {{ article.author }} · {{ DateFormatUtil.formatLongDate(article.publishedAt) }}
     </p>

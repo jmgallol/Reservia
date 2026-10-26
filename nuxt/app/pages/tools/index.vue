@@ -21,11 +21,15 @@ useSeoMeta({
 
 <template>
   <section>
-    <h1 class="h2 mb-3">Herramientas</h1>
+    <h1 class="h2 mb-3 text-primary">Herramientas</h1>
 
-    <ul class="list-group">
-      <li v-for="tool in tools" :key="tool.to" class="list-group-item position-relative">
-        <NuxtLink class="stretched-link text-decoration-none" :to="tool.to">
+    <ul class="list-group shadow-sm">
+      <li
+        v-for="tool in tools"
+        :key="tool.to"
+        class="list-group-item list-group-item-action position-relative py-3"
+      >
+        <NuxtLink class="stretched-link text-decoration-none fw-semibold" :to="tool.to">
           {{ tool.title }}
         </NuxtLink>
         <span class="text-body-secondary d-block small">{{ tool.description }}</span>

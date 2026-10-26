@@ -31,11 +31,11 @@ useSeoMeta({
       <NuxtLink class="text-decoration-none small" to="/tools">← Herramientas</NuxtLink>
     </p>
 
-    <h1 class="h2">Calculadora de cuenta</h1>
+    <h1 class="h2 text-primary">Calculadora de cuenta</h1>
     <p class="text-body-secondary">Divide la cuenta del restaurante entre los comensales.</p>
 
     <!-- Formulario -->
-    <form class="mb-4" @submit.prevent>
+    <form class="card card-body shadow-sm mb-4" @submit.prevent>
       <div class="mb-3">
         <label class="form-label" for="bill-amount">Valor de la cuenta (COP)</label>
         <input
@@ -74,7 +74,7 @@ useSeoMeta({
     </form>
 
     <!-- Resultado -->
-    <dl v-if="isValid" class="row mb-0">
+    <dl v-if="isValid" class="row card card-body shadow-sm border-primary bg-primary-subtle mx-0 mb-0">
       <dt class="col-6">Propina</dt>
       <dd class="col-6 text-end">{{ CurrencyFormatUtil.formatCop(billSplit.tipAmount) }}</dd>
 
@@ -82,7 +82,7 @@ useSeoMeta({
       <dd class="col-6 text-end">{{ CurrencyFormatUtil.formatCop(billSplit.totalWithTip) }}</dd>
 
       <dt class="col-6">Por persona</dt>
-      <dd class="col-6 text-end fw-bold">
+      <dd class="col-6 text-end fw-bold text-primary fs-5">
         {{ CurrencyFormatUtil.formatCop(billSplit.amountPerPerson) }}
       </dd>
     </dl>

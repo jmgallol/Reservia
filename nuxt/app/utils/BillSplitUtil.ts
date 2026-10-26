@@ -1,16 +1,12 @@
-// Internal imports
-import type { CalculateBillSplitDTO } from '~/dtos/CalculateBillSplitDTO';
-import type { BillSplitInterface } from '~/interfaces/BillSplitInterface';
-
 export class BillSplitUtil {
-  static calculate(dto: CalculateBillSplitDTO): BillSplitInterface {
-    const tipAmount = dto.billAmount * (dto.tipPercentage / 100);
-    const totalWithTip = dto.billAmount + tipAmount;
+  static calculate(params: { billAmount: number; tipPercentage: number; people: number }) {
+    const tipAmount = params.billAmount * (params.tipPercentage / 100);
+    const totalWithTip = params.billAmount + tipAmount;
 
     return {
       tipAmount,
       totalWithTip,
-      amountPerPerson: totalWithTip / dto.people,
+      amountPerPerson: totalWithTip / params.people,
     };
   }
 }
