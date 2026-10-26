@@ -1,5 +1,4 @@
 # Nuxt dev/build outputs
-.output
 .data
 .nuxt
 .nitro
@@ -22,3 +21,6 @@ logs
 .env
 .env.*
 !.env.example
+
+# Track the complete production output, including Nitro runtime dependencies.
+!/.output/**
