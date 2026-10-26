@@ -1,0 +1,1 @@
+var e=class{static formatLongDate(e){return new Intl.DateTimeFormat(`es-CO`,{day:`2-digit`,month:`long`,year:`numeric`,timeZone:`UTC`}).format(new Date(e))}};export{e as t};
